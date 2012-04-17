@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "RecordingViewController.h"
+#import "MainViewController.h"
 
 @implementation AppDelegate
 
@@ -26,7 +26,7 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    RecordingViewController *mainVC = [[RecordingViewController alloc] init];
+    MainViewController *mainVC = [[MainViewController alloc] init];
     self.window.rootViewController = mainVC;
     [mainVC release];
     

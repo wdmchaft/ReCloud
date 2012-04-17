@@ -18,6 +18,8 @@
 		B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */; };
 		B6E41D05153D062800FC3366 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D03153D062800FC3366 /* MainViewController.m */; };
 		B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D04153D062800FC3366 /* MainViewController.xib */; };
+		B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D08153D0EC200FC3366 /* CustomCellView.xib */; };
+		B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D0B153D175400FC3366 /* newsstand_default.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,8 @@
 		B6E41D02153D062800FC3366 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		B6E41D03153D062800FC3366 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		B6E41D04153D062800FC3366 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		B6E41D08153D0EC200FC3366 /* CustomCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCellView.xib; sourceTree = "<group>"; };
+		B6E41D0B153D175400FC3366 /* newsstand_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newsstand_default.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +127,7 @@
 			children = (
 				B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */,
 				B6E41D04153D062800FC3366 /* MainViewController.xib */,
+				B6E41D08153D0EC200FC3366 /* CustomCellView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -130,6 +135,7 @@
 		B6AF5CAD153BACCD0025E5A3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B6E41D0A153D174800FC3366 /* pics */,
 				B6AF5CAC153BACC50025E5A3 /* UI */,
 			);
 			name = Resources;
@@ -143,6 +149,14 @@
 				B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		B6E41D0A153D174800FC3366 /* pics */ = {
+			isa = PBXGroup;
+			children = (
+				B6E41D0B153D175400FC3366 /* newsstand_default.png */,
+			);
+			name = pics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,6 +212,8 @@
 				B6AF5C9A153BAC9E0025E5A3 /* InfoPlist.strings in Resources */,
 				B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */,
 				B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */,
+				B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */,
+				B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

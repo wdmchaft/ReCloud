@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MainViewController : UIViewController
+@interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>{
+    
+}
+
+@property (nonatomic, retain) NSMutableArray *audioList;
 
 @end

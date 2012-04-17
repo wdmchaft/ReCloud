@@ -10,6 +10,8 @@
 
 @implementation MainViewController
 
+@synthesize audioList;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -27,12 +29,25 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+-(void) dealloc{
+    self.audioList = nil;
+    
+    [super dealloc];
+    
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    NSMutableArray *newArr = [[NSMutableArray alloc] init];
+    //[newArr addObject:@""];
+    //[newArr addObject:@""];
+    [newArr addObject:@""];
+    self.audioList = newArr;
+    [newArr release];
 }
 
 - (void)viewDidUnload
@@ -46,6 +61,37 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - UITableView DataSource Methods
+
+-(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
+-(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if(audioList != nil){
+        return audioList.count;
+    }
+    return 0;
+}
+
+-(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *cellIdentifier = @"mainViewCell";    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if(cell == nil){
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+    }
+    
+    
+    
+    return cell;
+}
+
+#pragma mark - UITableView Delegate Methods
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
