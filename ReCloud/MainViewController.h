@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class RecordingViewController;
+
 @interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>{
+    
     
 }
 
 @property (nonatomic, retain) NSMutableArray *audioList;
+
+-(IBAction) toRecordView:(id)sender;
 
 @end

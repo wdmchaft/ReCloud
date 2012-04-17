@@ -7,10 +7,13 @@
 //
 
 #import "MainViewController.h"
+#import "RecordingViewController.h"
+#import "Constants.h"
 
 @implementation MainViewController
 
 @synthesize audioList;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,18 +46,20 @@
     [super viewDidLoad];
     
     NSMutableArray *newArr = [[NSMutableArray alloc] init];
-    //[newArr addObject:@""];
-    //[newArr addObject:@""];
+    [newArr addObject:@""];
+    [newArr addObject:@""];
     [newArr addObject:@""];
     self.audioList = newArr;
     [newArr release];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_RECORDING_VIEW object:nil];
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -94,6 +99,21 @@
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50;
+}
+
+#pragma mark - Instance Methods
+
+-(IBAction) toRecordView:(id)sender{    
+    RecordingViewController *recordVC = [[RecordingViewController alloc] init];
+    [self presentModalViewController:recordVC animated:YES];
+    [recordVC release];
+}
+
+#pragma mark - NSNotification Callback Methods
+
+-(void) dismissRecordingView:(NSNotification *)notification{
+    [self dismissModalViewControllerAnimated:YES];
+
 }
 
 @end
