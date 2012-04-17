@@ -10,6 +10,6 @@
 
 #define TAG_SLIDER_VIEW 10
 #define TAG_BLOCK_VIEW 20
-#define NOTIFY_DISMISS_PALYBACK_VIEW @"nDismissPlaybackView"
+#define NOTIFY_DISMISS_VIEW_CONTROLLER @"nDismissViewController"
 
 

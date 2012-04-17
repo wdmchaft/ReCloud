@@ -53,7 +53,8 @@
     self.audioList = newArr;
     [newArr release];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_PALYBACK_VIEW object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_VIEW_CONTROLLER object:nil];
+    
 }
 
 - (void)viewDidUnload
@@ -86,7 +87,7 @@
     static NSString *cellIdentifier = @"mainViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
     }    
     
     return cell;
@@ -96,6 +97,10 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    PlaybackViewController *playbackVC = [[PlaybackViewController alloc] init];
+    [self presentModalViewController:playbackVC animated:YES];
+    [playbackVC release];
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -104,10 +109,10 @@
 
 #pragma mark - Instance Methods
 
--(IBAction) toPlaybackView:(id)sender{    
-    PlaybackViewController *playbackVC = [[PlaybackViewController alloc] init];
-    [self presentModalViewController:playbackVC animated:YES];
-    [playbackVC release];
+-(IBAction) toRecordingView:(id)sender{    
+    RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
+    [self presentModalViewController:recordingVC animated:YES];
+    [recordingVC release];
 }
 
 #pragma mark - NSNotification Callback Methods

@@ -17,6 +17,6 @@
 
 @property (nonatomic, retain) NSMutableArray *audioList;
 
--(IBAction) toPlaybackView:(id)sender;
+-(IBAction) toRecordingView:(id)sender;
 
 @end

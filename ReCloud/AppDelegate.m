@@ -26,9 +26,10 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
     MainViewController *mainVC = [[MainViewController alloc] init];
     self.window.rootViewController = mainVC;
-    [mainVC release];
+    [mainVC release];    
     
     [self.window makeKeyAndVisible];
     return YES;

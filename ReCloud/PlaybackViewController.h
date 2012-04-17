@@ -11,6 +11,7 @@
 @interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
+@property (nonatomic, retain) NSMutableArray *indexList;
 
 -(IBAction) backAction:(id)sender;
 
