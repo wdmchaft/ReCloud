@@ -182,7 +182,7 @@
 							<object class="IBUILabel" id="230178559">
 								<reference key="NSNextResponder" ref="944794858"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{147, 25}, {4, 21}}</string>
+								<string key="NSFrame">{{147, 27}, {4, 16}}</string>
 								<reference key="NSSuperview" ref="944794858"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="761487398"/>
@@ -215,7 +215,7 @@
 								<string key="NSFrame">{{249, 17}, {25, 21}}</string>
 								<reference key="NSSuperview" ref="944794858"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="593950977"/>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage" id="265148844">
@@ -229,6 +229,7 @@
 								<string key="NSFrame">{{284, 17}, {28, 21}}</string>
 								<reference key="NSSuperview" ref="944794858"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIImage" ref="265148844"/>
@@ -256,6 +257,7 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<reference key="IBUIContentView" ref="944794858"/>
 				<string key="IBUIReuseIdentifier">mainViewCell</string>
+				<real value="50" key="IBUIRowHeight"/>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
