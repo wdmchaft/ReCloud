@@ -16,6 +16,8 @@
 		B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */; };
 		B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */; };
 		B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */; };
+		B6E41D05153D062800FC3366 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D03153D062800FC3366 /* MainViewController.m */; };
+		B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D04153D062800FC3366 /* MainViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,9 @@
 		B6AF5CBB153C10BD0025E5A3 /* RecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingViewController.h; sourceTree = "<group>"; };
 		B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingViewController.m; sourceTree = "<group>"; };
 		B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecordingViewController.xib; sourceTree = "<group>"; };
+		B6E41D02153D062800FC3366 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		B6E41D03153D062800FC3366 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		B6E41D04153D062800FC3366 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +112,8 @@
 			children = (
 				B6AF5CBB153C10BD0025E5A3 /* RecordingViewController.h */,
 				B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */,
+				B6E41D02153D062800FC3366 /* MainViewController.h */,
+				B6E41D03153D062800FC3366 /* MainViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -115,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */,
+				B6E41D04153D062800FC3366 /* MainViewController.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -189,6 +197,7 @@
 			files = (
 				B6AF5C9A153BAC9E0025E5A3 /* InfoPlist.strings in Resources */,
 				B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */,
+				B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +212,7 @@
 				B6AF5CA0153BAC9E0025E5A3 /* AppDelegate.m in Sources */,
 				B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */,
 				B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */,
+				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +316,7 @@
 				B6AF5CA5153BAC9E0025E5A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
