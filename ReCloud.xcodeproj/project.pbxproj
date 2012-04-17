@@ -1,0 +1,313 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
+		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
+		B6AF5C94153BAC9E0025E5A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */; };
+		B6AF5C9A153BAC9E0025E5A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5C98153BAC9E0025E5A3 /* InfoPlist.strings */; };
+		B6AF5C9C153BAC9E0025E5A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5C9B153BAC9E0025E5A3 /* main.m */; };
+		B6AF5CA0153BAC9E0025E5A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5C9F153BAC9E0025E5A3 /* AppDelegate.m */; };
+		B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */; };
+		B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */; };
+		B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B6AF5C97153BAC9E0025E5A3 /* ReCloud-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ReCloud-Info.plist"; sourceTree = "<group>"; };
+		B6AF5C99153BAC9E0025E5A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B6AF5C9B153BAC9E0025E5A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B6AF5C9D153BAC9E0025E5A3 /* ReCloud-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReCloud-Prefix.pch"; sourceTree = "<group>"; };
+		B6AF5C9E153BAC9E0025E5A3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B6AF5C9F153BAC9E0025E5A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B6AF5CB2153BB5760025E5A3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		B6AF5CB8153C06B70025E5A3 /* SquareSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquareSliderView.h; sourceTree = "<group>"; };
+		B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareSliderView.m; sourceTree = "<group>"; };
+		B6AF5CBB153C10BD0025E5A3 /* RecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingViewController.h; sourceTree = "<group>"; };
+		B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingViewController.m; sourceTree = "<group>"; };
+		B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecordingViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B6AF5C88153BAC9E0025E5A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */,
+				B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */,
+				B6AF5C94153BAC9E0025E5A3 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B6AF5C80153BAC9D0025E5A3 = {
+			isa = PBXGroup;
+			children = (
+				B6AF5C95153BAC9E0025E5A3 /* ReCloud */,
+				B6AF5C8E153BAC9E0025E5A3 /* Frameworks */,
+				B6AF5C8C153BAC9E0025E5A3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B6AF5C8C153BAC9E0025E5A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B6AF5C8E153BAC9E0025E5A3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */,
+				B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */,
+				B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B6AF5C95153BAC9E0025E5A3 /* ReCloud */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5CAE153BADA70025E5A3 /* Utils */,
+				B6AF5CAD153BACCD0025E5A3 /* Resources */,
+				B6AF5CAB153BACBA0025E5A3 /* Controller */,
+				B6AF5C9E153BAC9E0025E5A3 /* AppDelegate.h */,
+				B6AF5C9F153BAC9E0025E5A3 /* AppDelegate.m */,
+				B6AF5C96153BAC9E0025E5A3 /* Supporting Files */,
+			);
+			path = ReCloud;
+			sourceTree = "<group>";
+		};
+		B6AF5C96153BAC9E0025E5A3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5C97153BAC9E0025E5A3 /* ReCloud-Info.plist */,
+				B6AF5C98153BAC9E0025E5A3 /* InfoPlist.strings */,
+				B6AF5C9B153BAC9E0025E5A3 /* main.m */,
+				B6AF5C9D153BAC9E0025E5A3 /* ReCloud-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B6AF5CAB153BACBA0025E5A3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5CBB153C10BD0025E5A3 /* RecordingViewController.h */,
+				B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		B6AF5CAC153BACC50025E5A3 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		B6AF5CAD153BACCD0025E5A3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5CAC153BACC50025E5A3 /* UI */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		B6AF5CAE153BADA70025E5A3 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B6AF5CB2153BB5760025E5A3 /* Constants.h */,
+				B6AF5CB8153C06B70025E5A3 /* SquareSliderView.h */,
+				B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B6AF5C8A153BAC9E0025E5A3 /* ReCloud */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6AF5CA3153BAC9E0025E5A3 /* Build configuration list for PBXNativeTarget "ReCloud" */;
+			buildPhases = (
+				B6AF5C87153BAC9E0025E5A3 /* Sources */,
+				B6AF5C88153BAC9E0025E5A3 /* Frameworks */,
+				B6AF5C89153BAC9E0025E5A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReCloud;
+			productName = ReCloud;
+			productReference = B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B6AF5C82153BAC9D0025E5A3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = B6AF5C85153BAC9D0025E5A3 /* Build configuration list for PBXProject "ReCloud" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B6AF5C80153BAC9D0025E5A3;
+			productRefGroup = B6AF5C8C153BAC9E0025E5A3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B6AF5C8A153BAC9E0025E5A3 /* ReCloud */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B6AF5C89153BAC9E0025E5A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6AF5C9A153BAC9E0025E5A3 /* InfoPlist.strings in Resources */,
+				B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B6AF5C87153BAC9E0025E5A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6AF5C9C153BAC9E0025E5A3 /* main.m in Sources */,
+				B6AF5CA0153BAC9E0025E5A3 /* AppDelegate.m in Sources */,
+				B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */,
+				B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B6AF5C98153BAC9E0025E5A3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B6AF5C99153BAC9E0025E5A3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B6AF5CA1153BAC9E0025E5A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B6AF5CA2153BAC9E0025E5A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B6AF5CA4153BAC9E0025E5A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ReCloud/ReCloud-Prefix.pch";
+				INFOPLIST_FILE = "ReCloud/ReCloud-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B6AF5CA5153BAC9E0025E5A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ReCloud/ReCloud-Prefix.pch";
+				INFOPLIST_FILE = "ReCloud/ReCloud-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B6AF5C85153BAC9D0025E5A3 /* Build configuration list for PBXProject "ReCloud" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6AF5CA1153BAC9E0025E5A3 /* Debug */,
+				B6AF5CA2153BAC9E0025E5A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B6AF5CA3153BAC9E0025E5A3 /* Build configuration list for PBXNativeTarget "ReCloud" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6AF5CA4153BAC9E0025E5A3 /* Debug */,
+				B6AF5CA5153BAC9E0025E5A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B6AF5C82153BAC9D0025E5A3 /* Project object */;
+}
