@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "RecordingViewController.h"
+#import "PlaybackViewController.h"
 #import "Constants.h"
 
 @implementation MainViewController
@@ -52,7 +53,7 @@
     self.audioList = newArr;
     [newArr release];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_RECORDING_VIEW object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_PALYBACK_VIEW object:nil];
 }
 
 - (void)viewDidUnload
@@ -103,17 +104,16 @@
 
 #pragma mark - Instance Methods
 
--(IBAction) toRecordView:(id)sender{    
-    RecordingViewController *recordVC = [[RecordingViewController alloc] init];
-    [self presentModalViewController:recordVC animated:YES];
-    [recordVC release];
+-(IBAction) toPlaybackView:(id)sender{    
+    PlaybackViewController *playbackVC = [[PlaybackViewController alloc] init];
+    [self presentModalViewController:playbackVC animated:YES];
+    [playbackVC release];
 }
 
 #pragma mark - NSNotification Callback Methods
 
 -(void) dismissRecordingView:(NSNotification *)notification{
     [self dismissModalViewControllerAnimated:YES];
-
 }
 
 @end

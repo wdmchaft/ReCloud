@@ -20,6 +20,8 @@
 		B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D04153D062800FC3366 /* MainViewController.xib */; };
 		B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D08153D0EC200FC3366 /* CustomCellView.xib */; };
 		B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D0B153D175400FC3366 /* newsstand_default.png */; };
+		B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D15153D312600FC3366 /* PlaybackViewController.m */; };
+		B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D16153D312600FC3366 /* PlaybackViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,9 @@
 		B6E41D04153D062800FC3366 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		B6E41D08153D0EC200FC3366 /* CustomCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCellView.xib; sourceTree = "<group>"; };
 		B6E41D0B153D175400FC3366 /* newsstand_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newsstand_default.png; sourceTree = "<group>"; };
+		B6E41D14153D312600FC3366 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
+		B6E41D15153D312600FC3366 /* PlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackViewController.m; sourceTree = "<group>"; };
+		B6E41D16153D312600FC3366 /* PlaybackViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaybackViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +123,8 @@
 				B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */,
 				B6E41D02153D062800FC3366 /* MainViewController.h */,
 				B6E41D03153D062800FC3366 /* MainViewController.m */,
+				B6E41D14153D312600FC3366 /* PlaybackViewController.h */,
+				B6E41D15153D312600FC3366 /* PlaybackViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -126,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */,
+				B6E41D16153D312600FC3366 /* PlaybackViewController.xib */,
 				B6E41D04153D062800FC3366 /* MainViewController.xib */,
 				B6E41D08153D0EC200FC3366 /* CustomCellView.xib */,
 			);
@@ -214,6 +222,7 @@
 				B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */,
 				B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */,
 				B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */,
+				B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +238,7 @@
 				B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */,
 				B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */,
 				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
+				B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
