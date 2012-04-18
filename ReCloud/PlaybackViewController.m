@@ -44,7 +44,7 @@
 {
     [super viewDidLoad];
     
-    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, 50)];
+    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, 80)];
     [sliderBackView addSubview:squareView];
     [squareView release];
     
@@ -58,6 +58,8 @@
 - (void)viewDidUnload
 {
     self.sliderBackView = nil;
+    
+    
     
     [super viewDidUnload];
 }

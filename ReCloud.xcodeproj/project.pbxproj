@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
 		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
 		B6AF5C94153BAC9E0025E5A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -136,6 +138,7 @@
 				B6E41D16153D312600FC3366 /* PlaybackViewController.xib */,
 				B6E41D04153D062800FC3366 /* MainViewController.xib */,
 				B6E41D08153D0EC200FC3366 /* CustomCellView.xib */,
+				B69F8839153E9B1E003044BF /* SliderBlockView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -223,6 +226,7 @@
 				B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */,
 				B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */,
 				B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */,
+				B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface SquareSliderView : UIView
+
+@property (nonatomic, assign) float progress;
+
+-(void) setBackViewColor:(UIColor *)color;
+-(void) setSliderViewColor:(UIColor *)color;
 
 @end

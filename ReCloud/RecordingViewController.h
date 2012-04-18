@@ -10,7 +10,7 @@
 
 @interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, retain) IBOutlet UIView *silderBackView;
+@property (nonatomic, retain) NSMutableArray *indexList;
 
 -(IBAction) backAction:(id)sender;
 

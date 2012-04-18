@@ -11,27 +11,34 @@
 
 @implementation SquareSliderView
 
+@synthesize progress;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor blackColor];        
+        
+        UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 50)];
+        backView.backgroundColor = CUSTOM_COLOR(176.0, 215.0, 255.0); 
+        [self addSubview:backView];
+        [backView release];
         
         //progressView为可拖动的进度界面
-        UIView *progressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width / 2, frame.size.height)];
-        progressView.backgroundColor = [UIColor blueColor];
+        UIView *progressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width / 2, backView.frame.size.height)];
+        progressView.backgroundColor = [UIColor blackColor];
+        progressView.alpha = 0.3;
         progressView.tag = TAG_SLIDER_VIEW;
         [self addSubview:progressView];
         [progressView release];
         
-        CGFloat blockWidth = 30;
         //blockView为滑块
-        UIView *blockView = [[UIView alloc] initWithFrame:CGRectMake(progressView.frame.size.width - blockWidth, 0, blockWidth, frame.size.height)];
-        blockView.backgroundColor = [UIColor redColor];
+        UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
+        CGRect rect = blockView.frame;
+        rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
+        rect.origin.y = 0;
+        blockView.frame = rect;
         blockView.tag = TAG_BLOCK_VIEW;
         [self addSubview:blockView];
-        [blockView release];
 
     }
     return self;
@@ -51,13 +58,17 @@
     
     UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
     CGRect rect1 = blockView.frame;
-    rect1.origin.x = touchPoint.x - rect1.size.width;
+    rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
+    
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_INDEX_LABEL];
+    timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
     
 }
 
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
     NSLog(@"%s", __FUNCTION__);
+    
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
     
     UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
@@ -67,14 +78,28 @@
     
     UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
     CGRect rect1 = blockView.frame;
-    rect1.origin.x = touchPoint.x - rect1.size.width;
+    rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
+    
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_INDEX_LABEL];
+    timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
 }
 
 
 -(void) dealloc{
     
     [super dealloc];
+}
+
+#pragma mark - Instance Methods
+ 
+-(void) setBackViewColor:(UIColor *)color{
+    self.backgroundColor = color;
+}
+
+-(void) setSliderViewColor:(UIColor *)color{
+    UIView *sliderView = [self viewWithTag:TAG_SLIDER_VIEW];
+    sliderView.backgroundColor = color;
 }
 
 
