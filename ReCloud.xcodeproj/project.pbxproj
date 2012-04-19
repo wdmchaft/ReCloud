@@ -23,6 +23,7 @@
 		B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D0B153D175400FC3366 /* newsstand_default.png */; };
 		B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D15153D312600FC3366 /* PlaybackViewController.m */; };
 		B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D16153D312600FC3366 /* PlaybackViewController.xib */; };
+		B6F37E1415400FE200C46C84 /* MAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F37E1315400FE200C46C84 /* MAlertView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,8 @@
 		B6E41D14153D312600FC3366 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
 		B6E41D15153D312600FC3366 /* PlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackViewController.m; sourceTree = "<group>"; };
 		B6E41D16153D312600FC3366 /* PlaybackViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaybackViewController.xib; sourceTree = "<group>"; };
+		B6F37E1215400FE200C46C84 /* MAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAlertView.h; sourceTree = "<group>"; };
+		B6F37E1315400FE200C46C84 /* MAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAlertView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +161,8 @@
 				B6AF5CB2153BB5760025E5A3 /* Constants.h */,
 				B6AF5CB8153C06B70025E5A3 /* SquareSliderView.h */,
 				B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */,
+				B6F37E1215400FE200C46C84 /* MAlertView.h */,
+				B6F37E1315400FE200C46C84 /* MAlertView.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -243,6 +248,7 @@
 				B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */,
 				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
 				B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */,
+				B6F37E1415400FE200C46C84 /* MAlertView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

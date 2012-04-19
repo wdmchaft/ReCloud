@@ -9,12 +9,14 @@
 #import "MainViewController.h"
 #import "RecordingViewController.h"
 #import "PlaybackViewController.h"
+#import "MAlertView.h"
 #import "Constants.h"
 
 @implementation MainViewController
 
+@synthesize myTableView;
+@synthesize editLabel;
 @synthesize audioList;
-
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -35,6 +37,7 @@
 
 -(void) dealloc{
     self.audioList = nil;
+    self.editLabel = nil;
     
     [super dealloc];
     
@@ -53,15 +56,19 @@
     self.audioList = newArr;
     [newArr release];
     
+    viewingLocal = YES;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_VIEW_CONTROLLER object:nil];
     
 }
 
 - (void)viewDidUnload
 {
-    [super viewDidUnload];
+    self.myTableView = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [super viewDidUnload];    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -87,10 +94,20 @@
     static NSString *cellIdentifier = @"mainViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
     }    
     
     return cell;
+}
+
+-(void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(editingStyle == UITableViewCellEditingStyleDelete){
+        NSLog(@"%s", __FUNCTION__);
+        
+        [audioList removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];        
+
+    }    
 }
 
 #pragma mark - UITableView Delegate Methods
@@ -107,12 +124,96 @@
     return 50;
 }
 
+
+
 #pragma mark - Instance Methods
 
 -(IBAction) toRecordingView:(id)sender{    
+    editLabel.text = @"edit";
+    [myTableView setEditing:NO animated:YES];
+    
     RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
     [self presentModalViewController:recordingVC animated:YES];
     [recordingVC release];
+    
+}
+
+-(IBAction) editAction:(id)sender{    
+    if([editLabel.text isEqualToString:@"edit"]){
+        editLabel.text = @"done";
+        
+        [myTableView setEditing:YES animated:YES];
+    }else{
+        editLabel.text = @"edit";
+        
+        [myTableView setEditing:NO animated:YES];
+    }
+    
+}
+
+-(IBAction) loginAction:(id)sender{
+    editLabel.text = @"edit";
+    [myTableView setEditing:NO animated:YES];
+    
+    /*
+    [audioList addObject:@""];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:3 inSection:0];
+    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationMiddle];
+     */
+    
+    MAlertView *alertView = [[MAlertView alloc] initWithTitle:@"" message:nil delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    [alertView addTextField:[[[UITextField alloc] init] autorelease] placeHolder:@"Account"];
+    [alertView addTextField:[[[UITextField alloc] init] autorelease] placeHolder:@"Password"];
+    [alertView show];
+    [alertView release];
+    
+}
+
+-(IBAction) viewCloud:(id)sender{
+    editLabel.text = @"edit";
+    [myTableView setEditing:NO animated:YES];
+    
+    if(viewingLocal){
+        //从云端下载数据
+        
+        NSMutableArray *newArr = [[NSMutableArray alloc] init];
+        [newArr addObject:@""];
+        [newArr addObject:@""];
+        self.audioList = newArr;
+        [newArr release];
+        
+        [myTableView reloadData];
+        
+        viewingLocal = NO;
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                            message:@"请先登陆" 
+                                                           delegate:nil 
+                                                  cancelButtonTitle:@"知道了" 
+                                                  otherButtonTitles:nil, nil];
+        [alertView show];
+        [alertView release];
+    }
+}
+
+-(IBAction) viewLocal:(id)sender{
+    editLabel.text = @"edit";
+    [myTableView setEditing:NO animated:YES];
+    
+    if(!viewingLocal){        
+        //浏览本地文件
+        
+        NSMutableArray *newArr = [[NSMutableArray alloc] init];
+        [newArr addObject:@""];
+        [newArr addObject:@""];
+        [newArr addObject:@""];
+        self.audioList = newArr;
+        [newArr release];
+        
+        [myTableView reloadData];
+        
+        viewingLocal = YES;
+    }
 }
 
 #pragma mark - NSNotification Callback Methods
