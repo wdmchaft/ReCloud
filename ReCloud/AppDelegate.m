@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "Constants.h"
 
 @implementation AppDelegate
 
@@ -23,6 +24,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *samplePath = [[self documentPath] stringByAppendingPathComponent:SAMPLE_DIR];
+    NSString *audioPath = [[self documentPath] stringByAppendingPathComponent:AUDIO_DIR];
+    NSString *indexPath = [[self documentPath] stringByAppendingPathComponent:INDEX_DIR];
+    if(![fileManager fileExistsAtPath:samplePath]){
+        [fileManager createDirectoryAtPath:samplePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    if(![fileManager fileExistsAtPath:audioPath]){
+        [fileManager createDirectoryAtPath:audioPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    if(![fileManager fileExistsAtPath:indexPath]){
+        [fileManager createDirectoryAtPath:indexPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+
+    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
@@ -73,5 +90,17 @@
      See also applicationDidEnterBackground:.
      */
 }
+
+#pragma mark - Instance Methods
+
+-(NSString *) documentPath{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDirectory, YES);
+    NSString *docPath= [paths objectAtIndex:0];
+    
+    NSLog(@"%@", docPath);
+    
+    return docPath;
+}
+
 
 @end

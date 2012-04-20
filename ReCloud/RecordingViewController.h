@@ -7,11 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
-@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate>{
+    
+    BOOL recording;
+    BOOL pausing;
+    BOOL sampling;
+    long timestamp;
+}
 
 @property (nonatomic, retain) NSMutableArray *indexList;
+@property (nonatomic, retain) AVAudioRecorder *mRecorder;
 
--(IBAction) backAction:(id)sender;
+-(IBAction)     backAction:(id)sender;
+-(IBAction)     pauseOrRecordAction:(id)sender;
+-(void)         startRecordingForFilepath:(NSString *)path;
+-(void)         pauseRecording;
+-(void)         stopRecording;
+-(void)         resumeRecording;
+-(NSString *)   formatDuration:(NSTimeInterval)duration;
 
 @end

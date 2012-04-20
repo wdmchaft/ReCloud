@@ -18,4 +18,8 @@
 
 #define NOTIFY_DISMISS_VIEW_CONTROLLER @"nDismissViewController"
 
+#define AUDIO_DIR @"data"
+#define SAMPLE_DIR @"sample"
+#define INDEX_DIR @"index"
+
 

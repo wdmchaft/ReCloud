@@ -25,5 +25,6 @@
 -(IBAction) loginAction:(id)sender;
 -(IBAction) viewCloud:(id)sender;
 -(IBAction) viewLocal:(id)sender;
+-(void)     refreshAudioList;
 
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
+		B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
 		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
 		B6AF5C94153BAC9E0025E5A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
+		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -61,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */,
 				B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */,
 				B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */,
 				B6AF5C94153BAC9E0025E5A3 /* CoreGraphics.framework in Frameworks */,
@@ -90,6 +93,7 @@
 		B6AF5C8E153BAC9E0025E5A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */,
 				B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */,
 				B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */,
 				B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */,
@@ -286,7 +290,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -305,7 +309,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

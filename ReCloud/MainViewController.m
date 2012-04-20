@@ -11,6 +11,7 @@
 #import "PlaybackViewController.h"
 #import "MAlertView.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
 @implementation MainViewController
 
@@ -49,12 +50,7 @@
 {
     [super viewDidLoad];
     
-    NSMutableArray *newArr = [[NSMutableArray alloc] init];
-    [newArr addObject:@""];
-    [newArr addObject:@""];
-    [newArr addObject:@""];
-    self.audioList = newArr;
-    [newArr release];
+    [self refreshAudioList];
     
     viewingLocal = YES;
     
@@ -202,18 +198,24 @@
     
     if(!viewingLocal){        
         //浏览本地文件
-        
-        NSMutableArray *newArr = [[NSMutableArray alloc] init];
-        [newArr addObject:@""];
-        [newArr addObject:@""];
-        [newArr addObject:@""];
-        self.audioList = newArr;
-        [newArr release];
+        [self refreshAudioList];
         
         [myTableView reloadData];
         
         viewingLocal = YES;
     }
+}
+
+-(void) refreshAudioList{
+    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    NSString *audiosPath = [[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *arr = [fileManager contentsOfDirectoryAtPath:audiosPath error:nil];    
+    NSMutableArray *newArr = [[NSMutableArray alloc] initWithArray:arr];
+    self.audioList = newArr;
+    [newArr release];
+    
+    NSLog(@"audioList count: %d", audioList.count);
 }
 
 #pragma mark - NSNotification Callback Methods
