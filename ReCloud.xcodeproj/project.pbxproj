@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B6972AED154507750034136C /* AudioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B6972AEC154507750034136C /* AudioItem.m */; };
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
 		B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
@@ -28,6 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B6972AEB154507750034136C /* AudioItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioItem.h; sourceTree = "<group>"; };
+		B6972AEC154507750034136C /* AudioItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioItem.m; sourceTree = "<group>"; };
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
 		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +76,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B6972AE9154507390034136C /* Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				B6972AEB154507750034136C /* AudioItem.h */,
+				B6972AEC154507750034136C /* AudioItem.m */,
+			);
+			name = "Data Model";
+			sourceTree = "<group>";
+		};
 		B6AF5C80153BAC9D0025E5A3 = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +116,7 @@
 		B6AF5C95153BAC9E0025E5A3 /* ReCloud */ = {
 			isa = PBXGroup;
 			children = (
+				B6972AE9154507390034136C /* Data Model */,
 				B6AF5CAE153BADA70025E5A3 /* Utils */,
 				B6AF5CAD153BACCD0025E5A3 /* Resources */,
 				B6AF5CAB153BACBA0025E5A3 /* Controller */,
@@ -253,6 +266,7 @@
 				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
 				B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */,
 				B6F37E1415400FE200C46C84 /* MAlertView.m in Sources */,
+				B6972AED154507750034136C /* AudioItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

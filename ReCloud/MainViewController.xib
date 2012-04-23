@@ -215,7 +215,6 @@
 						<string key="NSFrame">{{119, 396}, {83, 66}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -311,12 +310,12 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">toRecordingView:</string>
+						<string key="label">showRecordingView:</string>
 						<reference key="source" ref="426657"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">16</int>
+					<int key="connectionID">25</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -441,7 +440,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">24</int>
+			<int key="maxID">25</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -451,7 +450,7 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="editAction:">id</string>
 						<string key="loginAction:">id</string>
-						<string key="toRecordingView:">id</string>
+						<string key="showRecordingView:">id</string>
 						<string key="viewCloud:">id</string>
 						<string key="viewLocal:">id</string>
 					</dictionary>
@@ -464,8 +463,8 @@
 							<string key="name">loginAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="toRecordingView:">
-							<string key="name">toRecordingView:</string>
+						<object class="IBActionInfo" key="showRecordingView:">
+							<string key="name">showRecordingView:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="viewCloud:">

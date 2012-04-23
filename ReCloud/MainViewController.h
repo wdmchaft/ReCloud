@@ -20,7 +20,7 @@
 @property (nonatomic, retain) IBOutlet UILabel *editLabel;
 @property (nonatomic, retain) NSMutableArray *audioList;
 
--(IBAction) toRecordingView:(id)sender;
+-(IBAction) showRecordingView:(id)sender;
 -(IBAction) editAction:(id)sender;
 -(IBAction) loginAction:(id)sender;
 -(IBAction) viewCloud:(id)sender;

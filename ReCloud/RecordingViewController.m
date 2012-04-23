@@ -85,7 +85,7 @@
     static NSString *cellIdentifier = @"playbackViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
     }    
     
     return cell;
@@ -182,7 +182,19 @@
     NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:newURL error:nil];
     [newURL release];
-    NSLog(@"duration: %f", player.duration);
+    NSString *durationStr = [self stringForDuration:player.duration];
+    //NSLog(@"durationStr: %@", durationStr);
+    
+    NSArray *tagArr = [NSArray arrayWithObjects:@"123", @"213", @"2312", nil];
+    NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:dateStr, kDate, 
+                                                                      timeStr, kTime, 
+                                                                      defaultTitle, kTitle, 
+                                                                      durationStr, kDuration, 
+                                                                      filesizeStr, kSize, 
+                                                                      filename, kFilename, 
+                                                                      tagArr, kTag, nil];
+    NSString *indexFilepath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.plist", timestamp]];
+    [newDict writeToFile:indexFilepath atomically:YES];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_VIEW_CONTROLLER object:self];
 }
@@ -207,5 +219,21 @@
         [clicked setTitle:@">" forState:UIControlStateNormal];
     }
 }
+
+-(NSString *) stringForDuration:(NSTimeInterval)duration{
+    NSInteger temp = (NSInteger)duration;
+    NSInteger hour =  temp / 3600;
+    NSInteger remainder = temp % 3600;
+    NSInteger minute = 0;
+    NSInteger second = 0;
+    if(remainder != 0){
+        minute = remainder / 60;
+        second = remainder % 60;
+    }    
+    NSString *result = [[NSString alloc] initWithFormat:@"%02d:%02d:%02d", hour, minute, second];
+    
+    return [result autorelease];
+}
+
 
 @end

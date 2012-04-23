@@ -49,13 +49,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self refreshAudioList];
+    NSLog(@"%s", __FUNCTION__);
     
     viewingLocal = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_VIEW_CONTROLLER object:nil];
     
+}
+
+-(void) viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    NSLog(@"%s", __FUNCTION__);
+    
+    [self refreshAudioList];
+    [myTableView reloadData];
 }
 
 - (void)viewDidUnload
@@ -92,6 +99,21 @@
     if(cell == nil){
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
     }    
+    NSDictionary *dict = [audioList objectAtIndex:indexPath.row];
+    
+    UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIME_LABEL];
+    UILabel *dateLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DATE_LABEL];
+    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLE_LABEL];
+    UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
+    UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
+    //UIButton *editButton = (UIButton *)[cell.contentView viewWithTag:TAG_EDIT_BUTTON];
+    //UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:TAG_DELETE_BUTTON];
+    
+    timeLabel.text = [dict objectForKey:kTime];
+    dateLabel.text = [dict objectForKey:kDate];
+    titleLabel.text = [dict objectForKey:kTitle];
+    durationLabel.text = [dict objectForKey:kDuration];
+    sizeLabel.text = [dict objectForKey:kSize];
     
     return cell;
 }
@@ -124,7 +146,7 @@
 
 #pragma mark - Instance Methods
 
--(IBAction) toRecordingView:(id)sender{    
+-(IBAction) showRecordingView:(id)sender{    
     editLabel.text = @"edit";
     [myTableView setEditing:NO animated:YES];
     
@@ -208,14 +230,21 @@
 
 -(void) refreshAudioList{
     AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-    NSString *audiosPath = [[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR];
+    NSString *indexPath = [[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR];
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *arr = [fileManager contentsOfDirectoryAtPath:audiosPath error:nil];    
-    NSMutableArray *newArr = [[NSMutableArray alloc] initWithArray:arr];
+    NSArray *fileList = [fileManager contentsOfDirectoryAtPath:indexPath error:nil];
+    
+    NSMutableArray *newArr = [[NSMutableArray alloc] init];
+    for(NSString *file in fileList){
+        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:[indexPath stringByAppendingPathComponent:file]];
+        [newArr addObject:dict];
+        [dict release];
+    }    
     self.audioList = newArr;
     [newArr release];
-    
+    //NSLog(@"newArr count: %@", newArr);
     NSLog(@"audioList count: %d", audioList.count);
+    
 }
 
 #pragma mark - NSNotification Callback Methods

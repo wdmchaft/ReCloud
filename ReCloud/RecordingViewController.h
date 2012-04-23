@@ -26,6 +26,6 @@
 -(void)         pauseRecording;
 -(void)         stopRecording;
 -(void)         resumeRecording;
--(NSString *)   formatDuration:(NSTimeInterval)duration;
+-(NSString *)   stringForDuration:(NSTimeInterval)duration;
 
 @end
