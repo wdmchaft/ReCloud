@@ -18,8 +18,8 @@
 #define TAG_TITLE_LABEL 1002
 #define TAG_DURATION_LABEL 1003
 #define TAG_SIZE_LABEL 1004
-#define TAG_EDIT_BUTTON 1005
-#define TAG_DELETE_BUTTON 1006
+#define BASE_TAG_EDIT_BUTTON 1100
+#define BASE_TAG_UPLOAD_BUTTON 1200
 
 #define kDate @"Date"
 #define kTime @"Time"
@@ -30,8 +30,6 @@
 #define kTag @"Tag"
 
 #define CUSTOM_COLOR(R, G, B) [UIColor colorWithRed:R / 255 green:G / 255 blue:B / 255 alpha:1.0] 
-
-#define NOTIFY_DISMISS_VIEW_CONTROLLER @"nDismissViewController"
 
 #define AUDIO_DIR @"data"
 #define SAMPLE_DIR @"sample"

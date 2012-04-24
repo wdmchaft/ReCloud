@@ -14,6 +14,7 @@
 
 @synthesize indexList;
 @synthesize mRecorder;
+@synthesize recordButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,6 +47,8 @@
 {
     [super viewDidLoad];
     
+    [self initLayout];
+    
     NSMutableArray *newList = [[NSMutableArray alloc] init];
     [newList addObject:@""];
     [newList addObject:@""];
@@ -53,11 +56,12 @@
     [newList release];
     
     recording = NO;
-    pausing = NO;
 }
 
 - (void)viewDidUnload
 {
+    self.recordButton = nil;
+    
     [super viewDidUnload];
 
 }
@@ -103,62 +107,61 @@
 
 #pragma mark - Instance Methods
 
--(void) startRecordingForFilepath:(NSString *)path{
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    audioSession.delegate = self;
-    [audioSession setActive:YES error:nil];
-    [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
+-(void) recordOrPause:(id)sender{
+    UIButton *clicked = (UIButton *)sender;
     
-    NSURL *newURL = [[NSURL alloc] initFileURLWithPath:path];
-    NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                    [NSNumber numberWithFloat:44100.0], AVSampleRateKey, 
-                                    [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
-                                    [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
-                                    [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
-                                    nil];
-    AVAudioRecorder *newRecorder = [[AVAudioRecorder alloc] initWithURL:newURL settings:recordSettings error:nil];
-    [newURL release];
-    [recordSettings release];
-    self.mRecorder = newRecorder;
-    [newRecorder release];
-    mRecorder.meteringEnabled = YES;
-    mRecorder.delegate = self;
-    [mRecorder prepareToRecord];
-    [mRecorder record];
-    
-    recording = YES;
-    pausing = NO;
-}
-
--(void) pauseRecording{
-    if(mRecorder != nil){
-        [mRecorder pause];
-        recording = NO;
-        pausing = YES;
-    }
-}
-
--(void) resumeRecording{
-    if(mRecorder != nil){
+    if(mRecorder == nil){
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        audioSession.delegate = self;
+        [audioSession setActive:YES error:nil];
+        [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
+        
+        AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+        timestamp = [[NSDate date] timeIntervalSince1970];
+        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.pcm", timestamp]];   
+        NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
+        NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                        [NSNumber numberWithFloat:44100.0], AVSampleRateKey, 
+                                        [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
+                                        [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
+                                        [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
+                                        nil];
+        AVAudioRecorder *newRecorder = [[AVAudioRecorder alloc] initWithURL:newURL settings:recordSettings error:nil];
+        [newURL release];
+        [recordSettings release];
+        self.mRecorder = newRecorder;
+        [newRecorder release];
+        mRecorder.meteringEnabled = YES;
+        mRecorder.delegate = self;
+        [mRecorder prepareToRecord];
         [mRecorder record];
+        
         recording = YES;
-        pausing = NO;
+        [clicked setTitle:@"||" forState:UIControlStateNormal];
+    }else{
+        if(recording){
+            [mRecorder pause];
+            recording = NO;
+            [clicked setTitle:@">" forState:UIControlStateNormal];
+        }else{
+            [mRecorder record];
+            recording = YES;
+            [clicked setTitle:@"||" forState:UIControlStateNormal];
+        }
     }
 }
 
 -(void) stopRecording{
-    if(mRecorder != nil){
-        [mRecorder stop];
-        self.mRecorder = nil;
-        recording = NO;
-        pausing = NO;
-        
-        [[AVAudioSession sharedInstance] setActive:NO error:nil];
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-    }
+    [mRecorder stop];
+    self.mRecorder = nil;
+    recording = NO;
+    [recordButton setTitle:@">" forState:UIControlStateNormal];
+    
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
 }
 
--(IBAction) backAction:(id)sender{
+-(void) backAction:(id)sender{
     [self stopRecording];
     
     NSString *filename = [[NSString alloc] initWithFormat:@"%ld.pcm", timestamp];
@@ -175,9 +178,8 @@
     NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:filename];
     NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:filepath error:nil];
     NSString *tempFileSizeStr  = [dict objectForKey:NSFileSize];
-    NSUInteger filesize = [tempFileSizeStr longLongValue] / 1000000.0;
+    float filesize = [tempFileSizeStr longLongValue] / 1000000.0;
     NSString *filesizeStr = [[NSString alloc] initWithFormat:@"%.2f", filesize];
-    NSLog(@"file size: %@", filesizeStr);
     
     NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:newURL error:nil];
@@ -196,29 +198,9 @@
     NSString *indexFilepath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.plist", timestamp]];
     [newDict writeToFile:indexFilepath atomically:YES];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_VIEW_CONTROLLER object:self];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
--(IBAction) pauseOrRecordAction:(id)sender{
-    if(!recording){
-        if(pausing){
-            [self resumeRecording];
-        }else{
-            AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-            timestamp = [[NSDate date] timeIntervalSince1970];
-            NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.pcm", timestamp]];            
-            [self startRecordingForFilepath:filepath];
-        }
-        
-        UIButton *clicked = (UIButton *)sender;
-        [clicked setTitle:@"||" forState:UIControlStateNormal];
-    }else{
-        [self pauseRecording];
-        
-        UIButton *clicked = (UIButton *)sender;
-        [clicked setTitle:@">" forState:UIControlStateNormal];
-    }
-}
 
 -(NSString *) stringForDuration:(NSTimeInterval)duration{
     NSInteger temp = (NSInteger)duration;
@@ -235,5 +217,10 @@
     return [result autorelease];
 }
 
+-(void) initLayout{
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
+    self.navigationItem.leftBarButtonItem = buttonItem;
+    [buttonItem release];
+}
 
 @end

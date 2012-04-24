@@ -51,9 +51,9 @@
     [super viewDidLoad];
     NSLog(@"%s", __FUNCTION__);
     
-    viewingLocal = YES;
+    [self initLayout];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissRecordingView:) name:NOTIFY_DISMISS_VIEW_CONTROLLER object:nil];
+    viewingLocal = YES;   
     
 }
 
@@ -106,14 +106,26 @@
     UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLE_LABEL];
     UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
     UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
-    //UIButton *editButton = (UIButton *)[cell.contentView viewWithTag:TAG_EDIT_BUTTON];
-    //UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:TAG_DELETE_BUTTON];
+    
+    UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [editButton setTitle:@"E" forState:UIControlStateNormal];
+    editButton.tag = BASE_TAG_EDIT_BUTTON + indexPath.row;
+    editButton.frame = CGRectMake(240, 11, 30, 25);
+    [cell.contentView addSubview:editButton];
+    
+    UIButton *uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [uploadButton setTitle:@"U" forState:UIControlStateNormal];
+    uploadButton.tag = BASE_TAG_UPLOAD_BUTTON + indexPath.row;
+    uploadButton.frame = CGRectMake(285, 11, 30, 25);
+    [cell.contentView addSubview:uploadButton];
     
     timeLabel.text = [dict objectForKey:kTime];
     dateLabel.text = [dict objectForKey:kDate];
     titleLabel.text = [dict objectForKey:kTitle];
     durationLabel.text = [dict objectForKey:kDuration];
-    sizeLabel.text = [dict objectForKey:kSize];
+    sizeLabel.text = [NSString stringWithFormat:@"%@MB", [dict objectForKey:kSize]];
+    [editButton addTarget:self action:@selector(editTitle:) forControlEvents:UIControlEventTouchUpInside];
+    [uploadButton addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
     
     return cell;
 }
@@ -131,10 +143,10 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];    
     
     PlaybackViewController *playbackVC = [[PlaybackViewController alloc] init];
-    [self presentModalViewController:playbackVC animated:YES];
+    [self.navigationController pushViewController:playbackVC animated:YES];
     [playbackVC release];
 }
 
@@ -147,31 +159,31 @@
 #pragma mark - Instance Methods
 
 -(IBAction) showRecordingView:(id)sender{    
-    editLabel.text = @"edit";
-    [myTableView setEditing:NO animated:YES];
+    [self doneEditingAction:nil];
     
     RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
-    [self presentModalViewController:recordingVC animated:YES];
+    [self.navigationController pushViewController:recordingVC animated:YES];
     [recordingVC release];
     
 }
 
--(IBAction) editAction:(id)sender{    
-    if([editLabel.text isEqualToString:@"edit"]){
-        editLabel.text = @"done";
-        
-        [myTableView setEditing:YES animated:YES];
-    }else{
-        editLabel.text = @"edit";
-        
-        [myTableView setEditing:NO animated:YES];
-    }
-    
+-(void) editAction:(id)sender{    
+    [myTableView setEditing:YES animated:YES];    
+    UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"done" style:UIBarButtonItemStyleBordered target:self action:@selector(doneEditingAction:)];
+    self.navigationItem.leftBarButtonItem = leftButtonItem;
+    [leftButtonItem release];
 }
 
--(IBAction) loginAction:(id)sender{
-    editLabel.text = @"edit";
+-(void) doneEditingAction:(id)sender{
     [myTableView setEditing:NO animated:YES];
+    UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editAction:)];
+    self.navigationItem.leftBarButtonItem = leftButtonItem;
+    [leftButtonItem release];
+}
+
+-(void) loginAction:(id)sender{
+    editLabel.text = @"edit";
+    [self doneEditingAction:nil];
     
     /*
     [audioList addObject:@""];
@@ -188,20 +200,12 @@
 }
 
 -(IBAction) viewCloud:(id)sender{
-    editLabel.text = @"edit";
-    [myTableView setEditing:NO animated:YES];
+    [self doneEditingAction:nil];
     
     if(viewingLocal){
         //从云端下载数据
-        
-        NSMutableArray *newArr = [[NSMutableArray alloc] init];
-        [newArr addObject:@""];
-        [newArr addObject:@""];
-        self.audioList = newArr;
-        [newArr release];
-        
+        self.audioList = nil;
         [myTableView reloadData];
-        
         viewingLocal = NO;
         
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
@@ -215,15 +219,12 @@
 }
 
 -(IBAction) viewLocal:(id)sender{
-    editLabel.text = @"edit";
-    [myTableView setEditing:NO animated:YES];
+    [self doneEditingAction:nil];
     
     if(!viewingLocal){        
         //浏览本地文件
-        [self refreshAudioList];
-        
-        [myTableView reloadData];
-        
+        [self refreshAudioList];        
+        [myTableView reloadData];        
         viewingLocal = YES;
     }
 }
@@ -237,7 +238,7 @@
     NSMutableArray *newArr = [[NSMutableArray alloc] init];
     for(NSString *file in fileList){
         NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:[indexPath stringByAppendingPathComponent:file]];
-        [newArr addObject:dict];
+        [newArr insertObject:dict atIndex:0];
         [dict release];
     }    
     self.audioList = newArr;
@@ -247,10 +248,23 @@
     
 }
 
-#pragma mark - NSNotification Callback Methods
+-(void) editTitle:(id)sender{
+    UIButton *clicked = (UIButton *)sender;
+    NSLog(@"editButton: %d", clicked.tag);
+}
 
--(void) dismissRecordingView:(NSNotification *)notification{
-    [self dismissModalViewControllerAnimated:YES];
+-(void) uploadToCloud:(id)sender{
+    
+}
+
+-(void) initLayout{
+    UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editAction:)];
+    self.navigationItem.leftBarButtonItem = leftButtonItem;
+    [leftButtonItem release];
+    
+    UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"login" style:UIBarButtonItemStyleBordered target:self action:@selector(loginAction:)];
+    self.navigationItem.rightBarButtonItem = rightButtonItem;
+    [rightButtonItem release];
 }
 
 @end

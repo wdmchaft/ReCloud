@@ -7,12 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
-@interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate>{
+    BOOL playing;
+    
+}
 
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
 @property (nonatomic, retain) NSMutableArray *indexList;
+@property (nonatomic, retain) NSDictionary *dataInfo;
+@property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 
--(IBAction) backAction:(id)sender;
+-(id)       initWithAudioInfo:(NSDictionary *)info;
+-(IBAction) playOrPause:(id)sender;
+-(IBAction) prevSection:(id)sender;
+-(IBAction) nextSection:(id)sender;
+-(IBAction) stop:(id)sender;
+-(IBAction) addTag:(id)sender;
+-(void)     backAction:(id)sender;
+-(void)     initLayout;
 
 @end

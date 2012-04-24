@@ -9,19 +9,22 @@
 #import "PlaybackViewController.h"
 #import "SquareSliderView.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
 @implementation PlaybackViewController
 
 @synthesize sliderBackView;
 @synthesize indexList;
+@synthesize dataInfo;
+@synthesize audioPlayer;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+-(id) initWithAudioInfo:(NSDictionary *)info{
+    self = [super init];
+    if(self){
+        self.dataInfo = info;
+        return self;
     }
-    return self;
+    return nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -34,6 +37,8 @@
 
 -(void) dealloc{
     self.indexList = nil;
+    self.dataInfo = nil;
+    self.audioPlayer = nil;
     
     [super dealloc];
 }
@@ -44,22 +49,21 @@
 {
     [super viewDidLoad];
     
-    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, 80)];
-    [sliderBackView addSubview:squareView];
-    [squareView release];
+    [self initLayout];
     
     NSMutableArray *newList = [[NSMutableArray alloc] init];
     [newList addObject:@""];
     [newList addObject:@""];
     self.indexList = newList;
+    
+    playing = NO;
+    
     [newList release];
 }
 
 - (void)viewDidUnload
 {
-    self.sliderBackView = nil;
-    
-    
+    self.sliderBackView = nil;    
     
     [super viewDidUnload];
 }
@@ -105,8 +109,67 @@
 
 #pragma mark - Instance Methods
 
--(IBAction) backAction:(id)sender{
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_VIEW_CONTROLLER object:self];
+-(void) backAction:(id)sender{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(IBAction) prevSection:(id)sender{
+    
+}
+
+-(IBAction) playOrPause:(id)sender{
+    if(audioPlayer == nil){
+        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[dataInfo objectForKey:kFilename]];
+        NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
+        AVAudioPlayer *newPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:newURL error:nil];
+        [newURL release];
+        self.audioPlayer = newPlayer;
+        [newPlayer release];
+        [audioPlayer prepareToPlay];
+        audioPlayer.delegate = self;
+        [audioPlayer play];
+        playing = YES;
+    }else{
+        if(playing){
+            [audioPlayer pause]; 
+            playing = NO;
+        }else{
+            [audioPlayer play];
+            playing = YES;
+        }            
+    }
+}
+
+-(IBAction) addTag:(id)sender{
+    
+}
+
+-(IBAction) stop:(id)sender{
+    
+}
+
+-(IBAction) nextSection:(id)sender{
+    
+}
+
+-(void) initLayout{
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
+    self.navigationItem.leftBarButtonItem = buttonItem;
+    [buttonItem release];
+    
+    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithTitle:@"upload" style:UIBarButtonItemStyleBordered target:self action:@selector(uploadAction:)];
+    self.navigationItem.rightBarButtonItem = buttonItem2;
+    [buttonItem2 release];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.text = [dataInfo objectForKey:kTitle];
+    self.navigationItem.titleView = titleLabel;
+    
+    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, 80)];
+    [sliderBackView addSubview:squareView];
+    [squareView release];     
+    
 }
 
 @end

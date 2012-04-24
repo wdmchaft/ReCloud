@@ -12,20 +12,18 @@
 @interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate>{
     
     BOOL recording;
-    BOOL pausing;
     BOOL sampling;
     long timestamp;
 }
 
+@property (nonatomic, retain) IBOutlet UIButton *recordButton;
 @property (nonatomic, retain) NSMutableArray *indexList;
 @property (nonatomic, retain) AVAudioRecorder *mRecorder;
 
--(IBAction)     backAction:(id)sender;
--(IBAction)     pauseOrRecordAction:(id)sender;
--(void)         startRecordingForFilepath:(NSString *)path;
--(void)         pauseRecording;
+-(void)         backAction:(id)sender;
 -(void)         stopRecording;
--(void)         resumeRecording;
 -(NSString *)   stringForDuration:(NSTimeInterval)duration;
+-(IBAction)     recordOrPause:(id)sender;
+-(void)         initLayout;
 
 @end
