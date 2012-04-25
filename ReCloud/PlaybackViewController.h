@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
+@property (nonatomic, retain) IBOutlet UIButton *playButton;
 @property (nonatomic, retain) NSMutableArray *indexList;
 @property (nonatomic, retain) NSDictionary *dataInfo;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;

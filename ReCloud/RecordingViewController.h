@@ -14,16 +14,22 @@
     BOOL recording;
     BOOL sampling;
     long timestamp;
+    NSTimer *recordingTimer;
 }
 
+@property (nonatomic, retain) IBOutlet UIView *tagBackView;
+@property (nonatomic, retain) IBOutlet UILabel *timingLabel;
 @property (nonatomic, retain) IBOutlet UIButton *recordButton;
-@property (nonatomic, retain) NSMutableArray *indexList;
+@property (nonatomic, retain) IBOutlet UITableView *myTableView;
+@property (nonatomic, retain) NSMutableArray *tagList;
 @property (nonatomic, retain) AVAudioRecorder *mRecorder;
 
 -(void)         backAction:(id)sender;
 -(void)         stopRecording;
 -(NSString *)   stringForDuration:(NSTimeInterval)duration;
 -(IBAction)     recordOrPause:(id)sender;
+-(IBAction)     tagForTime:(id)sender;
+-(void)         addTagView;
 -(void)         initLayout;
 
 @end

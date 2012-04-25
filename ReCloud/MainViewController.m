@@ -145,7 +145,7 @@
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];    
     
-    PlaybackViewController *playbackVC = [[PlaybackViewController alloc] init];
+    PlaybackViewController *playbackVC = [[PlaybackViewController alloc] initWithAudioInfo:[audioList objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:playbackVC animated:YES];
     [playbackVC release];
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B6972AED154507750034136C /* AudioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B6972AEC154507750034136C /* AudioItem.m */; };
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
+		B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6A11BDA1547AC0100456A6E /* TagView.xib */; };
 		B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
 		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
@@ -32,6 +33,7 @@
 		B6972AEB154507750034136C /* AudioItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioItem.h; sourceTree = "<group>"; };
 		B6972AEC154507750034136C /* AudioItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioItem.m; sourceTree = "<group>"; };
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
+		B6A11BDA1547AC0100456A6E /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
 		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -167,6 +169,7 @@
 				B6E41D04153D062800FC3366 /* MainViewController.xib */,
 				B6E41D08153D0EC200FC3366 /* CustomCellView.xib */,
 				B69F8839153E9B1E003044BF /* SliderBlockView.xib */,
+				B6A11BDA1547AC0100456A6E /* TagView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				B6E41D0C153D175400FC3366 /* newsstand_default.png in Resources */,
 				B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */,
 				B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */,
+				B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

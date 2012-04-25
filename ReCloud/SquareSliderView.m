@@ -61,7 +61,7 @@
     rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
     
-    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_INDEX_LABEL];
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
     timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
     
 }
@@ -81,7 +81,7 @@
     rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
     
-    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_INDEX_LABEL];
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
     timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
 }
 

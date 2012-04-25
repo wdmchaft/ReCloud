@@ -12,9 +12,12 @@
 
 @implementation RecordingViewController
 
-@synthesize indexList;
+@synthesize tagList;
 @synthesize mRecorder;
 @synthesize recordButton;
+@synthesize tagBackView;
+@synthesize timingLabel;
+@synthesize myTableView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -34,11 +37,10 @@
 }
 
 -(void) dealloc{
-    self.indexList = nil;
+    self.tagList = nil;
     self.mRecorder = nil;
     
-    [super dealloc];
-    
+    [super dealloc];    
 }
 
 #pragma mark - View lifecycle
@@ -50,18 +52,22 @@
     [self initLayout];
     
     NSMutableArray *newList = [[NSMutableArray alloc] init];
-    [newList addObject:@""];
-    [newList addObject:@""];
-    self.indexList = newList;
+    self.tagList = newList;
     [newList release];
     
+    [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
     recording = NO;
 }
 
 - (void)viewDidUnload
 {
     self.recordButton = nil;
+    self.tagBackView = nil;
+    self.timingLabel = nil;
+    self.myTableView = nil;
     
+    [recordingTimer invalidate];
+    recordingTimer = nil;
     [super viewDidUnload];
 
 }
@@ -79,18 +85,44 @@
 }
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if(indexList != nil){
-        return indexList.count;
+    if(tagList != nil){
+        return tagList.count;
     }
     return 0;
 }
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"%s", __FUNCTION__);
+    
     static NSString *cellIdentifier = @"playbackViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
-    }    
+    }  
+    NSDictionary *dict = [tagList objectAtIndex:indexPath.row];
+    
+    UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_COUNTLABEL];
+    countLabel.text = [NSString stringWithFormat:@"%d", tagList.count - indexPath.row];
+    
+    UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_TIMELABEL];
+    timeLabel.text = [dict objectForKey:kCurrentTime];
+    
+    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_TITLELABEL];
+    titleLabel.text = [dict objectForKey:kTagTitle];
+    
+    UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [editButton setTitle:@"E" forState:UIControlStateNormal];
+    editButton.frame = CGRectMake(240, 15, 35, 25);
+    editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+    [editButton addTarget:self action:@selector(editTag:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:editButton];
+    
+    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [deleteButton setTitle:@"D" forState:UIControlStateNormal];
+    deleteButton.frame = CGRectMake(280, 15, 35, 25);
+    deleteButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+    [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:deleteButton];
     
     return cell;
 }
@@ -105,10 +137,45 @@
     return 50;
 }
 
+#pragma mark - KVO Callback Methods
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    NSLog(@"%s", __FUNCTION__);
+    
+    if([keyPath isEqualToString:@"recording"]){
+        if(recording){
+            [recordButton setTitle:@"||" forState:UIControlStateNormal];
+        }else{
+            [recordButton setTitle:@">" forState:UIControlStateNormal];
+        }
+    }
+}
+
+#pragma mark - NSTimer Callback Methods
+
+-(void) timeRecording:(NSTimer *)timer{
+    //NSLog(@"currentTime: %f", mRecorder.currentTime);    
+    timingLabel.text = [self stringForDuration:mRecorder.currentTime];
+    
+    if(recording){
+        for(int i = 0; i < tagList.count; i++){
+            [UIView animateWithDuration:1 animations:^{
+                UIView *tagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + i];
+                CGRect rect = tagView.frame;
+                if(rect.origin.x > i * 1.2){
+                    rect.origin.x--;
+                }
+                tagView.frame = rect;
+            }];
+        } 
+    }
+
+}
+
 #pragma mark - Instance Methods
 
 -(void) recordOrPause:(id)sender{
-    UIButton *clicked = (UIButton *)sender;
+    BOOL flag;
     
     if(mRecorder == nil){
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -134,28 +201,34 @@
         mRecorder.meteringEnabled = YES;
         mRecorder.delegate = self;
         [mRecorder prepareToRecord];
-        [mRecorder record];
+        [mRecorder record];        
+        flag = YES;
         
-        recording = YES;
-        [clicked setTitle:@"||" forState:UIControlStateNormal];
+        recordingTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
     }else{
         if(recording){
             [mRecorder pause];
-            recording = NO;
-            [clicked setTitle:@">" forState:UIControlStateNormal];
-        }else{
+            flag = NO;
+    }else{
             [mRecorder record];
-            recording = YES;
-            [clicked setTitle:@"||" forState:UIControlStateNormal];
+            flag = YES;
         }
     }
+    
+    [self willChangeValueForKey:@"recording"];
+    recording = flag;
+    [self didChangeValueForKey:@"recording"];
 }
 
 -(void) stopRecording{
+    [recordingTimer invalidate];
+    recordingTimer = nil;
+    
     [mRecorder stop];
     self.mRecorder = nil;
+    [self willChangeValueForKey:@"recording"];
     recording = NO;
-    [recordButton setTitle:@">" forState:UIControlStateNormal];
+    [self didChangeValueForKey:@"recording"];    
     
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -163,6 +236,7 @@
 
 -(void) backAction:(id)sender{
     [self stopRecording];
+    [self removeObserver:self forKeyPath:@"recording"];
     
     NSString *filename = [[NSString alloc] initWithFormat:@"%ld.pcm", timestamp];
     
@@ -187,18 +261,25 @@
     NSString *durationStr = [self stringForDuration:player.duration];
     //NSLog(@"durationStr: %@", durationStr);
     
-    NSArray *tagArr = [NSArray arrayWithObjects:@"123", @"213", @"2312", nil];
     NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:dateStr, kDate, 
                                                                       timeStr, kTime, 
                                                                       defaultTitle, kTitle, 
                                                                       durationStr, kDuration, 
                                                                       filesizeStr, kSize, 
                                                                       filename, kFilename, 
-                                                                      tagArr, kTag, nil];
+                                                                      tagList, kTag, nil];
     NSString *indexFilepath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.plist", timestamp]];
     [newDict writeToFile:indexFilepath atomically:YES];
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void) editTag:(id)sender{
+    
+}
+
+-(void) deleteTag:(id)sender{
+    
 }
 
 
@@ -221,6 +302,39 @@
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonItem;
     [buttonItem release];
+}
+
+-(IBAction) tagForTime:(id)sender{
+    if(recording){
+        
+        //更新数据源
+        NSString *currentTimeStr = [self stringForDuration:mRecorder.currentTime];
+        NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
+        [tagList insertObject:newDict atIndex:0];
+        [newDict release];
+        
+        //增加TagView
+        [self addTagView];
+        
+        //更新列表视图
+        [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
+        
+    }
+}
+
+-(void) addTagView{
+    UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+    tagView.frame = CGRectMake([UIScreen mainScreen].applicationFrame.size.width - tagView.frame.size.width / 2, 0, tagView.frame.size.width, tagView.frame.size.height);
+    tagView.tag = BASE_TAG_RECORDVIEW_TAGVIEW + tagList.count - 1;
+    
+    UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+    countLabel.text = [NSString stringWithFormat:@"%d", tagList.count];
+    
+    UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+    timeLabel.text = [[tagList objectAtIndex:0] objectForKey:kCurrentTime];  //最新的在列表最前位置
+    
+    [tagBackView addSubview:tagView];
+    
 }
 
 @end

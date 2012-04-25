@@ -38,7 +38,9 @@
     if(![fileManager fileExistsAtPath:indexPath]){
         [fileManager createDirectoryAtPath:indexPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-
+    
+    //屏幕常亮
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.

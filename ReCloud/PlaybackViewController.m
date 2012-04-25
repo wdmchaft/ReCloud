@@ -14,6 +14,7 @@
 @implementation PlaybackViewController
 
 @synthesize sliderBackView;
+@synthesize playButton;
 @synthesize indexList;
 @synthesize dataInfo;
 @synthesize audioPlayer;
@@ -48,6 +49,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"%s", __FUNCTION__);
     
     [self initLayout];
     
@@ -56,6 +58,8 @@
     [newList addObject:@""];
     self.indexList = newList;
     
+    NSLog(@"dataInfo: %@", dataInfo);
+    [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
     
     [newList release];
@@ -63,7 +67,8 @@
 
 - (void)viewDidUnload
 {
-    self.sliderBackView = nil;    
+    self.sliderBackView = nil;
+    self.playButton = nil;
     
     [super viewDidUnload];
 }
@@ -107,9 +112,31 @@
     return 50;
 }
 
+#pragma mark - KVO Callback Methods
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    if([keyPath isEqualToString:@"playing"]){
+        if(playing){
+            [playButton setTitle:@"||" forState:UIControlStateNormal];
+        }else{
+            [playButton setTitle:@">" forState:UIControlStateNormal];
+        } 
+    } 
+}
+
+#pragma mark - AVAudioPlayer Delegate Methods
+
+-(void) audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
+    [self willChangeValueForKey:@"playing"];
+    playing = NO;
+    [self didChangeValueForKey:@"playing"];
+}
+
 #pragma mark - Instance Methods
 
 -(void) backAction:(id)sender{
+    [self removeObserver:self forKeyPath:@"playing" context:nil];
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -118,6 +145,7 @@
 }
 
 -(IBAction) playOrPause:(id)sender{
+    BOOL flag;
     if(audioPlayer == nil){
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[dataInfo objectForKey:kFilename]];
@@ -129,16 +157,20 @@
         [audioPlayer prepareToPlay];
         audioPlayer.delegate = self;
         [audioPlayer play];
-        playing = YES;
+        flag = YES;
     }else{
         if(playing){
             [audioPlayer pause]; 
-            playing = NO;
+            flag = NO;
         }else{
             [audioPlayer play];
-            playing = YES;
+            flag = YES;
         }            
     }
+    
+    [self willChangeValueForKey:@"playing"];
+    playing = flag;
+    [self didChangeValueForKey:@"playing"];
 }
 
 -(IBAction) addTag:(id)sender{
@@ -146,7 +178,13 @@
 }
 
 -(IBAction) stop:(id)sender{
-    
+    if(audioPlayer != nil){
+        [audioPlayer stop];
+        
+        [self willChangeValueForKey:@"playing"];
+        playing = NO;
+        [self didChangeValueForKey:@"playing"];
+    }
 }
 
 -(IBAction) nextSection:(id)sender{
@@ -166,7 +204,7 @@
     titleLabel.text = [dataInfo objectForKey:kTitle];
     self.navigationItem.titleView = titleLabel;
     
-    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, 80)];
+    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, sliderBackView.frame.size.height)];
     [sliderBackView addSubview:squareView];
     [squareView release];     
     
