@@ -49,14 +49,14 @@
 {
     [super viewDidLoad];
     
-    [self initLayout];
-    
     NSMutableArray *newList = [[NSMutableArray alloc] init];
     self.tagList = newList;
     [newList release];
     
     [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
     recording = NO;
+    
+    [self initLayout];
 }
 
 - (void)viewDidUnload
@@ -101,13 +101,13 @@
     }  
     NSDictionary *dict = [tagList objectAtIndex:indexPath.row];
     
-    UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_COUNTLABEL];
+    UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_COUNTLABEL];
     countLabel.text = [NSString stringWithFormat:@"%d", tagList.count - indexPath.row];
     
-    UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_TIMELABEL];
+    UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIMELABEL];
     timeLabel.text = [dict objectForKey:kCurrentTime];
     
-    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_RECORDVIEW_TITLELABEL];
+    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
     titleLabel.text = [dict objectForKey:kTagTitle];
     
     UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -159,14 +159,12 @@
     
     if(recording){
         for(int i = 0; i < tagList.count; i++){
-            [UIView animateWithDuration:1 animations:^{
-                UIView *tagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + i];
-                CGRect rect = tagView.frame;
-                if(rect.origin.x > i * 1.2){
-                    rect.origin.x--;
-                }
-                tagView.frame = rect;
-            }];
+            UIView *tagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + i];
+            CGRect rect = tagView.frame;
+            if(rect.origin.x > 0){
+                rect.origin.x = rect.origin.x - 2.0 / log10(mRecorder.currentTime + 1);
+            }
+            tagView.frame = rect;
         } 
     }
 
@@ -204,7 +202,7 @@
         [mRecorder record];        
         flag = YES;
         
-        recordingTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
+        recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
     }else{
         if(recording){
             [mRecorder pause];
@@ -324,6 +322,7 @@
 
 -(void) addTagView{
     UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+    tagView.alpha = 0;
     tagView.frame = CGRectMake([UIScreen mainScreen].applicationFrame.size.width - tagView.frame.size.width / 2, 0, tagView.frame.size.width, tagView.frame.size.height);
     tagView.tag = BASE_TAG_RECORDVIEW_TAGVIEW + tagList.count - 1;
     
@@ -334,6 +333,10 @@
     timeLabel.text = [[tagList objectAtIndex:0] objectForKey:kCurrentTime];  //最新的在列表最前位置
     
     [tagBackView addSubview:tagView];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        tagView.alpha = 1.0;
+    }];
     
 }
 

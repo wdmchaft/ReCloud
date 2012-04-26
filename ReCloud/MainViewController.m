@@ -49,12 +49,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"%s", __FUNCTION__);
-    
-    [self initLayout];
+    NSLog(@"%s", __FUNCTION__);    
     
     viewingLocal = YES;   
     
+    [self initLayout];    
 }
 
 -(void) viewWillAppear:(BOOL)animated{
@@ -134,8 +133,17 @@
     if(editingStyle == UITableViewCellEditingStyleDelete){
         NSLog(@"%s", __FUNCTION__);
         
+        NSString *filename = [[audioList objectAtIndex:indexPath.row] objectForKey:kFilename];
+        NSString *filePrefix = [[NSString alloc] initWithFormat:@"%@", [[filename componentsSeparatedByString:@"."] objectAtIndex:0]];
         [audioList removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];        
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade]; 
+        
+        NSFileManager *filemanager = [NSFileManager defaultManager];
+        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        NSString *audioFile = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.pcm", filePrefix]];
+        NSString *plistFile = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", filePrefix]];
+        [filemanager removeItemAtPath:audioFile error:nil];
+        [filemanager removeItemAtPath:plistFile error:nil];
 
     }    
 }
@@ -147,14 +155,19 @@
     
     PlaybackViewController *playbackVC = [[PlaybackViewController alloc] initWithAudioInfo:[audioList objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:playbackVC animated:YES];
-    [playbackVC release];
+    //[playbackVC release]; //这里release时，进入playbackVC-> 退出 -> 进入recordingVC，会导致崩溃。why？
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50;
 }
 
+#pragma mark - UIView Animation Callback Methods
 
+-(void) removeEditingView{
+    [editingView removeFromSuperview];
+    editingView = nil;
+}
 
 #pragma mark - Instance Methods
 
@@ -163,8 +176,7 @@
     
     RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
     [self.navigationController pushViewController:recordingVC animated:YES];
-    [recordingVC release];
-    
+    //[recordingVC release];    
 }
 
 -(void) editAction:(id)sender{    
@@ -251,7 +263,64 @@
 -(void) editTitle:(id)sender{
     UIButton *clicked = (UIButton *)sender;
     NSLog(@"editButton: %d", clicked.tag);
+    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON;
+    UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
+    UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLE_LABEL];
+    
+    editingView = [[[NSBundle mainBundle] loadNibNamed:@"EditingView" owner:self options:nil] lastObject];
+    editingView.alpha = 0;
+    editingView.frame = CGRectMake(0.0, 20.0, editingView.frame.size.width, editingView.frame.size.height);
+    
+    UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+    textView.text = titleLabel.text;
+    [textView becomeFirstResponder];
+    
+    UIButton *okButton = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_OK_BUTTON];
+    [okButton addTarget:self action:@selector(confirmEditing:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *cancelButton = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
+    [cancelButton addTarget:self action:@selector(cancelEditing:) forControlEvents:UIControlEventTouchUpInside];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.window addSubview:editingView];
+    [UIView animateWithDuration:0.5 animations:^{
+        editingView.alpha = 1.0;
+    }];
+    
 }
+
+-(void) cancelEditing:(id)sender{
+    [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(removeEditingView)];
+    editingView.alpha = 0.0;
+    [UIView commitAnimations];
+}
+
+-(void) confirmEditing:(id)sender{    
+    UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
+    UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLE_LABEL];
+    UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+    titleLabel.text = textView.text;
+    [textView resignFirstResponder];
+    
+    NSMutableDictionary *dict = [[audioList objectAtIndex:editingIndex] mutableCopy];
+    [dict setObject:textView.text forKey:kTitle];    
+    [audioList replaceObjectAtIndex:editingIndex withObject:dict];
+    [dict release];
+    
+    NSString *temp = [[[dict objectForKey:kFilename] componentsSeparatedByString:@"."] objectAtIndex:0];
+    NSString *filename = [NSString stringWithFormat:@"%@.plist", temp];
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    NSString *filePath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:filename];
+    [dict writeToFile:filePath atomically:YES];    
+    
+    [self cancelEditing:nil];
+}
+
+
 
 -(void) uploadToCloud:(id)sender{
     

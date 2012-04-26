@@ -17,9 +17,12 @@
 		B6AF5C9A153BAC9E0025E5A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5C98153BAC9E0025E5A3 /* InfoPlist.strings */; };
 		B6AF5C9C153BAC9E0025E5A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5C9B153BAC9E0025E5A3 /* main.m */; };
 		B6AF5CA0153BAC9E0025E5A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5C9F153BAC9E0025E5A3 /* AppDelegate.m */; };
-		B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */; };
 		B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */; };
 		B6AF5CBF153C10BD0025E5A3 /* RecordingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */; };
+		B6BA4DB01548DD9B003D1C91 /* EditingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */; };
+		B6BA4DB31548E260003D1C91 /* overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = B6BA4DB21548E260003D1C91 /* overlay.png */; };
+		B6BA4DB51548EFE3003D1C91 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6BA4DB41548EFE3003D1C91 /* arrow.png */; };
+		B6BA4DB815492363003D1C91 /* TagSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6BA4DB715492363003D1C91 /* TagSliderView.m */; };
 		B6E41D05153D062800FC3366 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D03153D062800FC3366 /* MainViewController.m */; };
 		B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D04153D062800FC3366 /* MainViewController.xib */; };
 		B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D08153D0EC200FC3366 /* CustomCellView.xib */; };
@@ -46,11 +49,14 @@
 		B6AF5C9E153BAC9E0025E5A3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B6AF5C9F153BAC9E0025E5A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B6AF5CB2153BB5760025E5A3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		B6AF5CB8153C06B70025E5A3 /* SquareSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquareSliderView.h; sourceTree = "<group>"; };
-		B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareSliderView.m; sourceTree = "<group>"; };
 		B6AF5CBB153C10BD0025E5A3 /* RecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingViewController.h; sourceTree = "<group>"; };
 		B6AF5CBC153C10BD0025E5A3 /* RecordingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingViewController.m; sourceTree = "<group>"; };
 		B6AF5CBD153C10BD0025E5A3 /* RecordingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecordingViewController.xib; sourceTree = "<group>"; };
+		B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditingView.xib; sourceTree = "<group>"; };
+		B6BA4DB21548E260003D1C91 /* overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = overlay.png; sourceTree = "<group>"; };
+		B6BA4DB41548EFE3003D1C91 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		B6BA4DB615492363003D1C91 /* TagSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSliderView.h; sourceTree = "<group>"; };
+		B6BA4DB715492363003D1C91 /* TagSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSliderView.m; sourceTree = "<group>"; };
 		B6E41D02153D062800FC3366 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		B6E41D03153D062800FC3366 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		B6E41D04153D062800FC3366 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
@@ -170,6 +176,7 @@
 				B6E41D08153D0EC200FC3366 /* CustomCellView.xib */,
 				B69F8839153E9B1E003044BF /* SliderBlockView.xib */,
 				B6A11BDA1547AC0100456A6E /* TagView.xib */,
+				B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -187,10 +194,10 @@
 			isa = PBXGroup;
 			children = (
 				B6AF5CB2153BB5760025E5A3 /* Constants.h */,
-				B6AF5CB8153C06B70025E5A3 /* SquareSliderView.h */,
-				B6AF5CB9153C06B70025E5A3 /* SquareSliderView.m */,
 				B6F37E1215400FE200C46C84 /* MAlertView.h */,
 				B6F37E1315400FE200C46C84 /* MAlertView.m */,
+				B6BA4DB615492363003D1C91 /* TagSliderView.h */,
+				B6BA4DB715492363003D1C91 /* TagSliderView.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -198,6 +205,8 @@
 		B6E41D0A153D174800FC3366 /* pics */ = {
 			isa = PBXGroup;
 			children = (
+				B6BA4DB41548EFE3003D1C91 /* arrow.png */,
+				B6BA4DB21548E260003D1C91 /* overlay.png */,
 				B6E41D0B153D175400FC3366 /* newsstand_default.png */,
 			);
 			name = pics;
@@ -261,6 +270,9 @@
 				B6E41D18153D312600FC3366 /* PlaybackViewController.xib in Resources */,
 				B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */,
 				B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */,
+				B6BA4DB01548DD9B003D1C91 /* EditingView.xib in Resources */,
+				B6BA4DB31548E260003D1C91 /* overlay.png in Resources */,
+				B6BA4DB51548EFE3003D1C91 /* arrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,12 +285,12 @@
 			files = (
 				B6AF5C9C153BAC9E0025E5A3 /* main.m in Sources */,
 				B6AF5CA0153BAC9E0025E5A3 /* AppDelegate.m in Sources */,
-				B6AF5CBA153C06B70025E5A3 /* SquareSliderView.m in Sources */,
 				B6AF5CBE153C10BD0025E5A3 /* RecordingViewController.m in Sources */,
 				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
 				B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */,
 				B6F37E1415400FE200C46C84 /* MAlertView.m in Sources */,
 				B6972AED154507750034136C /* AudioItem.m in Sources */,
+				B6BA4DB815492363003D1C91 /* TagSliderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

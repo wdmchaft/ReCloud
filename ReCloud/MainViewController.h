@@ -13,6 +13,8 @@
 @interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>{
     
     BOOL viewingLocal;
+    UIView *editingView;
+    NSInteger editingIndex;
     
 }
 

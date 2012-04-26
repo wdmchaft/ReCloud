@@ -9,24 +9,27 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate>{
-    BOOL playing;
+@class TagSliderView;
+
+@interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate, UINavigationControllerDelegate>{
     
+    BOOL playing;
+    TagSliderView *tagSliderView;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
 @property (nonatomic, retain) IBOutlet UIButton *playButton;
 @property (nonatomic, retain) NSMutableArray *indexList;
-@property (nonatomic, retain) NSDictionary *dataInfo;
+@property (nonatomic, retain) NSMutableDictionary *dataInfo;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 
--(id)       initWithAudioInfo:(NSDictionary *)info;
--(IBAction) playOrPause:(id)sender;
--(IBAction) prevSection:(id)sender;
--(IBAction) nextSection:(id)sender;
--(IBAction) stop:(id)sender;
--(IBAction) addTag:(id)sender;
--(void)     backAction:(id)sender;
--(void)     initLayout;
+-(id)           initWithAudioInfo:(NSDictionary *)info ;
+-(IBAction)     playOrPause:(id)sender;
+-(IBAction)     prevSection:(id)sender;
+-(IBAction)     nextSection:(id)sender;
+-(IBAction)     stop:(id)sender;
+-(IBAction)     addTag:(id)sender;
+-(void)         backAction:(id)sender;
+-(void)         initLayout;
 
 @end

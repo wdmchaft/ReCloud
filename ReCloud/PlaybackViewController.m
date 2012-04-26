@@ -7,7 +7,7 @@
 //
 
 #import "PlaybackViewController.h"
-#import "SquareSliderView.h"
+#import "TagSliderView.h"
 #import "Constants.h"
 #import "AppDelegate.h"
 
@@ -22,7 +22,9 @@
 -(id) initWithAudioInfo:(NSDictionary *)info{
     self = [super init];
     if(self){
-        self.dataInfo = info;
+        NSMutableDictionary *newDict = [info mutableCopy];
+        self.dataInfo = newDict;
+        [newDict release];
         return self;
     }
     return nil;
@@ -51,18 +53,14 @@
     [super viewDidLoad];
     NSLog(@"%s", __FUNCTION__);
     
-    [self initLayout];
+    NSMutableArray *newArray = [[dataInfo objectForKey:kTag] mutableCopy];
+    self.indexList = newArray;
+    [newArray release];
     
-    NSMutableArray *newList = [[NSMutableArray alloc] init];
-    [newList addObject:@""];
-    [newList addObject:@""];
-    self.indexList = newList;
-    
-    NSLog(@"dataInfo: %@", dataInfo);
     [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
     
-    [newList release];
+    [self initLayout];
 }
 
 - (void)viewDidUnload
@@ -98,6 +96,30 @@
     if(cell == nil){
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
     }    
+    NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
+    
+    UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_COUNTLABEL];
+    countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - indexPath.row];
+    
+    UILabel *tagTimeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIMELABEL];
+    tagTimeLabel.text = [dict objectForKey:kCurrentTime];
+    
+    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
+    titleLabel.text = [dict objectForKey:kTagTitle];
+    
+    UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [editButton setTitle:@"E" forState:UIControlStateNormal];
+    editButton.frame = CGRectMake(240, 15, 35, 25);
+    editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+    [editButton addTarget:self action:@selector(editTag:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:editButton];
+    
+    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [deleteButton setTitle:@"D" forState:UIControlStateNormal];
+    deleteButton.frame = CGRectMake(280, 15, 35, 25);
+    deleteButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+    [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:deleteButton];
     
     return cell;
 }
@@ -110,6 +132,34 @@
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50;
+}
+
+#pragma mark - UINavigationController Delegate Methods
+
+-(void) navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    
+    NSInteger audioDuration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
+    [tagSliderView setProgressStr:[dataInfo objectForKey:kDuration]];
+    CGFloat viewWidth = tagSliderView.frame.size.width;    
+    for(NSInteger i = 0; i < indexList.count; i++){
+        NSDictionary *dict = [indexList objectAtIndex:i];
+        NSString *tagTimeStr = [dict objectForKey:kCurrentTime];
+        NSInteger timeTagged = [TagSliderView durationForString:tagTimeStr];
+        
+        UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+        CGRect rect = tagView.frame;
+        rect.origin.x = (timeTagged * 1.0 / audioDuration) * viewWidth - rect.size.width / 2;
+        tagView.frame = rect;
+        
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - i];
+        
+        UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+        timeLabel.text = tagTimeStr;
+        
+        [tagSliderView addTagView:tagView withFrame:tagView.frame];
+        
+    }    
 }
 
 #pragma mark - KVO Callback Methods
@@ -138,9 +188,18 @@
     [self removeObserver:self forKeyPath:@"playing" context:nil];
     
     [self.navigationController popViewControllerAnimated:YES];
+    NSLog(@"3.playback retainCount:%d", [self retainCount]);
+}
+
+-(void) uploadAction:(id)sender{
+    
 }
 
 -(IBAction) prevSection:(id)sender{
+    
+}
+
+-(IBAction) nextSection:(id)sender{
     
 }
 
@@ -180,15 +239,12 @@
 -(IBAction) stop:(id)sender{
     if(audioPlayer != nil){
         [audioPlayer stop];
+        self.audioPlayer = nil;
         
         [self willChangeValueForKey:@"playing"];
         playing = NO;
         [self didChangeValueForKey:@"playing"];
     }
-}
-
--(IBAction) nextSection:(id)sender{
-    
 }
 
 -(void) initLayout{
@@ -200,14 +256,14 @@
     self.navigationItem.rightBarButtonItem = buttonItem2;
     [buttonItem2 release];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.text = [dataInfo objectForKey:kTitle];
-    self.navigationItem.titleView = titleLabel;
+    self.navigationItem.title = [dataInfo objectForKey:kTitle];
     
-    SquareSliderView *squareView = [[SquareSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, sliderBackView.frame.size.height)];
-    [sliderBackView addSubview:squareView];
-    [squareView release];     
+    tagSliderView = [[TagSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, sliderBackView.frame.size.height) andTimeStr:[dataInfo objectForKey:kDuration]];
+    [sliderBackView addSubview:tagSliderView];
+    [tagSliderView release];     
     
+    self.navigationController.delegate = self;    
+ 
 }
 
 @end

@@ -1,23 +1,22 @@
 //
-//  SquareSliderView.m
+//  TagSliderView.m
 //  ReCloud
 //
-//  Created by hanl on 12-4-16.
+//  Created by hanl on 12-4-26.
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import "SquareSliderView.h"
+#import "TagSliderView.h"
 #import "Constants.h"
 
-@implementation SquareSliderView
+@implementation TagSliderView
 
-@synthesize progress;
+@synthesize progress, duration;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame andTimeStr:(NSString *)str
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        
+    if (self) {        
         UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 50)];
         backView.backgroundColor = CUSTOM_COLOR(176.0, 215.0, 255.0); 
         [self addSubview:backView];
@@ -31,6 +30,18 @@
         [self addSubview:progressView];
         [progressView release];
         
+        UILabel *progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 0, backView.frame.size.width / 2, backView.frame.size.height)];
+        progressLabel.backgroundColor = [UIColor clearColor];
+        progressLabel.textAlignment = UITextAlignmentCenter;
+        progressLabel.font = [UIFont systemFontOfSize:31];
+        progressLabel.textColor = [UIColor whiteColor];
+        progressLabel.text = str;
+        progressLabel.center = CGPointMake(backView.frame.size.width / 2, backView.frame.size.height / 2);
+        progressLabel.tag = TAG_PROGRESS_LABEL;
+        [self addSubview:progressLabel];
+        [progressLabel release];
+        duration = [TagSliderView durationForString:str];
+        
         //blockView为滑块
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
         CGRect rect = blockView.frame;
@@ -39,7 +50,8 @@
         blockView.frame = rect;
         blockView.tag = TAG_BLOCK_VIEW;
         [self addSubview:blockView];
-
+        [self bringSubviewToFront:blockView];
+        
     }
     return self;
 }
@@ -64,6 +76,7 @@
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
     timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
     
+    progress = touchPoint.x / self.frame.size.width;
 }
 
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -83,6 +96,8 @@
     
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
     timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
+    
+    progress = touchPoint.x / self.frame.size.width;
 }
 
 
@@ -92,7 +107,7 @@
 }
 
 #pragma mark - Instance Methods
- 
+
 -(void) setBackViewColor:(UIColor *)color{
     self.backgroundColor = color;
 }
@@ -102,5 +117,42 @@
     sliderView.backgroundColor = color;
 }
 
+-(void) addTagView:(UIView *)view withFrame:(CGRect)rect{
+    view.frame = rect;
+    view.alpha = 0.0;
+    [self addSubview:view];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        view.alpha = 1.0;
+    }];
+    
+    UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
+    [self bringSubviewToFront:blockView];
+    
+}
+
++(NSString *) stringForDuration:(NSTimeInterval)duration{
+    NSInteger temp = (NSInteger)duration;
+    NSInteger hour =  temp / 3600;
+    NSInteger remainder = temp % 3600;
+    NSInteger minute = 0;
+    NSInteger second = 0;
+    if(remainder != 0){
+        minute = remainder / 60;
+        second = remainder % 60;
+    }    
+    NSString *result = [[NSString alloc] initWithFormat:@"%02d:%02d:%02d", hour, minute, second];
+    
+    return [result autorelease];
+}
+
+
++(NSInteger) durationForString:(NSString *)str{
+    NSArray *arr = [str componentsSeparatedByString:@":"];
+    if(arr.count == 3){
+        return [[arr objectAtIndex:0] intValue] * 3600 + [[arr objectAtIndex:1] intValue] * 60 + [[arr objectAtIndex:2] intValue];
+    }
+    return 0;    
+}
 
 @end
