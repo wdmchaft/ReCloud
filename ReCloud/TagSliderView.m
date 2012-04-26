@@ -11,9 +11,9 @@
 
 @implementation TagSliderView
 
-@synthesize progress, duration;
+@synthesize progress;
 
-- (id)initWithFrame:(CGRect)frame andTimeStr:(NSString *)str
+- (id)initWithFrame:(CGRect)frame andTotalTimeStr:(NSString *)str
 {
     self = [super initWithFrame:frame];
     if (self) {        
@@ -44,6 +44,8 @@
         
         //blockView为滑块
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
+        UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * 0.5]];
         CGRect rect = blockView.frame;
         rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
         rect.origin.y = 0;
@@ -52,6 +54,7 @@
         [self addSubview:blockView];
         [self bringSubviewToFront:blockView];
         
+        tagCount = 0;
     }
     return self;
 }
@@ -60,6 +63,8 @@
 
 -(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     NSLog(@"%s", __FUNCTION__);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_WILL_SLIDE object:self];
     
     CGPoint touchPoint = [[touches anyObject] locationInView:self];  
     
@@ -73,10 +78,9 @@
     rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
     
-    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
-    timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
-    
     progress = touchPoint.x / self.frame.size.width;
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    timeLabel.text = [TagSliderView stringForDuration:duration * progress];     
 }
 
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -94,10 +98,16 @@
     rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
     blockView.frame = rect1;
     
-    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_SQUAEWSLIDERVIEW_TIMELABEL];
-    timeLabel.text = [NSString stringWithFormat:@"%f", touchPoint.x];
-    
     progress = touchPoint.x / self.frame.size.width;
+    UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    timeLabel.text = [TagSliderView stringForDuration:duration * progress];
+}
+
+-(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    NSLog(@"%s", __FUNCTION__);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_END_SLIDE object:self];
+    
 }
 
 
@@ -117,8 +127,7 @@
     sliderView.backgroundColor = color;
 }
 
--(void) addTagView:(UIView *)view withFrame:(CGRect)rect{
-    view.frame = rect;
+-(void) addTagView:(UIView *)view{
     view.alpha = 0.0;
     [self addSubview:view];
     
@@ -129,7 +138,45 @@
     UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
     [self bringSubviewToFront:blockView];
     
+    tagCount++;
+    
 }
+
+-(void) setProgress:(float)_progress{
+    progress = _progress;
+    
+    UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
+    CGRect rect = progressView.frame;
+    rect.size.width = self.frame.size.width * progress;
+    progressView.frame = rect;
+    
+    UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
+    CGRect rect1 = blockView.frame;
+    rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
+    blockView.frame = rect1;
+    
+    UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    blockLabel.text = [TagSliderView stringForDuration:progress * duration];  
+}
+
+-(void) setProgressForTimeStr:(NSString *)str{
+    progress = [TagSliderView durationForString:str] / duration;    
+    
+    UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
+    CGRect rect = progressView.frame;
+    rect.size.width = self.frame.size.width * progress;
+    progressView.frame = rect;
+    
+    UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
+    CGRect rect1 = blockView.frame;
+    rect1.origin.x = progressView.frame.size.width - rect1.size.width / 2;
+    blockView.frame = rect1;
+    
+    UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    blockLabel.text = str;    
+    
+}
+
 
 +(NSString *) stringForDuration:(NSTimeInterval)duration{
     NSInteger temp = (NSInteger)duration;

@@ -13,10 +13,16 @@
 
 @interface PlaybackViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate, UINavigationControllerDelegate>{
     
-    BOOL playing;
     TagSliderView *tagSliderView;
+    UIView *editingView;
+    
+    BOOL playing;    
+    NSTimer *progressTimer;
+    NSInteger editingIndex;
+    
 }
 
+@property (nonatomic, retain) IBOutlet UITableView *myTableView;
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
 @property (nonatomic, retain) IBOutlet UIButton *playButton;
 @property (nonatomic, retain) NSMutableArray *indexList;

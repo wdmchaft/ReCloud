@@ -114,7 +114,7 @@
     [editButton setTitle:@"E" forState:UIControlStateNormal];
     editButton.frame = CGRectMake(240, 15, 35, 25);
     editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
-    [editButton addTarget:self action:@selector(editTag:) forControlEvents:UIControlEventTouchUpInside];
+    [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:editButton];
     
     UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -272,7 +272,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void) editTag:(id)sender{
+-(void) editTagTitle:(id)sender{
     
 }
 
