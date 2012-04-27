@@ -7,9 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B6972AED154507750034136C /* AudioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B6972AEC154507750034136C /* AudioItem.m */; };
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
 		B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6A11BDA1547AC0100456A6E /* TagView.xib */; };
+		B6AB6931154A2AD900DE4A35 /* MainViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */; };
+		B6AB6942154A407300DE4A35 /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693A154A407300DE4A35 /* grayArrow.png */; };
+		B6AB6943154A407300DE4A35 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693B154A407300DE4A35 /* grayArrow@2x.png */; };
+		B6AB6944154A407300DE4A35 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693C154A407300DE4A35 /* blackArrow.png */; };
+		B6AB6945154A407300DE4A35 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693D154A407300DE4A35 /* blackArrow@2x.png */; };
+		B6AB6946154A407300DE4A35 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693E154A407300DE4A35 /* blueArrow.png */; };
+		B6AB6947154A407300DE4A35 /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693F154A407300DE4A35 /* blueArrow@2x.png */; };
+		B6AB6948154A407300DE4A35 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6940154A407300DE4A35 /* whiteArrow.png */; };
+		B6AB6949154A407300DE4A35 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6941154A407300DE4A35 /* whiteArrow@2x.png */; };
+		B6AB694D154A40C000DE4A35 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AB694C154A40C000DE4A35 /* EGORefreshTableHeaderView.m */; };
+		B6AB694F154A4D8B00DE4A35 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */; };
 		B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
 		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
@@ -33,10 +43,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B6972AEB154507750034136C /* AudioItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioItem.h; sourceTree = "<group>"; };
-		B6972AEC154507750034136C /* AudioItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioItem.m; sourceTree = "<group>"; };
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
 		B6A11BDA1547AC0100456A6E /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
+		B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewCell.xib; sourceTree = "<group>"; };
+		B6AB693A154A407300DE4A35 /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
+		B6AB693B154A407300DE4A35 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
+		B6AB693C154A407300DE4A35 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
+		B6AB693D154A407300DE4A35 /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
+		B6AB693E154A407300DE4A35 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
+		B6AB693F154A407300DE4A35 /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
+		B6AB6940154A407300DE4A35 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
+		B6AB6941154A407300DE4A35 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
+		B6AB694B154A40C000DE4A35 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		B6AB694C154A40C000DE4A35 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -74,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6AB694F154A4D8B00DE4A35 /* QuartzCore.framework in Frameworks */,
 				B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */,
 				B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */,
 				B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */,
@@ -84,21 +105,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B6972AE9154507390034136C /* Data Model */ = {
+		B6AB694A154A40A100DE4A35 /* RefreshTableViewHeaderView */ = {
 			isa = PBXGroup;
 			children = (
-				B6A085961546444E001D249B /* upcoming */,
+				B6AB694B154A40C000DE4A35 /* EGORefreshTableHeaderView.h */,
+				B6AB694C154A40C000DE4A35 /* EGORefreshTableHeaderView.m */,
 			);
-			name = "Data Model";
-			sourceTree = "<group>";
-		};
-		B6A085961546444E001D249B /* upcoming */ = {
-			isa = PBXGroup;
-			children = (
-				B6972AEB154507750034136C /* AudioItem.h */,
-				B6972AEC154507750034136C /* AudioItem.m */,
-			);
-			name = upcoming;
+			name = RefreshTableViewHeaderView;
 			sourceTree = "<group>";
 		};
 		B6AF5C80153BAC9D0025E5A3 = {
@@ -121,6 +134,7 @@
 		B6AF5C8E153BAC9E0025E5A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */,
 				B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */,
 				B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */,
 				B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */,
@@ -132,7 +146,6 @@
 		B6AF5C95153BAC9E0025E5A3 /* ReCloud */ = {
 			isa = PBXGroup;
 			children = (
-				B6972AE9154507390034136C /* Data Model */,
 				B6AF5CAE153BADA70025E5A3 /* Utils */,
 				B6AF5CAD153BACCD0025E5A3 /* Resources */,
 				B6AF5CAB153BACBA0025E5A3 /* Controller */,
@@ -177,6 +190,7 @@
 				B69F8839153E9B1E003044BF /* SliderBlockView.xib */,
 				B6A11BDA1547AC0100456A6E /* TagView.xib */,
 				B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */,
+				B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -193,6 +207,7 @@
 		B6AF5CAE153BADA70025E5A3 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				B6AB694A154A40A100DE4A35 /* RefreshTableViewHeaderView */,
 				B6AF5CB2153BB5760025E5A3 /* Constants.h */,
 				B6F37E1215400FE200C46C84 /* MAlertView.h */,
 				B6F37E1315400FE200C46C84 /* MAlertView.m */,
@@ -205,6 +220,14 @@
 		B6E41D0A153D174800FC3366 /* pics */ = {
 			isa = PBXGroup;
 			children = (
+				B6AB693A154A407300DE4A35 /* grayArrow.png */,
+				B6AB693B154A407300DE4A35 /* grayArrow@2x.png */,
+				B6AB693C154A407300DE4A35 /* blackArrow.png */,
+				B6AB693D154A407300DE4A35 /* blackArrow@2x.png */,
+				B6AB693E154A407300DE4A35 /* blueArrow.png */,
+				B6AB693F154A407300DE4A35 /* blueArrow@2x.png */,
+				B6AB6940154A407300DE4A35 /* whiteArrow.png */,
+				B6AB6941154A407300DE4A35 /* whiteArrow@2x.png */,
 				B6BA4DB41548EFE3003D1C91 /* arrow.png */,
 				B6BA4DB21548E260003D1C91 /* overlay.png */,
 				B6E41D0B153D175400FC3366 /* newsstand_default.png */,
@@ -273,6 +296,15 @@
 				B6BA4DB01548DD9B003D1C91 /* EditingView.xib in Resources */,
 				B6BA4DB31548E260003D1C91 /* overlay.png in Resources */,
 				B6BA4DB51548EFE3003D1C91 /* arrow.png in Resources */,
+				B6AB6931154A2AD900DE4A35 /* MainViewCell.xib in Resources */,
+				B6AB6942154A407300DE4A35 /* grayArrow.png in Resources */,
+				B6AB6943154A407300DE4A35 /* grayArrow@2x.png in Resources */,
+				B6AB6944154A407300DE4A35 /* blackArrow.png in Resources */,
+				B6AB6945154A407300DE4A35 /* blackArrow@2x.png in Resources */,
+				B6AB6946154A407300DE4A35 /* blueArrow.png in Resources */,
+				B6AB6947154A407300DE4A35 /* blueArrow@2x.png in Resources */,
+				B6AB6948154A407300DE4A35 /* whiteArrow.png in Resources */,
+				B6AB6949154A407300DE4A35 /* whiteArrow@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,8 +321,8 @@
 				B6E41D05153D062800FC3366 /* MainViewController.m in Sources */,
 				B6E41D17153D312600FC3366 /* PlaybackViewController.m in Sources */,
 				B6F37E1415400FE200C46C84 /* MAlertView.m in Sources */,
-				B6972AED154507750034136C /* AudioItem.m in Sources */,
 				B6BA4DB815492363003D1C91 /* TagSliderView.m in Sources */,
+				B6AB694D154A40C000DE4A35 /* EGORefreshTableHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

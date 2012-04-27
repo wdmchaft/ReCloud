@@ -16,6 +16,7 @@
     TagSliderView *tagSliderView;
     UIView *editingView;
     
+    BOOL didEdit;  //是否编辑过音频编辑，以便是否重新写入文件
     BOOL playing;    
     NSTimer *progressTimer;
     NSInteger editingIndex;

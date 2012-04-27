@@ -86,45 +86,51 @@
 }
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if(audioList != nil){
+    if(audioList != nil && audioList.count > 0){
         return audioList.count;
     }
     return 0;
 }
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"%s", __FUNCTION__);
+    
     static NSString *cellIdentifier = @"mainViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
-    }    
-    NSDictionary *dict = [audioList objectAtIndex:indexPath.row];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"MainViewCell" owner:self options:nil] lastObject];
+    } 
     
-    UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIME_LABEL];
-    UILabel *dateLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DATE_LABEL];
-    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLE_LABEL];
-    UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
-    UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
-    
-    UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [editButton setTitle:@"E" forState:UIControlStateNormal];
-    editButton.tag = BASE_TAG_EDIT_BUTTON + indexPath.row;
-    editButton.frame = CGRectMake(240, 11, 30, 25);
-    [cell.contentView addSubview:editButton];
-    
-    UIButton *uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [uploadButton setTitle:@"U" forState:UIControlStateNormal];
-    uploadButton.tag = BASE_TAG_UPLOAD_BUTTON + indexPath.row;
-    uploadButton.frame = CGRectMake(285, 11, 30, 25);
-    [cell.contentView addSubview:uploadButton];
-    
-    timeLabel.text = [dict objectForKey:kTime];
-    dateLabel.text = [dict objectForKey:kDate];
-    titleLabel.text = [dict objectForKey:kTitle];
-    durationLabel.text = [dict objectForKey:kDuration];
-    sizeLabel.text = [NSString stringWithFormat:@"%@MB", [dict objectForKey:kSize]];
-    [editButton addTarget:self action:@selector(editTitle:) forControlEvents:UIControlEventTouchUpInside];
-    [uploadButton addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
+    if(audioList != nil && audioList.count > 0){
+        NSDictionary *dict = [audioList objectAtIndex:indexPath.row];
+        
+        UILabel *timeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIME_LABEL];
+        UILabel *dateLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DATE_LABEL];
+        UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLE_LABEL];
+        UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
+        UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
+        
+        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [editButton setTitle:@"E" forState:UIControlStateNormal];
+        editButton.tag = BASE_TAG_EDIT_BUTTON + indexPath.row;
+        editButton.frame = CGRectMake(240, 11, 30, 25);
+        [cell.contentView addSubview:editButton];
+        
+        UIButton *uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [uploadButton setTitle:@"U" forState:UIControlStateNormal];
+        uploadButton.tag = BASE_TAG_UPLOAD_BUTTON + indexPath.row;
+        uploadButton.frame = CGRectMake(285, 11, 30, 25);
+        [cell.contentView addSubview:uploadButton];
+        
+        timeLabel.text = [dict objectForKey:kTime];
+        dateLabel.text = [dict objectForKey:kDate];
+        titleLabel.text = [dict objectForKey:kTitle];
+        durationLabel.text = [dict objectForKey:kDuration];
+        sizeLabel.text = [NSString stringWithFormat:@"%@MB", [dict objectForKey:kSize]];
+        [editButton addTarget:self action:@selector(editTitle:) forControlEvents:UIControlEventTouchUpInside];
+        [uploadButton addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
+    }
+
     
     return cell;
 }

@@ -12,6 +12,7 @@
 @implementation TagSliderView
 
 @synthesize progress;
+@synthesize currentTimeStr;
 
 - (id)initWithFrame:(CGRect)frame andTotalTimeStr:(NSString *)str
 {
@@ -43,9 +44,11 @@
         duration = [TagSliderView durationForString:str];
         
         //blockView为滑块
+        progress = duration * 0.5;
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
         UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
-        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * 0.5]];
+        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:progress]];
+        currentTimeStr = blockLabel.text;
         CGRect rect = blockView.frame;
         rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
         rect.origin.y = 0;
@@ -80,7 +83,9 @@
     
     progress = touchPoint.x / self.frame.size.width;
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
-    timeLabel.text = [TagSliderView stringForDuration:duration * progress];     
+    timeLabel.text = [TagSliderView stringForDuration:duration * progress];   
+    currentTimeStr = timeLabel.text;
+    
 }
 
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -101,6 +106,7 @@
     progress = touchPoint.x / self.frame.size.width;
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     timeLabel.text = [TagSliderView stringForDuration:duration * progress];
+    currentTimeStr = timeLabel.text;
 }
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -158,6 +164,7 @@
     UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     blockLabel.text = [TagSliderView stringForDuration:progress * duration];  
 }
+
 
 -(void) setProgressForTimeStr:(NSString *)str{
     progress = [TagSliderView durationForString:str] / duration;    

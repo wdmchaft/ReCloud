@@ -67,6 +67,7 @@
     
     [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
+    didEdit = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slide:) name:NOTIFY_WILL_SLIDE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneSliding:) name:NOTIFY_END_SLIDE object:nil];
@@ -79,6 +80,11 @@
     self.sliderBackView = nil;
     self.playButton = nil;
     self.myTableView = nil;
+    
+    if(progressTimer != nil){
+        [progressTimer invalidate];
+        progressTimer = nil;
+    }
     
     [super viewDidUnload];
 }
@@ -96,42 +102,46 @@
 }
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if(indexList != nil){
+    if(indexList != nil && indexList.count > 0){
         return indexList.count;
     }
     return 0;
 }
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *cellIdentifier = @"playbackViewCell";    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *cellIdentifier1 = @"playbackViewCell";    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier1];
     if(cell == nil){
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] objectAtIndex:0];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
     }    
-    NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
     
-    UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_COUNTLABEL];
-    countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - indexPath.row];
-    
-    UILabel *tagTimeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIMELABEL];
-    tagTimeLabel.text = [dict objectForKey:kCurrentTime];
-    
-    UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
-    titleLabel.text = [dict objectForKey:kTagTitle];
-    
-    UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [editButton setTitle:@"E" forState:UIControlStateNormal];
-    editButton.frame = CGRectMake(240, 15, 35, 25);
-    editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
-    [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:editButton];
-    
-    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [deleteButton setTitle:@"D" forState:UIControlStateNormal];
-    deleteButton.frame = CGRectMake(280, 15, 35, 25);
-    deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
-    [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:deleteButton];
+    if(indexList != nil && indexList.count > 0){
+        NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
+        
+        UILabel *countLabel = (UILabel *)[cell.contentView viewWithTag:TAG_COUNTLABEL];
+        countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - indexPath.row];
+        
+        UILabel *tagTimeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TIMELABEL];
+        tagTimeLabel.text = [dict objectForKey:kCurrentTime];
+        
+        UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
+        titleLabel.text = [dict objectForKey:kTagTitle];
+        
+        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [editButton setTitle:@"E" forState:UIControlStateNormal];
+        editButton.frame = CGRectMake(240, 15, 35, 25);
+        editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+        [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:editButton];
+        
+        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [deleteButton setTitle:@"D" forState:UIControlStateNormal];
+        deleteButton.frame = CGRectMake(280, 15, 35, 25);
+        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
+        [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:deleteButton];
+        
+    }
     
     return cell;
 }
@@ -244,11 +254,15 @@
     
     [self removeObserver:self forKeyPath:@"playing" context:nil];
     
-    NSString *temp = [[[dataInfo objectForKey:kFilename] componentsSeparatedByString:@"."] objectAtIndex:0];
-    NSString *filename = [NSString stringWithFormat:@"%@.plist", temp];
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    NSString *filePath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:filename];
-    [dataInfo writeToFile:filePath atomically:YES]; 
+    if(didEdit){
+        [dataInfo setObject:indexList forKey:kTag];
+        
+        NSString *temp = [[[dataInfo objectForKey:kFilename] componentsSeparatedByString:@"."] objectAtIndex:0];
+        NSString *filename = [NSString stringWithFormat:@"%@.plist", temp];
+        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        NSString *filePath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:filename];
+        [dataInfo writeToFile:filePath atomically:YES];
+    } 
     
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -298,7 +312,32 @@
 }
 
 -(IBAction) addTag:(id)sender{
+    //更新数据源
+    NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:tagSliderView.currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
+    [indexList insertObject:newDict atIndex:0];
+    [newDict release];
     
+    //插入标记视图
+    UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+    
+    UILabel *tagCountLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+    tagCountLabel.text = [NSString stringWithFormat:@"%d", indexList.count + 1];
+    
+    UILabel *tagTimeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+    tagTimeLabel.text = [NSString stringWithFormat:@"%@", tagSliderView.currentTimeStr];
+    
+    CGRect rect = tagView.frame;
+    rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
+    tagView.frame = rect;
+    tagView.tag = BASE_TAG_PLAYBACK_TAGVIEW + indexList.count;
+    [tagSliderView addTagView:tagView];    
+    
+    //刷新列表视图
+    [myTableView beginUpdates];
+    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+    [myTableView endUpdates];
+    
+    didEdit = YES;
 }
 
 -(IBAction) stop:(id)sender{
@@ -383,17 +422,15 @@
     [dict setObject:textView.text forKey:kTagTitle];    
     [indexList replaceObjectAtIndex:editingIndex withObject:dict];
     [dict release];
+
+    //[dataInfo setObject:indexList forKey:kTag];
     
-    //NSLog(@"1.indexList retainCount: %d", [indexList retainCount]);
-    [dataInfo setObject:indexList forKey:kTag];
-    //[indexList release];
-    //NSLog(@"2.indexList retainCount: %d", [indexList retainCount]);
-    
+    didEdit = YES;
     [self cancelEditing:nil];
 }
 
 -(void) deleteTag:(id)sender{
-    
+    didEdit = YES;
 }
 
 @end

@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, setter = setProgress:) float progress;
+@property (nonatomic, assign) NSString *currentTimeStr;
 
 -(id)           initWithFrame:(CGRect)frame andTotalTimeStr:(NSString *)str;
 -(void)         setBackViewColor:(UIColor *)color;

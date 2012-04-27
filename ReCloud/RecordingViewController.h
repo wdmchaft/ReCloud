@@ -8,13 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "EGORefreshTableHeaderView.h"
 
-@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate>{
+@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate, EGORefreshTableHeaderDelegate>{
     
+    UIView *editingView;
+    EGORefreshTableHeaderView *refreshHeaderView;
+    
+    NSInteger editingIndex;
+    NSTimer *recordingTimer;
     BOOL recording;
     BOOL sampling;
+    BOOL reloading;
+    BOOL initial;
     long timestamp;
-    NSTimer *recordingTimer;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UIView *tagBackView;
@@ -31,5 +39,8 @@
 -(IBAction)     tagForTime:(id)sender;
 -(void)         addTagView;
 -(void)         initLayout;
+-(void)         writeAudioIndexFile;
+-(void)         reloadTableViewDataSource;
+-(void)         doneLoadingTableViewData;
 
 @end
