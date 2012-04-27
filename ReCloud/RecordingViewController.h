@@ -13,15 +13,20 @@
 @interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate, EGORefreshTableHeaderDelegate>{
     
     UIView *editingView;
+    UIView *waitingView;
     EGORefreshTableHeaderView *refreshHeaderView;
     
     NSInteger editingIndex;
+    NSInteger sampleCount;
+    NSInteger idleCount;
     NSTimer *recordingTimer;
+    NSTimer *sampleTimer;
     BOOL recording;
     BOOL sampling;
     BOOL reloading;
-    BOOL initial;
     long timestamp;
+    float totalSamplePeak;
+    float averageSamplePeak;
     
 }
 
@@ -42,5 +47,8 @@
 -(void)         writeAudioIndexFile;
 -(void)         reloadTableViewDataSource;
 -(void)         doneLoadingTableViewData;
+-(void)         sampleSurroundVoice;  //周围环境声音采样
+-(void)         showWaitingView;
+-(void)         cancelWaitingView;
 
 @end

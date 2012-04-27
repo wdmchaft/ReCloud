@@ -44,10 +44,10 @@
         duration = [TagSliderView durationForString:str];
         
         //blockView为滑块
-        progress = duration * 0.5;
+        progress = 0.5;
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
         UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
-        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:progress]];
+        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * progress]];
         currentTimeStr = blockLabel.text;
         CGRect rect = blockView.frame;
         rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
@@ -134,6 +134,8 @@
 }
 
 -(void) addTagView:(UIView *)view{
+    NSLog(@"%s", __FUNCTION__);
+    
     view.alpha = 0.0;
     [self addSubview:view];
     

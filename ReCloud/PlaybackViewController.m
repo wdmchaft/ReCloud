@@ -166,6 +166,7 @@
 #pragma mark - UINavigationController Delegate Methods
 
 -(void) navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    NSLog(@"%s", __FUNCTION__);
     
     NSInteger audioDuration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
     CGFloat viewWidth = tagSliderView.frame.size.width;    
@@ -188,7 +189,9 @@
         
         [tagSliderView addTagView:tagView];
         
-    }    
+    }  
+    
+    self.view.userInteractionEnabled = YES;
 }
 
 #pragma mark - KVO Callback Methods
@@ -222,21 +225,25 @@
 #pragma mark - NSNotification Callback Methods
 
 -(void) slide:(NSNotification *)notification{
-    if(playing){
-        [audioPlayer pause];
-        [self willChangeValueForKey:@"playing"];
-        playing = NO;
-        [self didChangeValueForKey:@"playing"];
+    if(audioPlayer != nil){
+        if(playing){
+            [audioPlayer pause];
+            [self willChangeValueForKey:@"playing"];
+            playing = NO;
+            [self didChangeValueForKey:@"playing"];
+        }
     }
 }
 
 -(void) doneSliding:(NSNotification *)notification{
-    if(!playing){
-        audioPlayer.currentTime = tagSliderView.progress * audioPlayer.duration;        
-        [audioPlayer play];
-        [self willChangeValueForKey:@"playing"];
-        playing = YES;
-        [self didChangeValueForKey:@"playing"];
+    if(audioPlayer != nil){
+        if(!playing){
+            audioPlayer.currentTime = tagSliderView.progress * audioPlayer.duration;        
+            [audioPlayer play];
+            [self willChangeValueForKey:@"playing"];
+            playing = YES;
+            [self didChangeValueForKey:@"playing"];
+        }
     }
 }
 
@@ -321,7 +328,7 @@
     UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
     
     UILabel *tagCountLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-    tagCountLabel.text = [NSString stringWithFormat:@"%d", indexList.count + 1];
+    tagCountLabel.text = [NSString stringWithFormat:@"%d", indexList.count];
     
     UILabel *tagTimeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
     tagTimeLabel.text = [NSString stringWithFormat:@"%@", tagSliderView.currentTimeStr];
@@ -355,6 +362,8 @@
 }
 
 -(void) initLayout{
+    self.view.userInteractionEnabled = NO;
+    
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonItem;
     [buttonItem release];

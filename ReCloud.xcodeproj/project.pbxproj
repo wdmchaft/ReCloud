@@ -20,6 +20,7 @@
 		B6AB6949154A407300DE4A35 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6941154A407300DE4A35 /* whiteArrow@2x.png */; };
 		B6AB694D154A40C000DE4A35 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AB694C154A40C000DE4A35 /* EGORefreshTableHeaderView.m */; };
 		B6AB694F154A4D8B00DE4A35 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */; };
+		B6AB6958154A95E300DE4A35 /* WaitingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6957154A95E300DE4A35 /* WaitingView.xib */; };
 		B6AD73E31540F8D000C0BDEB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */; };
 		B6AF5C90153BAC9E0025E5A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */; };
 		B6AF5C92153BAC9E0025E5A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */; };
@@ -57,6 +58,7 @@
 		B6AB694B154A40C000DE4A35 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		B6AB694C154A40C000DE4A35 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B6AB6957154A95E300DE4A35 /* WaitingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WaitingView.xib; sourceTree = "<group>"; };
 		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6AF5C8B153BAC9E0025E5A3 /* ReCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -191,6 +193,7 @@
 				B6A11BDA1547AC0100456A6E /* TagView.xib */,
 				B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */,
 				B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */,
+				B6AB6957154A95E300DE4A35 /* WaitingView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				B6AB6947154A407300DE4A35 /* blueArrow@2x.png in Resources */,
 				B6AB6948154A407300DE4A35 /* whiteArrow.png in Resources */,
 				B6AB6949154A407300DE4A35 /* whiteArrow@2x.png in Resources */,
+				B6AB6958154A95E300DE4A35 /* WaitingView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

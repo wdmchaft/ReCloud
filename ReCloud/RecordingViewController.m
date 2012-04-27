@@ -39,10 +39,16 @@
 -(void) dealloc{
     self.tagList = nil;
     self.mRecorder = nil;
+    
     if(recordingTimer != nil){
         [recordingTimer invalidate];
         recordingTimer = nil;
     }
+    if(sampleTimer != nil){
+        [sampleTimer invalidate];
+        sampleTimer = nil;
+    } 
+    
     refreshHeaderView = nil;
     
     [super dealloc];    
@@ -60,10 +66,11 @@
     NSDictionary *tempDict = [[NSDictionary alloc] initWithObjectsAndKeys:@"temp", kCurrentTime, @"temp", kTagTitle, nil];
     [tagList addObject:tempDict];   //开始加一个临时数据，使数据源不为空，从而一开始就可下拉TableView
     [tempDict release];
-    initial = YES;
     
     [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
-    recording = NO;   
+    recording = NO;
+    
+    [self sampleSurroundVoice];
     
     [self initLayout];
     
@@ -224,8 +231,36 @@
             }
             tagView.frame = rect;
         } 
+        
+        [mRecorder updateMeters];
+        if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){
+            idleCount++;
+            if(idleCount == 3){
+                //断句
+            }
+        }else{
+            idleCount = 0;
+        }
     }
 }
+
+-(void) pickSampleVoice:(NSTimer *)timer{
+    if(sampleCount < 30){
+        [mRecorder updateMeters];
+        NSLog(@"sampling: %f", [mRecorder peakPowerForChannel:0]);
+        totalSamplePeak += [mRecorder peakPowerForChannel:0];
+        sampleCount++;
+    }else{
+        [sampleTimer invalidate];
+        sampleTimer = nil;
+        [mRecorder stop];
+        averageSamplePeak = totalSamplePeak / sampleCount;
+        NSLog(@"averageSamplePeak: %f", averageSamplePeak);
+        
+        [self cancelWaitingView];
+    }
+}
+
 
 #pragma mark - UIView Animation Callback Methods
 
@@ -233,6 +268,12 @@
     [editingView removeFromSuperview];
     editingView = nil;
 }
+
+-(void) removeWaitingView{
+    [waitingView removeFromSuperview];
+    waitingView = nil;
+}
+
 
 #pragma mark - Instance Methods
 
@@ -266,7 +307,7 @@
         [mRecorder record];        
         flag = YES;
         
-        recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
+        recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
     }else{
         if(recording){
             [mRecorder pause];
@@ -474,6 +515,66 @@
 -(void) reloadTableViewDataSource{
     reloading = YES;
     [self tagForTime:nil];
+}
+
+-(void) sampleSurroundVoice{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    audioSession.delegate = self;
+    [audioSession setActive:YES error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
+    
+    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:SAMPLE_DIR] stringByAppendingPathComponent:@"sample.pcm"];   
+    NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
+    NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                    [NSNumber numberWithFloat:44100.0], AVSampleRateKey, 
+                                    [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
+                                    [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
+                                    [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
+                                    nil];
+    AVAudioRecorder *newRecorder = [[AVAudioRecorder alloc] initWithURL:newURL settings:recordSettings error:nil];
+    [newURL release];
+    [recordSettings release];
+    self.mRecorder = newRecorder;
+    [newRecorder release];
+    mRecorder.meteringEnabled = YES;
+    mRecorder.delegate = self;
+    [mRecorder prepareToRecord];
+    [mRecorder record];        
+    sampleCount = 0;
+    
+    sampleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(pickSampleVoice:) userInfo:nil repeats:YES];  
+    
+    [self showWaitingView];
+}
+
+-(void) showWaitingView{
+    waitingView = [[[NSBundle mainBundle] loadNibNamed:@"WaitingView" owner:self options:nil] lastObject];
+    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    waitingView.frame = CGRectMake(0, 20, waitingView.frame.size.width, waitingView.frame.size.height);
+    waitingView.alpha = 0.0;
+    UIActivityIndicatorView *indicator = (UIActivityIndicatorView *)[waitingView viewWithTag:TAG_WAITINGVIEW_ACTIVITY_INDICATOR];
+    [indicator startAnimating];
+    [appDelegate.window addSubview:waitingView];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        waitingView.alpha = 1.0;
+    }];
+}
+
+-(void) cancelWaitingView{
+    if(waitingView != nil){
+        UIActivityIndicatorView *indicator = (UIActivityIndicatorView *)[waitingView viewWithTag:TAG_WAITINGVIEW_ACTIVITY_INDICATOR];
+        [indicator stopAnimating];
+        
+        [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(removeWaitingView)];
+        waitingView.alpha = 0.0;
+        [UIView commitAnimations];
+    }
 }
 
 @end
