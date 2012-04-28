@@ -218,6 +218,7 @@
  
 -(void) updateProgress:(NSTimer *)timer{
     if(audioPlayer != nil && playing){
+        
         [tagSliderView setProgress:audioPlayer.currentTime / audioPlayer.duration];
     }
 }
@@ -319,6 +320,9 @@
 }
 
 -(IBAction) addTag:(id)sender{
+    //float currentTime = tagSliderView.progress * [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
+    //NSString *currentTimeStr = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:currentTime]];
+    
     //更新数据源
     NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:tagSliderView.currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
     [indexList insertObject:newDict atIndex:0];
@@ -343,6 +347,16 @@
     [myTableView beginUpdates];
     [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
     [myTableView endUpdates];
+    
+    [myTableView beginUpdates];        
+    NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
+    for(NSInteger i = 1; i < indexList.count; i++){
+        NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
+        [rowIndexPaths addObject:temp];
+    }
+    [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [myTableView endUpdates];   
+    [rowIndexPaths release];
     
     didEdit = YES;
 }
@@ -385,6 +399,9 @@
 -(void) editTagTitle:(id)sender{
     UIButton *clicked = (UIButton *)sender;
     editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON2;
+    
+    NSLog(@"editingIndex: %d", editingIndex);
+    
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
     UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLELABEL];
     

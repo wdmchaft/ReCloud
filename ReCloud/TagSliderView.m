@@ -48,7 +48,7 @@
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
         UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
         blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * progress]];
-        currentTimeStr = blockLabel.text;
+        self.currentTimeStr = blockLabel.text;
         CGRect rect = blockView.frame;
         rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
         rect.origin.y = 0;
@@ -84,7 +84,7 @@
     progress = touchPoint.x / self.frame.size.width;
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     timeLabel.text = [TagSliderView stringForDuration:duration * progress];   
-    currentTimeStr = timeLabel.text;
+    self.currentTimeStr = timeLabel.text;
     
 }
 
@@ -106,7 +106,7 @@
     progress = touchPoint.x / self.frame.size.width;
     UILabel *timeLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     timeLabel.text = [TagSliderView stringForDuration:duration * progress];
-    currentTimeStr = timeLabel.text;
+    self.currentTimeStr = timeLabel.text;
 }
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -118,6 +118,7 @@
 
 
 -(void) dealloc{
+    self.currentTimeStr = nil;
     
     [super dealloc];
 }
@@ -152,6 +153,7 @@
 
 -(void) setProgress:(float)_progress{
     progress = _progress;
+    self.currentTimeStr = [TagSliderView stringForDuration:progress * duration];
     
     UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
     CGRect rect = progressView.frame;

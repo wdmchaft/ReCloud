@@ -116,7 +116,7 @@
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{    
     if(tagList != nil && tagList.count > 0){
-        NSLog(@"%s", __FUNCTION__);
+        //NSLog(@"%s", __FUNCTION__);
         return tagList.count;
     }
     return 0;
@@ -159,7 +159,7 @@
         UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [deleteButton setTitle:@"D" forState:UIControlStateNormal];
         deleteButton.frame = CGRectMake(280, 15, 35, 25);
-        deleteButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
         [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:deleteButton];
     }
@@ -254,6 +254,8 @@
         [sampleTimer invalidate];
         sampleTimer = nil;
         [mRecorder stop];
+        self.mRecorder = nil;
+        
         averageSamplePeak = totalSamplePeak / sampleCount;
         NSLog(@"averageSamplePeak: %f", averageSamplePeak);
         
@@ -272,6 +274,11 @@
 -(void) removeWaitingView{
     [waitingView removeFromSuperview];
     waitingView = nil;
+}
+
+-(void) removeTagView{
+    [deletingTagView removeFromSuperview];
+    deletingTagView = nil;
 }
 
 
@@ -399,7 +406,34 @@
     [self cancelEditing:nil];
 }
 
--(void) deleteTag:(id)sender{
+-(void) deleteTag:(id)sender{      
+    UIButton *clicked = (UIButton *)sender;
+    NSInteger deleteIndex = clicked.tag - BASE_TAG_DELETE_BUTTON2;    
+    /*
+    //更新数据源
+    [tagList removeObjectAtIndex:deleteIndex];
+    
+    //刷新列表视图
+    [myTableView beginUpdates];
+    [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+    [myTableView endUpdates];
+    
+    [myTableView beginUpdates];        
+    NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
+    for(NSInteger i = 0; i < tagList.count; i++){
+        if(i != deleteIndex){
+            NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
+            [rowIndexPaths addObject:temp];
+        }
+    }
+    [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [myTableView endUpdates];  
+    [rowIndexPaths release];
+    
+    //删除浮标
+    [self deleteTagViewAtIndex:tagList.count + 1 - deleteIndex];
+    
+*/
     
 }
 
@@ -442,6 +476,15 @@
         [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
         [myTableView endUpdates];
         
+        [myTableView beginUpdates];        
+        NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
+        for(NSInteger i = 1; i < tagList.count; i++){
+            NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
+            [rowIndexPaths addObject:temp];
+        }
+        [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [myTableView endUpdates];   
+        [rowIndexPaths release];
     }
 }
 
@@ -449,7 +492,7 @@
     UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
     tagView.alpha = 0;
     tagView.frame = CGRectMake([UIScreen mainScreen].applicationFrame.size.width - tagView.frame.size.width / 2, 0, tagView.frame.size.width, tagView.frame.size.height);
-    tagView.tag = BASE_TAG_RECORDVIEW_TAGVIEW + tagList.count - 1 - 1;
+    tagView.tag = BASE_TAG_RECORDVIEW_TAGVIEW + tagList.count - 1;
     
     UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
     countLabel.text = [NSString stringWithFormat:@"%d", tagList.count - 1];
@@ -575,6 +618,19 @@
         waitingView.alpha = 0.0;
         [UIView commitAnimations];
     }
+}
+
+-(void) deleteTagViewAtIndex:(NSInteger)index{
+    deletingTagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + index];
+    
+    
+    [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(removeTagView)];
+    deletingTagView.alpha = 0.0;
+    [UIView commitAnimations];
 }
 
 @end

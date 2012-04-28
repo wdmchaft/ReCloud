@@ -142,7 +142,7 @@
         NSString *filename = [[audioList objectAtIndex:indexPath.row] objectForKey:kFilename];
         NSString *filePrefix = [[NSString alloc] initWithFormat:@"%@", [[filename componentsSeparatedByString:@"."] objectAtIndex:0]];
         [audioList removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade]; 
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationRight]; 
         
         NSFileManager *filemanager = [NSFileManager defaultManager];
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -261,14 +261,14 @@
     }    
     self.audioList = newArr;
     [newArr release];
-    //NSLog(@"newArr count: %@", newArr);
+
     NSLog(@"audioList count: %d", audioList.count);
     
 }
 
 -(void) editTitle:(id)sender{
     UIButton *clicked = (UIButton *)sender;
-    NSLog(@"editButton: %d", clicked.tag);
+
     editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON;
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
     UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLE_LABEL];

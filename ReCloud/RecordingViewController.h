@@ -14,6 +14,7 @@
     
     UIView *editingView;
     UIView *waitingView;
+    UIView *deletingTagView;
     EGORefreshTableHeaderView *refreshHeaderView;
     
     NSInteger editingIndex;
@@ -50,5 +51,6 @@
 -(void)         sampleSurroundVoice;  //周围环境声音采样
 -(void)         showWaitingView;
 -(void)         cancelWaitingView;
+-(void)         deleteTagViewAtIndex:(NSInteger)index;
 
 @end
