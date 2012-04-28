@@ -260,7 +260,7 @@
 -(void) backAction:(id)sender{
     [self stop:nil];
     
-    [self removeObserver:self forKeyPath:@"playing" context:nil];
+    [self removeObserver:self forKeyPath:@"playing"];
     
     if(didEdit){
         [dataInfo setObject:indexList forKey:kTag];
