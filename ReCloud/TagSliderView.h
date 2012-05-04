@@ -10,18 +10,23 @@
 #import <UIKit/UIKit.h>
 
 @interface TagSliderView : UIView{
-    NSInteger tagCount;
+   
+    NSString *durationStr;    
     float duration;
+    
 }
 
-@property (nonatomic, setter = setProgress:) float progress;
+@property (nonatomic, retain) NSMutableArray *tagViews;
 @property (nonatomic, retain) NSString *currentTimeStr;
+@property (nonatomic, setter = setProgress:) float progress;
+@property (nonatomic, assign) float currentXpos;
+
 
 -(id)           initWithFrame:(CGRect)frame andTotalTimeStr:(NSString *)str;
 -(void)         setBackViewColor:(UIColor *)color;
 -(void)         setSliderViewColor:(UIColor *)color;
 -(void)         addTagView:(UIView *)view;
--(void)         setProgressForTimeStr:(NSString *)str;
+-(void)         addTagView:(UIView *)view atIndex:(NSInteger)index;
 
 +(NSString *)   stringForDuration:(NSTimeInterval)duration;
 +(NSInteger)    durationForString:(NSString *)str;

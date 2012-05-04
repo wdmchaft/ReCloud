@@ -10,7 +10,7 @@
 
 #define TAG_SLIDER_VIEW 10
 #define TAG_BLOCK_VIEW 20
-#define TAG_PROGRESS_LABEL 21
+#define TAG_TAGSLIDERVIEW_PROGRESS_LABEL 21
 #define TAG_TAGVIEW_COUNTLABEL 30
 #define TAG_TAGVIEW_TIMELABEL 31
 #define TAG_WAITINGVIEW_ACTIVITY_INDICATOR 40
@@ -42,6 +42,7 @@
 #define kTag @"Tag"
 #define kCurrentTime @"CurrentTime"
 #define kTagTitle @"TagTitle"
+#define kSliderViewBlockXpos @"SliderViewBlockXpos"
 
 #define CUSTOM_COLOR(R, G, B) [UIColor colorWithRed:R / 255 green:G / 255 blue:B / 255 alpha:1.0] 
 
@@ -51,5 +52,8 @@
 
 #define NOTIFY_WILL_SLIDE @"nWillSlideSliderView"
 #define NOTIFY_END_SLIDE @"nEndSlideSliderView"
+#define NOTIFY_SLIDING @"nSlidingSliderView"
+#define NOTIFY_SLIDERVIEW_X_CHANGED @"nSliderViewXposChanged"
+
 
 

@@ -274,6 +274,8 @@
 -(void) removeWaitingView{
     [waitingView removeFromSuperview];
     waitingView = nil;
+    
+    [self recordOrPause:nil];   //取样后马上开始录音
 }
 
 -(void) removeTagView{
@@ -531,6 +533,7 @@
     [newURL release];
     NSString *durationStr = [self stringForDuration:player.duration];
     //NSLog(@"durationStr: %@", durationStr);
+    [player release];
     
     //注意tagList最后一项为临时占位项，要排除
     NSMutableArray *newArr = [[NSMutableArray alloc] init];

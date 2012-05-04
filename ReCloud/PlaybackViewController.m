@@ -68,9 +68,11 @@
     [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
     didEdit = NO;
+    hightlightedIndex = -1;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slide:) name:NOTIFY_WILL_SLIDE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willSlide:) name:NOTIFY_WILL_SLIDE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneSliding:) name:NOTIFY_END_SLIDE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sliding:) name:NOTIFY_SLIDING object:nil];
     
     [self initLayout];
 }
@@ -149,14 +151,14 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
-    [tagSliderView setProgressForTimeStr:[dict objectForKey:kCurrentTime]];
+    float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
+    float currentTime = [TagSliderView durationForString:[dict objectForKey:kCurrentTime]];
+    [tagSliderView setProgress:currentTime / duration];
     if(playing){
         audioPlayer.currentTime = tagSliderView.progress * audioPlayer.duration;
-    }
-    
+    }    
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -179,7 +181,6 @@
         CGRect rect = tagView.frame;
         rect.origin.x = (timeTagged * 1.0 / audioDuration) * viewWidth - rect.size.width / 2;
         tagView.frame = rect;
-        tagView.tag = BASE_TAG_PLAYBACK_TAGVIEW + i;
         
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
         countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - i];
@@ -217,15 +218,14 @@
 #pragma mark - NSTimer Callback Methods
  
 -(void) updateProgress:(NSTimer *)timer{
-    if(audioPlayer != nil && playing){
-        
+    if(audioPlayer != nil && playing){        
         [tagSliderView setProgress:audioPlayer.currentTime / audioPlayer.duration];
     }
 }
 
 #pragma mark - NSNotification Callback Methods
 
--(void) slide:(NSNotification *)notification{
+-(void) willSlide:(NSNotification *)notification{
     if(audioPlayer != nil){
         if(playing){
             [audioPlayer pause];
@@ -234,7 +234,32 @@
             [self didChangeValueForKey:@"playing"];
         }
     }
+    
+    NSDictionary *dict = [notification userInfo];
+    float x = [(NSNumber *)[dict objectForKey:kSliderViewBlockXpos] floatValue];
+    
+    NSInteger found = -1;
+    for(NSInteger i = 0; i < indexList.count; i++){
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
+        if(x >= tagView.frame.origin.x + tagView.frame.size.width / 2){ 
+            found = i;
+        }else{
+            break;
+        }        
+    }
+    
+    NSLog(@"found: %d", found);
+    if(found != -1){
+        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    }else{
+        for(NSInteger i = 0; i < indexList.count; i++){
+            [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
+        }        
+    }
+    
+    hightlightedIndex = found;
 }
+
 
 -(void) doneSliding:(NSNotification *)notification{
     if(audioPlayer != nil){
@@ -248,6 +273,34 @@
     }
 }
 
+
+-(void) sliding:(NSNotification *)notification{
+    NSDictionary *dict = [notification userInfo];
+    float x = [(NSNumber *)[dict objectForKey:kSliderViewBlockXpos] floatValue];
+    
+    NSInteger found = -1;
+    for(NSInteger i = 0; i < indexList.count; i++){
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
+        if(x >= tagView.frame.origin.x + tagView.frame.size.width / 2){ 
+            found = i;
+        }else{
+            break;
+        }        
+    }
+    
+    //NSLog(@"found: %d", found);
+    if(found != -1){
+        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];        
+    }else{
+        for(NSInteger i = 0; i < indexList.count; i++){
+            [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
+        }  
+    }
+    
+    hightlightedIndex = found;
+}
+
+
 #pragma mark - Animation Callback Meethods
 
 -(void) removeEditingView{
@@ -260,6 +313,7 @@
 -(void) backAction:(id)sender{
     [self stop:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self removeObserver:self forKeyPath:@"playing"];
     
     if(didEdit){
@@ -302,7 +356,7 @@
         [audioPlayer play];
         flag = YES;
         
-        [tagSliderView setProgressForTimeStr:@"00:00:00"];
+        [tagSliderView setProgress:0.0];
         progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
     }else{
         if(playing){
@@ -320,44 +374,51 @@
 }
 
 -(IBAction) addTag:(id)sender{
-    //float currentTime = tagSliderView.progress * [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
-    //NSString *currentTimeStr = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:currentTime]];
     
     //更新数据源
     NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:tagSliderView.currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
-    [indexList insertObject:newDict atIndex:0];
+    [indexList insertObject:newDict atIndex:indexList.count - 1 - hightlightedIndex];
     [newDict release];
     
     //插入标记视图
-    UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+    UIView *newTagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
     
-    UILabel *tagCountLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-    tagCountLabel.text = [NSString stringWithFormat:@"%d", indexList.count];
+    UILabel *tagCountLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+    tagCountLabel.text = [NSString stringWithFormat:@"%d", hightlightedIndex + 2];
     
-    UILabel *tagTimeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+    UILabel *tagTimeLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
     tagTimeLabel.text = [NSString stringWithFormat:@"%@", tagSliderView.currentTimeStr];
     
-    CGRect rect = tagView.frame;
+    CGRect rect = newTagView.frame;
     rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
-    tagView.frame = rect;
-    tagView.tag = BASE_TAG_PLAYBACK_TAGVIEW + indexList.count;
-    [tagSliderView addTagView:tagView];    
+    newTagView.frame = rect;
+    [tagSliderView addTagView:newTagView atIndex:tagSliderView.tagViews.count - 1 - hightlightedIndex];    
+    
+    //刷新标记序号
+    for(NSInteger i = 0; i <= indexList.count - 1 - (hightlightedIndex + 2); i++){
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - 1 - i + 1];        
+    }
     
     //刷新列表视图
     [myTableView beginUpdates];
-    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:(indexList.count - 2 - hightlightedIndex) inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
     [myTableView endUpdates];
+    
     
     [myTableView beginUpdates];        
     NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
-    for(NSInteger i = 1; i < indexList.count; i++){
-        NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
-        [rowIndexPaths addObject:temp];
+    for(NSInteger i = 0; i < indexList.count; i++){
+        if(i != indexList.count - 2 - hightlightedIndex){
+            NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
+            [rowIndexPaths addObject:temp];
+        }
     }
     [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
     [myTableView endUpdates];   
     [rowIndexPaths release];
-    
+     
     didEdit = YES;
 }
 
@@ -368,6 +429,8 @@
         
         [progressTimer invalidate];
         progressTimer = nil;
+        
+        [tagSliderView setProgress:0.0];
         
         [self willChangeValueForKey:@"playing"];
         playing = NO;
@@ -423,9 +486,9 @@
     [appDelegate.window addSubview:editingView];
     [UIView animateWithDuration:0.5 animations:^{
         editingView.alpha = 1.0;
-    }];
-    
+    }];    
 }
+
 
 -(void) cancelEditing:(id)sender{
     [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
@@ -436,6 +499,7 @@
     editingView.alpha = 0.0;
     [UIView commitAnimations];
 }
+
 
 -(void) confirmEditing:(id)sender{
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
@@ -455,8 +519,13 @@
     [self cancelEditing:nil];
 }
 
+
 -(void) deleteTag:(id)sender{
     didEdit = YES;
+    
+    UIButton *clicked = (UIButton *)sender;
+    NSLog(@"tag: %d", clicked.tag);
 }
+
 
 @end
