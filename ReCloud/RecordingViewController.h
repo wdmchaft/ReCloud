@@ -14,10 +14,11 @@
     
     UIView *editingView;
     UIView *waitingView;
-    UIView *deletingTagView;
     EGORefreshTableHeaderView *refreshHeaderView;
     
+    NSMutableArray *tagViews;
     NSInteger editingIndex;
+    NSInteger deletingIndex;
     NSInteger sampleCount;
     NSInteger idleCount;
     NSTimer *recordingTimer;
@@ -45,7 +46,7 @@
 -(IBAction)     tagForTime:(id)sender;
 -(void)         addTagView;
 -(void)         initLayout;
--(void)         writeAudioIndexFile;
+-(void)         writeAudioIndexToFile;
 -(void)         reloadTableViewDataSource;
 -(void)         doneLoadingTableViewData;
 -(void)         sampleSurroundVoice;  //周围环境声音采样

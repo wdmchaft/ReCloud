@@ -20,6 +20,7 @@
     BOOL playing;    
     NSTimer *progressTimer;
     NSInteger editingIndex;
+    NSInteger deletingIndex;
     NSInteger hightlightedIndex;   //当前高亮的标记序号 
     
 }

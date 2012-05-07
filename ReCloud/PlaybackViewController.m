@@ -308,6 +308,13 @@
     editingView = nil;
 }
 
+-(void) removeSingleTagView{
+    UIView *deleteTagView = [tagSliderView.tagViews objectAtIndex:deletingIndex];
+    [deleteTagView removeFromSuperview];
+    [tagSliderView.tagViews removeObjectAtIndex:deletingIndex];
+    deleteTagView = nil;
+}
+
 #pragma mark - Instance Methods
 
 -(void) backAction:(id)sender{
@@ -380,6 +387,7 @@
     [indexList insertObject:newDict atIndex:indexList.count - 1 - hightlightedIndex];
     [newDict release];
     
+    
     //插入标记视图
     UIView *newTagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
     
@@ -392,20 +400,21 @@
     CGRect rect = newTagView.frame;
     rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
     newTagView.frame = rect;
-    [tagSliderView addTagView:newTagView atIndex:tagSliderView.tagViews.count - 1 - hightlightedIndex];    
+    [tagSliderView addTagView:newTagView atIndex:tagSliderView.tagViews.count - 1 - hightlightedIndex];  
     
     //刷新标记序号
-    for(NSInteger i = 0; i <= indexList.count - 1 - (hightlightedIndex + 2); i++){
+    NSInteger count = indexList.count - 1 - (hightlightedIndex + 2);
+    for(NSInteger i = 0; i <= count; i++){
+        NSLog(@"looping>..");
         UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
         countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - 1 - i + 1];        
-    }
+    }    
     
     //刷新列表视图
     [myTableView beginUpdates];
     [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:(indexList.count - 2 - hightlightedIndex) inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
-    [myTableView endUpdates];
-    
+    [myTableView endUpdates];    
     
     [myTableView beginUpdates];        
     NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
@@ -418,8 +427,12 @@
     [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
     [myTableView endUpdates];   
     [rowIndexPaths release];
+    
+    hightlightedIndex++;
+    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
      
     didEdit = YES;
+
 }
 
 -(IBAction) stop:(id)sender{
@@ -524,7 +537,47 @@
     didEdit = YES;
     
     UIButton *clicked = (UIButton *)sender;
-    NSLog(@"tag: %d", clicked.tag);
+    NSLog(@"tag: %d", clicked.tag);    
+    deletingIndex = clicked.tag - BASE_TAG_DELETE_BUTTON2;
+    
+    if(hightlightedIndex + 1 >= indexList.count - deletingIndex){
+        hightlightedIndex--;
+    } 
+    
+    [indexList removeObjectAtIndex:deletingIndex];
+    
+    UIView *deleteTagView = [tagSliderView.tagViews objectAtIndex:deletingIndex];
+    [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(removeSingleTagView)];
+    deleteTagView.alpha = 0.0;
+    [UIView commitAnimations];
+    
+    for(NSInteger i = 0; i < deletingIndex; i++){
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
+        
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - i];
+    }    
+    
+    [myTableView beginUpdates];
+    [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deletingIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+    [myTableView endUpdates];
+    
+    [myTableView beginUpdates];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for(NSInteger i = 0; i < indexList.count; i++ ){
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+        [indexPaths addObject:indexPath];
+    }
+    [myTableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [myTableView endUpdates];
+    [indexPaths release];
+    
+    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:indexList.count - 1 - hightlightedIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    
 }
 
 

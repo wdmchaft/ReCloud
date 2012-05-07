@@ -40,6 +40,8 @@
     self.tagList = nil;
     self.mRecorder = nil;
     
+    [tagViews release];
+    
     if(recordingTimer != nil){
         [recordingTimer invalidate];
         recordingTimer = nil;
@@ -66,6 +68,8 @@
     NSDictionary *tempDict = [[NSDictionary alloc] initWithObjectsAndKeys:@"temp", kCurrentTime, @"temp", kTagTitle, nil];
     [tagList addObject:tempDict];   //开始加一个临时数据，使数据源不为空，从而一开始就可下拉TableView
     [tempDict release];
+    
+    tagViews = [[NSMutableArray alloc] init];
     
     [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
     recording = NO;
@@ -152,14 +156,14 @@
         UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [editButton setTitle:@"E" forState:UIControlStateNormal];
         editButton.frame = CGRectMake(240, 15, 35, 25);
-        editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+        editButton.tag = BASE_TAG_EDIT_BUTTON3 + indexPath.row;
         [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:editButton];
         
         UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [deleteButton setTitle:@"D" forState:UIControlStateNormal];
         deleteButton.frame = CGRectMake(280, 15, 35, 25);
-        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
+        deleteButton.tag = BASE_TAG_DELETE_BUTTON3 + indexPath.row;
         [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:deleteButton];
     }
@@ -223,14 +227,17 @@
     timingLabel.text = [self stringForDuration:mRecorder.currentTime];
     
     if(recording){
-        for(int i = 0; i < tagList.count; i++){
-            UIView *tagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + i];
-            CGRect rect = tagView.frame;
-            if(rect.origin.x > 0){
-                rect.origin.x = rect.origin.x - 2.0 / log10(mRecorder.currentTime + 1);
-            }
-            tagView.frame = rect;
-        } 
+        if(tagViews != nil && tagViews.count > 0){
+            
+            for(int i = 0; i < tagViews.count; i++){
+                UIView *tagView = [tagViews objectAtIndex:i];                
+                CGRect rect = tagView.frame;
+                if(rect.origin.x > 0){
+                    rect.origin.x = rect.origin.x - 2.0 / log10(mRecorder.currentTime + 1);
+                }
+                tagView.frame = rect;                
+            }            
+        }
         
         [mRecorder updateMeters];
         if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){
@@ -279,7 +286,9 @@
 }
 
 -(void) removeTagView{
+    UIView *deletingTagView = [tagViews objectAtIndex:deletingIndex]; 
     [deletingTagView removeFromSuperview];
+    [tagViews removeObjectAtIndex:deletingIndex];
     deletingTagView = nil;
 }
 
@@ -346,7 +355,7 @@
         [[AVAudioSession sharedInstance] setActive:NO error:nil];
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
         
-        [self writeAudioIndexFile];
+        [self writeAudioIndexToFile];
     }
 }
 
@@ -358,7 +367,7 @@
 
 -(void) editTagTitle:(id)sender{
     UIButton *clicked = (UIButton *)sender;
-    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON2;
+    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON3;
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
     UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLELABEL];
     
@@ -410,20 +419,21 @@
 
 -(void) deleteTag:(id)sender{      
     UIButton *clicked = (UIButton *)sender;
-    NSInteger deleteIndex = clicked.tag - BASE_TAG_DELETE_BUTTON2;    
-    /*
+    deletingIndex = clicked.tag - BASE_TAG_DELETE_BUTTON3;    
+    NSLog(@"deletingIndex:%d", deletingIndex);
+    
     //更新数据源
-    [tagList removeObjectAtIndex:deleteIndex];
+    [tagList removeObjectAtIndex:deletingIndex];
     
     //刷新列表视图
     [myTableView beginUpdates];
-    [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+    [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deletingIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
     [myTableView endUpdates];
     
     [myTableView beginUpdates];        
     NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
     for(NSInteger i = 0; i < tagList.count; i++){
-        if(i != deleteIndex){
+        if(i != deletingIndex){
             NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
             [rowIndexPaths addObject:temp];
         }
@@ -433,9 +443,14 @@
     [rowIndexPaths release];
     
     //删除浮标
-    [self deleteTagViewAtIndex:tagList.count + 1 - deleteIndex];
+    [self deleteTagViewAtIndex:deletingIndex];   
     
-*/
+    //刷新浮标序号
+    for(NSInteger i = 0; i < deletingIndex; i++){        
+        UIView *tagView = [tagViews objectAtIndex:i];
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.text = [NSString stringWithFormat:@"%d", tagViews.count - 1 - i];
+    }
     
 }
 
@@ -494,7 +509,7 @@
     UIView *tagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
     tagView.alpha = 0;
     tagView.frame = CGRectMake([UIScreen mainScreen].applicationFrame.size.width - tagView.frame.size.width / 2, 0, tagView.frame.size.width, tagView.frame.size.height);
-    tagView.tag = BASE_TAG_RECORDVIEW_TAGVIEW + tagList.count - 1;
+    [tagViews insertObject:tagView atIndex:0];
     
     UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
     countLabel.text = [NSString stringWithFormat:@"%d", tagList.count - 1];
@@ -510,7 +525,7 @@
     
 }
 
--(void) writeAudioIndexFile{
+-(void) writeAudioIndexToFile{
     NSString *filename = [[NSString alloc] initWithFormat:@"%ld.pcm", timestamp];
     
     NSString *defaultTitle = @"未命名";
@@ -624,8 +639,7 @@
 }
 
 -(void) deleteTagViewAtIndex:(NSInteger)index{
-    deletingTagView = [tagBackView viewWithTag:BASE_TAG_RECORDVIEW_TAGVIEW + index];
-    
+    UIView *deletingTagView = [tagViews objectAtIndex:index];    
     
     [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
