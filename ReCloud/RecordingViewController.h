@@ -16,6 +16,7 @@
     UIView *waitingView;
     EGORefreshTableHeaderView *refreshHeaderView;
     
+    NSMutableArray *idleList;
     NSMutableArray *tagViews;
     NSInteger editingIndex;
     NSInteger deletingIndex;
@@ -23,12 +24,15 @@
     NSInteger idleCount;
     NSTimer *recordingTimer;
     NSTimer *sampleTimer;
+    NSTimer *idleTimer;
+    BOOL isIdle;
     BOOL recording;
     BOOL sampling;
     BOOL reloading;
     long timestamp;
     float totalSamplePeak;
     float averageSamplePeak;
+    float idleTime;
     
 }
 

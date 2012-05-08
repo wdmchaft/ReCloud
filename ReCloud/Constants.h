@@ -21,6 +21,7 @@
 #define TAG_EDITVIEW_TEXTVIEW 60
 #define TAG_EDITVIEW_OK_BUTTON 61
 #define TAG_EDITVIEW_CANCEL_BUTTON 62
+#define TAG_OVERLAY_MESSAGE_LABEL 63
 #define TAG_TIME_LABEL 1000
 #define TAG_DATE_LABEL 1001
 #define TAG_TITLE_LABEL 1002
@@ -40,6 +41,7 @@
 #define kDuration @"Duration"
 #define kSize @"Size"
 #define kFilename @"Filename"
+#define kIdleTime @"IdleTime"
 #define kTag @"Tag"
 #define kCurrentTime @"CurrentTime"
 #define kTagTitle @"TagTitle"

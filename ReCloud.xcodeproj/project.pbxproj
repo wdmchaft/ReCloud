@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
 		B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6A11BDA1547AC0100456A6E /* TagView.xib */; };
+		B6AB0B4F1558C71F005605E0 /* OverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AB0B4E1558C71F005605E0 /* OverlayView.xib */; };
+		B6AB0B5A15591C62005605E0 /* TestView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AB0B5915591C62005605E0 /* TestView.xib */; };
 		B6AB6931154A2AD900DE4A35 /* MainViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */; };
 		B6AB6942154A407300DE4A35 /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693A154A407300DE4A35 /* grayArrow.png */; };
 		B6AB6943154A407300DE4A35 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6AB693B154A407300DE4A35 /* grayArrow@2x.png */; };
@@ -47,6 +49,8 @@
 /* Begin PBXFileReference section */
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
 		B6A11BDA1547AC0100456A6E /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
+		B6AB0B4E1558C71F005605E0 /* OverlayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OverlayView.xib; sourceTree = "<group>"; };
+		B6AB0B5915591C62005605E0 /* TestView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestView.xib; sourceTree = "<group>"; };
 		B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewCell.xib; sourceTree = "<group>"; };
 		B6AB693A154A407300DE4A35 /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
 		B6AB693B154A407300DE4A35 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
@@ -61,7 +65,7 @@
 		B6AB694E154A4D8B00DE4A35 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B6AB6957154A95E300DE4A35 /* WaitingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WaitingView.xib; sourceTree = "<group>"; };
 		B6AD73E21540F8D000C0BDEB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud_alpha_v1.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReCloud_alpha_v2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF5C8F153BAC9E0025E5A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B6AF5C91153BAC9E0025E5A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B6AF5C93153BAC9E0025E5A3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -130,7 +134,7 @@
 		B6AF5C8C153BAC9E0025E5A3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v1.app */,
+				B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v2.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -196,6 +200,8 @@
 				B6BA4DAF1548DD9B003D1C91 /* EditingView.xib */,
 				B6AB6930154A2AD900DE4A35 /* MainViewCell.xib */,
 				B6AB6957154A95E300DE4A35 /* WaitingView.xib */,
+				B6AB0B4E1558C71F005605E0 /* OverlayView.xib */,
+				B6AB0B5915591C62005605E0 /* TestView.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -258,7 +264,7 @@
 			);
 			name = ReCloud;
 			productName = ReCloud;
-			productReference = B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v1.app */;
+			productReference = B6AF5C8B153BAC9E0025E5A3 /* ReCloud_alpha_v2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -313,6 +319,8 @@
 				B6AB6949154A407300DE4A35 /* whiteArrow@2x.png in Resources */,
 				B6AB6958154A95E300DE4A35 /* WaitingView.xib in Resources */,
 				B6AF9651154BDF0300CA87A4 /* overlay2.png in Resources */,
+				B6AB0B4F1558C71F005605E0 /* OverlayView.xib in Resources */,
+				B6AB0B5A15591C62005605E0 /* TestView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +407,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReCloud/ReCloud-Prefix.pch";
 				INFOPLIST_FILE = "ReCloud/ReCloud-Info.plist";
-				PRODUCT_NAME = ReCloud_alpha_v1;
+				PRODUCT_NAME = ReCloud_alpha_v2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -410,7 +418,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReCloud/ReCloud-Prefix.pch";
 				INFOPLIST_FILE = "ReCloud/ReCloud-Info.plist";
-				PRODUCT_NAME = ReCloud_alpha_v1;
+				PRODUCT_NAME = ReCloud_alpha_v2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -15,6 +15,7 @@
     
     TagSliderView *tagSliderView;
     UIView *editingView;
+    UIView *overlayView;
     
     BOOL didEdit;  //是否编辑过音频，以便是否重新写入文件
     BOOL playing;    
@@ -22,6 +23,7 @@
     NSInteger editingIndex;
     NSInteger deletingIndex;
     NSInteger hightlightedIndex;   //当前高亮的标记序号 
+    NSInteger idleIndex;    //当前断句序号
     
 }
 
@@ -31,8 +33,9 @@
 @property (nonatomic, retain) NSMutableArray *indexList;
 @property (nonatomic, retain) NSMutableDictionary *dataInfo;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
+@property (nonatomic, retain) NSMutableArray *idleList;
 
--(id)           initWithAudioInfo:(NSDictionary *)info ;
+-(id)           initWithAudioInfo:(NSDictionary *)info;
 -(IBAction)     playOrPause:(id)sender;
 -(IBAction)     prevSection:(id)sender;
 -(IBAction)     nextSection:(id)sender;
@@ -40,5 +43,7 @@
 -(IBAction)     addTag:(id)sender;
 -(void)         backAction:(id)sender;
 -(void)         initLayout;
+-(void)         showOverlayViewWithMessage:(NSString *)msg;
+-(void)         cancelOverlayView;
 
 @end

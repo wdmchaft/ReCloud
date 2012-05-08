@@ -19,6 +19,7 @@
 @synthesize indexList;
 @synthesize dataInfo;
 @synthesize audioPlayer;
+@synthesize idleList;
 
 -(id) initWithAudioInfo:(NSDictionary *)info{
     self = [super init];
@@ -43,6 +44,7 @@
     self.indexList = nil;
     self.dataInfo = nil;
     self.audioPlayer = nil;
+    self.idleList = nil;
     
     if(progressTimer != nil){
         [progressTimer invalidate];
@@ -65,10 +67,17 @@
     self.indexList = newArray;
     [newArray release];
     
+    NSMutableArray *newArray1 = [[dataInfo objectForKey:kIdleTime] mutableCopy];
+    self.idleList = newArray1;
+    [newArray1 release];
+    
+    NSLog(@"dataInfo: %@, idleList: %@", dataInfo, idleList);
+    
     [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
     didEdit = NO;
     hightlightedIndex = -1;
+    idleIndex = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willSlide:) name:NOTIFY_WILL_SLIDE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneSliding:) name:NOTIFY_END_SLIDE object:nil];
@@ -315,6 +324,15 @@
     deleteTagView = nil;
 }
 
+-(void) willRemoveOverlayView{
+    [self cancelOverlayView];
+}
+
+-(void) removeOverlayView{
+    [overlayView removeFromSuperview];
+    overlayView = nil;
+}
+
 #pragma mark - Instance Methods
 
 -(void) backAction:(id)sender{
@@ -341,11 +359,32 @@
 }
 
 -(IBAction) prevSection:(id)sender{
+    if(audioPlayer != nil){
+        if(idleIndex == 0){
+            [self showOverlayViewWithMessage:@"列表为空"];
+            return;
+        }
+        
+        idleIndex--;
+        float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
+        [tagSliderView setProgress:idlePoint / audioPlayer.duration];
+        self.audioPlayer.currentTime = idlePoint;
+    }   
     
 }
 
 -(IBAction) nextSection:(id)sender{
-    
+    if(audioPlayer != nil){
+        if(idleIndex == idleList.count - 1){
+            [self showOverlayViewWithMessage:@"列表为空"];
+            return;
+        }        
+        idleIndex++;
+        float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
+        [tagSliderView setProgress:idlePoint / audioPlayer.duration];
+        self.audioPlayer.currentTime = idlePoint;
+    }
+
 }
 
 -(IBAction) playOrPause:(id)sender{
@@ -442,6 +481,8 @@
         
         [progressTimer invalidate];
         progressTimer = nil;
+        
+        idleIndex = 0;
         
         [tagSliderView setProgress:0.0];
         
@@ -580,5 +621,33 @@
     
 }
 
+
+-(void) showOverlayViewWithMessage:(NSString *)msg{
+    overlayView = [[[NSBundle mainBundle] loadNibNamed:@"OverlayView" owner:self options:nil] lastObject];
+    UILabel *msgLabel = (UILabel *)[overlayView viewWithTag:TAG_OVERLAY_MESSAGE_LABEL];
+    msgLabel.text = msg;
+    overlayView.frame = CGRectMake(0.0, 0.0, overlayView.frame.size.width, overlayView.frame.size.height);
+    overlayView.alpha = 0.0;
+    [self.view addSubview:overlayView];
+    [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDidStopSelector:@selector(willRemoveOverlayView)];
+    overlayView.alpha = 1.0;
+    [UIView commitAnimations];
+}
+
+-(void) cancelOverlayView{
+    if(overlayView != nil){
+        [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDidStopSelector:@selector(removeOverlayView)];
+        overlayView.alpha = 0.0;
+        [UIView commitAnimations];
+    }
+}
 
 @end

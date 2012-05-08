@@ -41,6 +41,7 @@
     self.mRecorder = nil;
     
     [tagViews release];
+    [idleList release];
     
     if(recordingTimer != nil){
         [recordingTimer invalidate];
@@ -50,6 +51,10 @@
         [sampleTimer invalidate];
         sampleTimer = nil;
     } 
+    if(idleTimer != nil){
+        [idleTimer invalidate];
+        idleTimer = nil;
+    }
     
     refreshHeaderView = nil;
     
@@ -67,12 +72,18 @@
     [newList release];
     NSDictionary *tempDict = [[NSDictionary alloc] initWithObjectsAndKeys:@"temp", kCurrentTime, @"temp", kTagTitle, nil];
     [tagList addObject:tempDict];   //开始加一个临时数据，使数据源不为空，从而一开始就可下拉TableView
-    [tempDict release];
-    
-    tagViews = [[NSMutableArray alloc] init];
+    [tempDict release];    
     
     [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
     recording = NO;
+    isIdle = NO;
+    idleCount = 0;
+    idleTime = -1.0f;
+    tagViews = [[NSMutableArray alloc] init];
+    idleList = [[NSMutableArray alloc] init];
+    NSString *initIdlePoint = [[NSString alloc] initWithFormat:@"%f", 0.0f];
+    [idleList addObject:initIdlePoint];
+    [initIdlePoint release];
     
     [self sampleSurroundVoice];
     
@@ -96,11 +107,6 @@
     self.timingLabel = nil;
     self.myTableView = nil;
     refreshHeaderView = nil;
-    
-    if(recordingTimer != nil){
-        [recordingTimer invalidate];
-        recordingTimer = nil;
-    }
 
     [super viewDidUnload];
 
@@ -214,8 +220,11 @@
     if([keyPath isEqualToString:@"recording"]){
         if(recording){
             [recordButton setTitle:@"||" forState:UIControlStateNormal];
+            idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
         }else{
             [recordButton setTitle:@">" forState:UIControlStateNormal];
+            [idleTimer invalidate];
+            idleTimer = nil;
         }
     }
 }
@@ -238,16 +247,6 @@
                 tagView.frame = rect;                
             }            
         }
-        
-        [mRecorder updateMeters];
-        if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){
-            idleCount++;
-            if(idleCount == 3){
-                //断句
-            }
-        }else{
-            idleCount = 0;
-        }
     }
 }
 
@@ -267,6 +266,30 @@
         NSLog(@"averageSamplePeak: %f", averageSamplePeak);
         
         [self cancelWaitingView];
+    }
+}
+
+-(void) checkingIdleState:(NSTimer *)timer{
+    [mRecorder updateMeters];
+    
+    NSLog(@"current peak: %f, idle: %d", [mRecorder peakPowerForChannel:0], isIdle);
+    
+    if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){       
+        idleCount++;
+        if(idleCount >= 15){   //空白时间超过1.5秒即判断为断句
+            isIdle = YES;
+        }
+    }else{
+        if(isIdle){
+            idleTime = mRecorder.currentTime;
+            isIdle = NO;
+            
+            NSString *idlePoint = [[NSString alloc] initWithFormat:@"%f", idleTime];
+            [idleList addObject:idlePoint];
+            [idlePoint release];
+        }
+        idleCount = 0;
+        idleTime = -1.0f;
     }
 }
 
@@ -326,6 +349,7 @@
         flag = YES;
         
         recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timeRecording:) userInfo:nil repeats:YES];
+
     }else{
         if(recording){
             [mRecorder pause];
@@ -345,6 +369,10 @@
     if(mRecorder != nil){
         [recordingTimer invalidate];
         recordingTimer = nil;
+        if(idleTimer != nil){
+            [idleTimer invalidate];
+            idleTimer = nil;
+        }
         
         [mRecorder stop];
         self.mRecorder = nil;
@@ -556,12 +584,15 @@
         [newArr addObject:[tagList objectAtIndex:i]];
     }
     
+    NSLog(@"idleList: %@", idleList);
+    
     NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:dateStr, kDate, 
                              timeStr, kTime, 
                              defaultTitle, kTitle, 
                              durationStr, kDuration, 
                              filesizeStr, kSize, 
-                             filename, kFilename, 
+                             filename, kFilename,
+                             idleList, kIdleTime,
                              newArr, kTag, nil];
     NSString *indexFilepath = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.plist", timestamp]];
     [newDict writeToFile:indexFilepath atomically:YES];
