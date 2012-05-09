@@ -34,6 +34,8 @@
     float averageSamplePeak;
     float idleTime;
     
+    NSInteger tempIndex;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UIView *tagBackView;

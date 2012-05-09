@@ -287,6 +287,21 @@
             NSString *idlePoint = [[NSString alloc] initWithFormat:@"%f", idleTime];
             [idleList addObject:idlePoint];
             [idlePoint release];
+            
+            UIView *tempView = [[[NSBundle mainBundle] loadNibNamed:@"TempView" owner:self options:nil] lastObject];
+            tempView.frame = CGRectMake(50.0, 100.0, tempView.frame.size.width, tempView.frame.size.height);
+            tempView.tag = 20000 + tempIndex;
+            UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [btn setTitle:@"关" forState:UIControlStateNormal];
+            [btn addTarget:self action:@selector(closeTempView:) forControlEvents:UIControlEventTouchUpInside];
+            btn.frame = CGRectMake(170, 0, 30, 30);
+            btn.tag = 30000 + tempIndex;
+            [tempView addSubview:btn];
+            UILabel *label = (UILabel *)[tempView viewWithTag:66666];
+            label.text = [NSString stringWithFormat:@"断于：%.2f s", idleTime];
+            [self.view addSubview:tempView];
+            
+            tempIndex++;
         }
         idleCount = 0;
         idleTime = -1.0f;
@@ -332,7 +347,7 @@
         NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.pcm", timestamp]];   
         NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
         NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                        [NSNumber numberWithFloat:44100.0], AVSampleRateKey, 
+                                        [NSNumber numberWithFloat:22050.0], AVSampleRateKey, 
                                         [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
                                         [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
                                         [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
@@ -584,8 +599,6 @@
         [newArr addObject:[tagList objectAtIndex:i]];
     }
     
-    NSLog(@"idleList: %@", idleList);
-    
     NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:dateStr, kDate, 
                              timeStr, kTime, 
                              defaultTitle, kTitle, 
@@ -679,6 +692,14 @@
     [UIView setAnimationDidStopSelector:@selector(removeTagView)];
     deletingTagView.alpha = 0.0;
     [UIView commitAnimations];
+}
+
+-(void) closeTempView:(id)sender{
+    UIButton *click = (UIButton *)sender;
+    UIView *tempView = [self.view viewWithTag:click.tag - 30000 + 20000];
+    [tempView removeFromSuperview];
+    tempView = nil;
+    tempIndex--;
 }
 
 @end

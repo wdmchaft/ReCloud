@@ -219,9 +219,7 @@
 #pragma mark - AVAudioPlayer Delegate Methods
 
 -(void) audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
-    [self willChangeValueForKey:@"playing"];
-    playing = NO;
-    [self didChangeValueForKey:@"playing"];
+    [self stop:nil];
 }
 
 #pragma mark - NSTimer Callback Methods
@@ -325,7 +323,7 @@
 }
 
 -(void) willRemoveOverlayView{
-    [self cancelOverlayView];
+    [self performSelector:@selector(cancelOverlayView) withObject:nil afterDelay:1.0];
 }
 
 -(void) removeOverlayView{
