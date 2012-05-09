@@ -18,6 +18,7 @@
 @synthesize tagBackView;
 @synthesize timingLabel;
 @synthesize myTableView;
+@synthesize wheelView1, wheelView2;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -55,6 +56,10 @@
         [idleTimer invalidate];
         idleTimer = nil;
     }
+    if(tapeRotatingTimer != nil){
+        [tapeRotatingTimer invalidate];
+        tapeRotatingTimer = nil;
+    }
     
     refreshHeaderView = nil;
     
@@ -79,6 +84,7 @@
     isIdle = NO;
     idleCount = 0;
     idleTime = -1.0f;
+    rotatingAngle = 0.0f;
     tagViews = [[NSMutableArray alloc] init];
     idleList = [[NSMutableArray alloc] init];
     NSString *initIdlePoint = [[NSString alloc] initWithFormat:@"%f", 0.0f];
@@ -107,6 +113,8 @@
     self.timingLabel = nil;
     self.myTableView = nil;
     refreshHeaderView = nil;
+    self.wheelView1 = nil;
+    self.wheelView2 = nil;
 
     [super viewDidUnload];
 
@@ -221,10 +229,13 @@
         if(recording){
             [recordButton setTitle:@"||" forState:UIControlStateNormal];
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
+            tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
         }else{
             [recordButton setTitle:@">" forState:UIControlStateNormal];
             [idleTimer invalidate];
             idleTimer = nil;
+            [tapeRotatingTimer invalidate];
+            tapeRotatingTimer = nil;
         }
     }
 }
@@ -308,6 +319,15 @@
     }
 }
 
+-(void) rotatingTapeWheel:(NSTimer *)timer{
+    rotatingAngle -= 0.1 * 90.0 * 2 * M_PI / 360.0f;
+    if(rotatingAngle <= -2 * M_PI){
+        rotatingAngle = 0.0f;
+    }
+    self.wheelView1.transform = CGAffineTransformMakeRotation(rotatingAngle);
+    self.wheelView2.transform = CGAffineTransformMakeRotation(rotatingAngle);
+}
+
 
 #pragma mark - UIView Animation Callback Methods
 
@@ -344,7 +364,7 @@
         
         AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
         timestamp = [[NSDate date] timeIntervalSince1970];
-        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.pcm", timestamp]];   
+        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.caf", timestamp]];   
         NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
         NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
                                         [NSNumber numberWithFloat:22050.0], AVSampleRateKey, 
@@ -388,6 +408,10 @@
             [idleTimer invalidate];
             idleTimer = nil;
         }
+        if(tapeRotatingTimer != nil){
+            [tapeRotatingTimer invalidate];
+            tapeRotatingTimer = nil;
+        }        
         
         [mRecorder stop];
         self.mRecorder = nil;
@@ -569,7 +593,7 @@
 }
 
 -(void) writeAudioIndexToFile{
-    NSString *filename = [[NSString alloc] initWithFormat:@"%ld.pcm", timestamp];
+    NSString *filename = [[NSString alloc] initWithFormat:@"%ld.caf", timestamp];
     
     NSString *defaultTitle = @"未命名";
     
@@ -629,10 +653,10 @@
     [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
     
     AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-    NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:SAMPLE_DIR] stringByAppendingPathComponent:@"sample.pcm"];   
+    NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:SAMPLE_DIR] stringByAppendingPathComponent:@"sample.caf"];   
     NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
     NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                    [NSNumber numberWithFloat:44100.0], AVSampleRateKey, 
+                                    [NSNumber numberWithFloat:22050.0], AVSampleRateKey, 
                                     [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
                                     [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
                                     [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,

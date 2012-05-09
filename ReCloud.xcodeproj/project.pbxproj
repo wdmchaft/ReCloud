@@ -37,6 +37,7 @@
 		B6BA4DB51548EFE3003D1C91 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B6BA4DB41548EFE3003D1C91 /* arrow.png */; };
 		B6BA4DB815492363003D1C91 /* TagSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6BA4DB715492363003D1C91 /* TagSliderView.m */; };
 		B6CC67831559FFE600AA81E2 /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6CC67821559FFE600AA81E2 /* TempView.xib */; };
+		B6CC6787155A422F00AA81E2 /* wheel.png in Resources */ = {isa = PBXBuildFile; fileRef = B6CC6786155A422F00AA81E2 /* wheel.png */; };
 		B6E41D05153D062800FC3366 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E41D03153D062800FC3366 /* MainViewController.m */; };
 		B6E41D06153D062800FC3366 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D04153D062800FC3366 /* MainViewController.xib */; };
 		B6E41D09153D0EC200FC3366 /* CustomCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E41D08153D0EC200FC3366 /* CustomCellView.xib */; };
@@ -85,6 +86,7 @@
 		B6BA4DB615492363003D1C91 /* TagSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSliderView.h; sourceTree = "<group>"; };
 		B6BA4DB715492363003D1C91 /* TagSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSliderView.m; sourceTree = "<group>"; };
 		B6CC67821559FFE600AA81E2 /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
+		B6CC6786155A422F00AA81E2 /* wheel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wheel.png; sourceTree = "<group>"; };
 		B6E41D02153D062800FC3366 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		B6E41D03153D062800FC3366 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		B6E41D04153D062800FC3366 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				B6BA4DB41548EFE3003D1C91 /* arrow.png */,
 				B6BA4DB21548E260003D1C91 /* overlay.png */,
 				B6AF9650154BDF0300CA87A4 /* overlay2.png */,
+				B6CC6786155A422F00AA81E2 /* wheel.png */,
 				B6E41D0B153D175400FC3366 /* newsstand_default.png */,
 			);
 			name = pics;
@@ -321,6 +324,7 @@
 				B6AF9651154BDF0300CA87A4 /* overlay2.png in Resources */,
 				B6AB0B4F1558C71F005605E0 /* OverlayView.xib in Resources */,
 				B6CC67831559FFE600AA81E2 /* TempView.xib in Resources */,
+				B6CC6787155A422F00AA81E2 /* wheel.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

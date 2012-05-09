@@ -25,6 +25,7 @@
     NSTimer *recordingTimer;
     NSTimer *sampleTimer;
     NSTimer *idleTimer;
+    NSTimer *tapeRotatingTimer;
     BOOL isIdle;
     BOOL recording;
     BOOL sampling;
@@ -33,7 +34,7 @@
     float totalSamplePeak;
     float averageSamplePeak;
     float idleTime;
-    
+    float rotatingAngle;
     NSInteger tempIndex;
     
 }
@@ -42,6 +43,8 @@
 @property (nonatomic, retain) IBOutlet UILabel *timingLabel;
 @property (nonatomic, retain) IBOutlet UIButton *recordButton;
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
+@property (nonatomic, retain) IBOutlet UIImageView *wheelView1;
+@property (nonatomic, retain) IBOutlet UIImageView *wheelView2;
 @property (nonatomic, retain) NSMutableArray *tagList;
 @property (nonatomic, retain) AVAudioRecorder *mRecorder;
 
