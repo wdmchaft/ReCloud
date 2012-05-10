@@ -14,12 +14,13 @@
 @implementation PlaybackViewController
 
 @synthesize sliderBackView;
-@synthesize playButton;
+@synthesize playButton, prevButton, nextButton, addTagButton, stopButton;
 @synthesize myTableView;
 @synthesize indexList;
 @synthesize dataInfo;
 @synthesize audioPlayer;
 @synthesize idleList;
+@synthesize buttonBackView;
 
 -(id) initWithAudioInfo:(NSDictionary *)info{
     self = [super init];
@@ -90,7 +91,12 @@
 {
     self.sliderBackView = nil;
     self.playButton = nil;
+    self.prevButton = nil;
+    self.nextButton = nil;
+    self.addTagButton = nil;
+    self.stopButton = nil;
     self.myTableView = nil;
+    self.buttonBackView = nil;
     
     if(progressTimer != nil){
         [progressTimer invalidate];
@@ -103,7 +109,17 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
+}
+
+-(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    NSLog(@"%s, orientation: %d, device_orientation: %d", __FUNCTION__, toInterfaceOrientation, [[UIDevice currentDevice] orientation]);
+    
+    if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
+        [self portraitView];
+    }else{
+        [self landscapeView];
+    }
 }
 
 #pragma mark - UITableView DataSource Methods
@@ -202,6 +218,8 @@
     }  
     
     self.view.userInteractionEnabled = YES;
+    
+
 }
 
 #pragma mark - KVO Callback Methods
@@ -212,6 +230,7 @@
             [playButton setTitle:@"||" forState:UIControlStateNormal];
         }else{
             [playButton setTitle:@">" forState:UIControlStateNormal];
+
         } 
     } 
 }
@@ -226,7 +245,30 @@
  
 -(void) updateProgress:(NSTimer *)timer{
     if(audioPlayer != nil && playing){        
-        [tagSliderView setProgress:audioPlayer.currentTime / audioPlayer.duration];
+        
+        float progress = audioPlayer.currentTime / audioPlayer.duration;        
+        [tagSliderView setProgress:progress];
+        
+        NSInteger found = -1;
+        for(NSInteger i = 0; i < tagSliderView.tagViews.count; i++){            
+            UIView *tagView = [tagSliderView.tagViews objectAtIndex:tagSliderView.tagViews.count - 1 - i];
+            if(tagSliderView.frame.size.width * progress >= (tagView.frame.origin.x + tagView.frame.size.width / 2)){                
+                found = i;
+            }else{
+                break;
+            }
+        }
+        if(found != -1){
+            [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+
+        }else{
+            for(NSInteger i = 0; i < indexList.count; i++){
+                [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
+
+            }        
+        }
+        
+        hightlightedIndex = found;
     }
 }
 
@@ -297,7 +339,7 @@
     
     //NSLog(@"found: %d", found);
     if(found != -1){
-        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];        
+        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];   
     }else{
         for(NSInteger i = 0; i < indexList.count; i++){
             [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
@@ -399,6 +441,7 @@
         audioPlayer.delegate = self;
         [audioPlayer play];
         flag = YES;
+        hightlightedIndex = -1;
         
         [tagSliderView setProgress:0.0];
         progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
@@ -467,6 +510,8 @@
     
     hightlightedIndex++;
     [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    
+    
      
     didEdit = YES;
 
@@ -508,7 +553,37 @@
     [tagSliderView release];     
     
     self.navigationController.delegate = self;    
+    
+    /*
+    if([[UIDevice currentDevice] orientation] == UIInterfaceOrientationPortrait || [[UIDevice currentDevice] orientation] == UIInterfaceOrientationPortraitUpsideDown){
+        [self portraitView];
+    }else{
+        [self landscapeView];
+    }
+     */
  
+}
+
+-(void) landscapeView{    
+    CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.height;
+    NSLog(@"screenWidth: %f", screenWidth);
+    
+    self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 70);
+    self.myTableView.frame = CGRectMake(0, 70, screenWidth, 156);
+    self.buttonBackView.frame = CGRectMake(0, 226, screenWidth, 42);
+    [tagSliderView landscapeLayout];
+
+}
+
+-(void) portraitView{    
+    CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.width;
+    NSLog(@"screenWidth: %f", screenWidth);
+    
+    self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 87);
+    self.myTableView.frame = CGRectMake(0, 88, screenWidth, 285);
+    self.buttonBackView.frame = CGRectMake(0, 374, screenWidth, 42);
+    [tagSliderView portraitLayout];
+
 }
 
 -(void) editTagTitle:(id)sender{

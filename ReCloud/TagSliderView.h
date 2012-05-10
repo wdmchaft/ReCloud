@@ -27,6 +27,8 @@
 -(void)         setSliderViewColor:(UIColor *)color;
 -(void)         addTagView:(UIView *)view;
 -(void)         addTagView:(UIView *)view atIndex:(NSInteger)index;
+-(void)         portraitLayout;
+-(void)         landscapeLayout;
 
 +(NSString *)   stringForDuration:(NSTimeInterval)duration;
 +(NSInteger)    durationForString:(NSString *)str;

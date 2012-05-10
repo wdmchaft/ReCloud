@@ -24,6 +24,7 @@
         
         UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 50)];
         backView.backgroundColor = CUSTOM_COLOR(176.0, 215.0, 255.0); 
+        backView.tag = TAG_SLIDER_BACK_VIEW;
         [self addSubview:backView];
         [backView release];
         
@@ -62,6 +63,7 @@
         [self bringSubviewToFront:blockView];
         
         tagViews = [[NSMutableArray alloc] init];
+        currentXpos = 0.0f;
     }
     return self;
 }
@@ -205,6 +207,33 @@
     
     UILabel *progressLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
     progressLabel.text = [NSString stringWithFormat:@"%@/%@", self.currentTimeStr, durationStr];
+}
+
+-(void) portraitLayout{
+    CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.width;
+    self.frame = CGRectMake(0, 0, screenWidth, 87);
+    
+
+}
+
+-(void) landscapeLayout{
+    CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.height;
+    self.frame = CGRectMake(0, 0, screenWidth, 70);
+    
+    UIView *progressBackView = [self viewWithTag:TAG_SLIDER_BACK_VIEW];
+    progressBackView.frame = CGRectMake(0, 0, screenWidth, 40.2);
+    
+    UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
+    progressView.frame = CGRectMake(0, 0, progress * progressBackView.frame.size.width, progressBackView.frame.size.height);
+    
+    UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
+    CGRect rect = blockView.frame;
+    rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
+    blockView.frame = rect;
+    
+    UILabel *durationLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
+    durationLabel.center = CGPointMake(progressBackView.frame.size.width / 2, progressBackView.frame.size.height / 2);
+    
 }
 
 +(NSString *) stringForDuration:(NSTimeInterval)duration{

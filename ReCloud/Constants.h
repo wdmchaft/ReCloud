@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #define TAG_SLIDER_VIEW 10
+#define TAG_SLIDER_BACK_VIEW 11
 #define TAG_BLOCK_VIEW 20
 #define TAG_TAGSLIDERVIEW_PROGRESS_LABEL 21
 #define TAG_TAGVIEW_COUNTLABEL 30

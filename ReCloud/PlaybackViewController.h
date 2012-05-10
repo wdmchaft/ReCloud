@@ -25,11 +25,21 @@
     NSInteger hightlightedIndex;   //当前高亮的标记序号 
     NSInteger idleIndex;    //当前断句序号
     
+    UIInterfaceOrientation currentOrientation;
+    
+    IBOutlet UIView *landView;
+    IBOutlet UIView *portView;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
 @property (nonatomic, retain) IBOutlet UIView *sliderBackView;
 @property (nonatomic, retain) IBOutlet UIButton *playButton;
+@property (nonatomic, retain) IBOutlet UIButton *prevButton;
+@property (nonatomic, retain) IBOutlet UIButton *addTagButton;
+@property (nonatomic, retain) IBOutlet UIButton *stopButton;
+@property (nonatomic, retain) IBOutlet UIButton *nextButton;
+@property (nonatomic, retain) IBOutlet UIView *buttonBackView;
 @property (nonatomic, retain) NSMutableArray *indexList;
 @property (nonatomic, retain) NSMutableDictionary *dataInfo;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
@@ -45,5 +55,7 @@
 -(void)         initLayout;
 -(void)         showOverlayViewWithMessage:(NSString *)msg;
 -(void)         cancelOverlayView;
+-(void)         portraitView;
+-(void)         landscapeView;
 
 @end

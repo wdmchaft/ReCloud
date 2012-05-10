@@ -368,7 +368,7 @@
         NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
         NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
                                         [NSNumber numberWithFloat:22050.0], AVSampleRateKey, 
-                                        [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
+                                        [NSNumber numberWithInt:kAudioFormatAppleIMA4], AVFormatIDKey,
                                         [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
                                         [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
                                         nil];
@@ -657,7 +657,7 @@
     NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
     NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
                                     [NSNumber numberWithFloat:22050.0], AVSampleRateKey, 
-                                    [NSNumber numberWithInt:kAudioFormatAppleLossless], AVFormatIDKey,
+                                    [NSNumber numberWithInt:kAudioFormatAppleIMA4], AVFormatIDKey,
                                     [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
                                     [NSNumber numberWithInt:AVAudioQualityMax], AVEncoderAudioQualityKey,
                                     nil];
