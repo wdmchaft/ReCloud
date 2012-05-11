@@ -17,6 +17,7 @@
 }
 
 @property (nonatomic, retain) NSMutableArray *tagViews;
+@property (nonatomic, retain) NSMutableArray *positionPercentage;
 @property (nonatomic, retain) NSString *currentTimeStr;
 @property (nonatomic, setter = setProgress:) float progress;
 @property (nonatomic, assign) float currentXpos;

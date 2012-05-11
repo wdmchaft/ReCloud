@@ -15,6 +15,7 @@
 @synthesize currentTimeStr;
 @synthesize currentXpos;
 @synthesize tagViews;
+@synthesize positionPercentage;
 
 - (id)initWithFrame:(CGRect)frame andTotalTimeStr:(NSString *)str
 {
@@ -62,6 +63,7 @@
         [self addSubview:blockView];
         [self bringSubviewToFront:blockView];
         
+        positionPercentage = [[NSMutableArray alloc] init];
         tagViews = [[NSMutableArray alloc] init];
         currentXpos = 0.0f;
     }
@@ -139,6 +141,7 @@
 -(void) dealloc{
     self.currentTimeStr = nil;
     self.tagViews = nil;
+    self.positionPercentage = nil;
     
     [super dealloc];
 }
@@ -213,7 +216,39 @@
     CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.width;
     self.frame = CGRectMake(0, 0, screenWidth, 87);
     
+    UIView *progressBackView = [self viewWithTag:TAG_SLIDER_BACK_VIEW];
+    progressBackView.frame = CGRectMake(0, 0, screenWidth, 50);
+    
+    UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
+    progressView.frame = CGRectMake(0, 0, progress * progressBackView.frame.size.width, progressBackView.frame.size.height);
+    
+    UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
+    CGRect rect = blockView.frame;
+    rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
+    blockView.frame = rect;
+    
+    UILabel *durationLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
+    durationLabel.center = CGPointMake(progressBackView.frame.size.width / 2, progressBackView.frame.size.height / 2);
+    
+    for(NSInteger i = 0; i < tagViews.count; i++){
+        UIView *tagView = [tagViews objectAtIndex:i];
+        CGRect rect = tagView.frame;
+        rect.origin.x = self.frame.size.width * [[positionPercentage objectAtIndex:i] floatValue] - rect.size.width / 2;
+        rect.size.height = 85;        
+        tagView.frame = rect;
+        
+        UIImageView *pointView = (UIImageView *)[tagView viewWithTag:TAG_TAGVIEW_POINT];
+        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 70);
+        
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.frame = CGRectMake(countLabel.frame.origin.x, 53, countLabel.frame.size.width, countLabel.frame.size.height);
+        countLabel.font = [UIFont systemFontOfSize:13];
+        
+        UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+        timeLabel.frame = CGRectMake(timeLabel.frame.origin.x, 69, timeLabel.frame.size.width, timeLabel.frame.size.height);
 
+        
+    }
 }
 
 -(void) landscapeLayout{
@@ -229,11 +264,27 @@
     UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
     CGRect rect = blockView.frame;
     rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
-    blockView.frame = rect;
     
     UILabel *durationLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
     durationLabel.center = CGPointMake(progressBackView.frame.size.width / 2, progressBackView.frame.size.height / 2);
     
+    for(NSInteger i = 0; i < tagViews.count; i++){
+        UIView *tagView = [tagViews objectAtIndex:i];
+        CGRect rect1 = tagView.frame;
+        rect1.origin.x = self.frame.size.width * [[positionPercentage objectAtIndex:i] floatValue] - rect1.size.width / 2;
+        rect1.size.height = 60;      
+        tagView.frame = rect1;     
+        
+        UIImageView *pointView = (UIImageView *)[tagView viewWithTag:TAG_TAGVIEW_POINT];
+        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 55);
+        
+        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        countLabel.frame = CGRectMake(countLabel.frame.origin.x, 40, countLabel.frame.size.width, countLabel.frame.size.height);
+        countLabel.font = [UIFont systemFontOfSize:12];
+        
+        UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+        timeLabel.frame = CGRectMake(timeLabel.frame.origin.x, 52, timeLabel.frame.size.width, timeLabel.frame.size.height);
+    }    
 }
 
 +(NSString *) stringForDuration:(NSTimeInterval)duration{

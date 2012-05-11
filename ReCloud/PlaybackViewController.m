@@ -79,6 +79,7 @@
     didEdit = NO;
     hightlightedIndex = -1;
     idleIndex = 0;
+    currentOrientation = UIInterfaceOrientationPortrait;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willSlide:) name:NOTIFY_WILL_SLIDE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneSliding:) name:NOTIFY_END_SLIDE object:nil];
@@ -115,6 +116,8 @@
 -(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     NSLog(@"%s, orientation: %d, device_orientation: %d", __FUNCTION__, toInterfaceOrientation, [[UIDevice currentDevice] orientation]);
     
+    currentOrientation = toInterfaceOrientation;
+    
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
         [self portraitView];
     }else{
@@ -139,7 +142,22 @@
     static NSString *cellIdentifier1 = @"playbackViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier1];
     if(cell == nil){
+        
+        NSLog(@"tableView width: %f", tableView.frame.size.width);
+        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+        
+        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
+        [editButton setTitle:@"E" forState:UIControlStateNormal];               
+        [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:editButton];
+        
+        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [deleteButton setTitle:@"D" forState:UIControlStateNormal];
+        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
+        [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:deleteButton];
     }    
     
     if(indexList != nil && indexList.count > 0){
@@ -152,22 +170,13 @@
         tagTimeLabel.text = [dict objectForKey:kCurrentTime];
         
         UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
-        titleLabel.text = [dict objectForKey:kTagTitle];
+        titleLabel.text = [dict objectForKey:kTagTitle];        
         
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [editButton setTitle:@"E" forState:UIControlStateNormal];
-        editButton.frame = CGRectMake(240, 15, 35, 25);
-        editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
-        [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:editButton];
+        UIButton *_editButton = (UIButton *)[cell.contentView viewWithTag:BASE_TAG_EDIT_BUTTON2 + indexPath.row];
+        _editButton.frame = CGRectMake(tableView.frame.size.width * 6.0 / 8, 15, 35, 25);
         
-        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [deleteButton setTitle:@"D" forState:UIControlStateNormal];
-        deleteButton.frame = CGRectMake(280, 15, 35, 25);
-        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
-        [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:deleteButton];
-        
+        UIButton *_deleteButton = (UIButton *)[cell.contentView viewWithTag:BASE_TAG_DELETE_BUTTON2 + indexPath.row];
+        _deleteButton.frame = CGRectMake(tableView.frame.size.width * 7.0 / 8, 15, 35, 25);        
     }
     
     return cell;
@@ -176,7 +185,6 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
     NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
     float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
     float currentTime = [TagSliderView durationForString:[dict objectForKey:kCurrentTime]];
@@ -214,6 +222,7 @@
         timeLabel.text = tagTimeStr;
         
         [tagSliderView addTagView:tagView];
+        [tagSliderView.positionPercentage addObject:[NSNumber numberWithFloat:timeTagged * 1.0 / audioDuration]];
         
     }  
     
@@ -479,8 +488,32 @@
     
     CGRect rect = newTagView.frame;
     rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
+    if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+        rect.size.height = 85;
+        
+        UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
+        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 70);
+        
+        tagCountLabel.frame = CGRectMake(tagCountLabel.frame.origin.x, 53, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
+        tagCountLabel.font = [UIFont systemFontOfSize:13];
+        
+        tagTimeLabel.frame = CGRectMake(tagTimeLabel.frame.origin.x, 69, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
+    }else{
+        rect.size.height = 60;
+        
+        UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
+        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 55);
+        
+        tagCountLabel.frame = CGRectMake(tagCountLabel.frame.origin.x, 40, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
+        tagCountLabel.font = [UIFont systemFontOfSize:12];
+        
+        tagTimeLabel.frame = CGRectMake(tagTimeLabel.frame.origin.x, 52, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
+    }
     newTagView.frame = rect;
-    [tagSliderView addTagView:newTagView atIndex:tagSliderView.tagViews.count - 1 - hightlightedIndex];  
+    
+    NSInteger index = tagSliderView.tagViews.count - 1 - hightlightedIndex;
+    [tagSliderView addTagView:newTagView atIndex:index];  
+    [tagSliderView.positionPercentage insertObject:[NSNumber numberWithFloat:tagSliderView.progress] atIndex:index];
     
     //刷新标记序号
     NSInteger count = indexList.count - 1 - (hightlightedIndex + 2);
@@ -509,12 +542,9 @@
     [rowIndexPaths release];
     
     hightlightedIndex++;
-    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
-    
-    
+    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];   
      
     didEdit = YES;
-
 }
 
 -(IBAction) stop:(id)sender{
@@ -571,6 +601,22 @@
     self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 70);
     self.myTableView.frame = CGRectMake(0, 70, screenWidth, 156);
     self.buttonBackView.frame = CGRectMake(0, 226, screenWidth, 42);
+    CGRect rect1 = self.prevButton.frame;
+    rect1.origin.x = 45;
+    self.prevButton.frame = rect1;
+    CGRect rect2 = self.playButton.frame;
+    rect2.origin.x = 135;
+    self.playButton.frame = rect2;
+    CGRect rect3 = self.addTagButton.frame;
+    rect3.origin.x = 223;
+    self.addTagButton.frame = rect3;
+    CGRect rect4 = self.stopButton.frame;
+    rect4.origin.x = 320;
+    self.stopButton.frame = rect4;
+    CGRect rect5 = self.nextButton.frame;
+    rect5.origin.x = 408;
+    self.nextButton.frame = rect5;
+    [myTableView reloadData];    
     [tagSliderView landscapeLayout];
 
 }
@@ -582,6 +628,22 @@
     self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 87);
     self.myTableView.frame = CGRectMake(0, 88, screenWidth, 285);
     self.buttonBackView.frame = CGRectMake(0, 374, screenWidth, 42);
+    CGRect rect1 = self.prevButton.frame;
+    rect1.origin.x = 21;
+    self.prevButton.frame = rect1;
+    CGRect rect2 = self.playButton.frame;
+    rect2.origin.x = 77;
+    self.playButton.frame = rect2;
+    CGRect rect3 = self.addTagButton.frame;
+    rect3.origin.x = 143;
+    self.addTagButton.frame = rect3;
+    CGRect rect4 = self.stopButton.frame;
+    rect4.origin.x = 209;
+    self.stopButton.frame = rect4;
+    CGRect rect5 = self.nextButton.frame;
+    rect5.origin.x = 268;
+    self.nextButton.frame = rect5;
+    [myTableView reloadData];
     [tagSliderView portraitLayout];
 
 }
@@ -696,11 +758,18 @@
 
 
 -(void) showOverlayViewWithMessage:(NSString *)msg{
-    overlayView = [[[NSBundle mainBundle] loadNibNamed:@"OverlayView" owner:self options:nil] lastObject];
-    UILabel *msgLabel = (UILabel *)[overlayView viewWithTag:TAG_OVERLAY_MESSAGE_LABEL];
+    UILabel *msgLabel = nil;
+    if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+        overlayView = [[[NSBundle mainBundle] loadNibNamed:@"OverlayView" owner:self options:nil] objectAtIndex:0];
+        msgLabel = (UILabel *)[overlayView viewWithTag:TAG_OVERLAY_MESSAGE_LABEL_PORT];
+        
+    }else{
+        overlayView = [[[NSBundle mainBundle] loadNibNamed:@"OverlayView" owner:self options:nil] lastObject];
+        msgLabel = (UILabel *)[overlayView viewWithTag:TAG_OVERLAY_MESSAGE_LABEL_LAND];
+            }    
     msgLabel.text = msg;
-    overlayView.frame = CGRectMake(0.0, 0.0, overlayView.frame.size.width, overlayView.frame.size.height);
-    overlayView.alpha = 0.0;
+    overlayView.alpha = 0.0;  
+    overlayView.frame = CGRectMake(0, 0, overlayView.frame.size.width, overlayView.frame.size.height);
     [self.view addSubview:overlayView];
     [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];

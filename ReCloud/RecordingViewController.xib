@@ -83,8 +83,8 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="609692207"/>
 								<object class="NSColor" key="IBUIBackgroundColor">
-									<int key="NSColorSpace">2</int>
-									<bytes key="NSRGB">MSAwLjQwMDAwMDAzNTggMC4yMDM5MjE1ODYzAA</bytes>
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MC4zNDY3MTUzMjg1AA</bytes>
 								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
@@ -159,7 +159,6 @@
 						<string key="NSFrame">{{130, 356}, {60, 60}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
