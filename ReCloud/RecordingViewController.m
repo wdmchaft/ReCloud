@@ -39,11 +39,9 @@
 
 -(void) dealloc{
     self.tagList = nil;
-    self.mRecorder = nil;
-    
+    self.mRecorder = nil;    
     [tagViews release];
-    [idleList release];
-    
+    [idleList release];   
     if(recordingTimer != nil){
         [recordingTimer invalidate];
         recordingTimer = nil;
@@ -78,8 +76,7 @@
     NSDictionary *tempDict = [[NSDictionary alloc] initWithObjectsAndKeys:@"temp", kCurrentTime, @"temp", kTagTitle, nil];
     [tagList addObject:tempDict];   //开始加一个临时数据，使数据源不为空，从而一开始就可下拉TableView
     [tempDict release];    
-    
-    [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
+
     recording = NO;
     isIdle = NO;
     idleCount = 0;
@@ -94,16 +91,6 @@
     [self sampleSurroundVoice];
     
     [self initLayout];
-    
-    if(refreshHeaderView == nil){
-        EGORefreshTableHeaderView *headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0 - myTableView.bounds.size.height, self.view.frame.size.width, myTableView.bounds.size.height)];
-        headerView.delegate = self;
-        [myTableView addSubview:headerView];
-        refreshHeaderView = headerView;
-        [headerView release];
-    }
-    
-    [refreshHeaderView refreshLastUpdatedDate];
 }
 
 - (void)viewDidUnload
@@ -134,7 +121,6 @@
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{    
     if(tagList != nil && tagList.count > 0){
-        //NSLog(@"%s", __FUNCTION__);
         return tagList.count;
     }
     return 0;
@@ -167,19 +153,12 @@
         UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
         titleLabel.text = [dict objectForKey:kTagTitle];
         
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [editButton setTitle:@"E" forState:UIControlStateNormal];
-        editButton.frame = CGRectMake(240, 15, 35, 25);
-        editButton.tag = BASE_TAG_EDIT_BUTTON3 + indexPath.row;
-        [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:editButton];
+        UIButton *deletingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_DELETING_BUTTON2];
+        [deletingBtn addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [deleteButton setTitle:@"D" forState:UIControlStateNormal];
-        deleteButton.frame = CGRectMake(280, 15, 35, 25);
-        deleteButton.tag = BASE_TAG_DELETE_BUTTON3 + indexPath.row;
-        [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:deleteButton];
+        UIButton *editingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_EDITING_BUTTON2];
+        [editingBtn addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
+    
     }
     
     return cell;
@@ -227,11 +206,13 @@
     
     if([keyPath isEqualToString:@"recording"]){
         if(recording){
-            [recordButton setTitle:@"||" forState:UIControlStateNormal];
+            self.navigationItem.title = @"正在录音";
+            [recordButton setImage:[UIImage imageNamed:@"button_recording_pause.png"] forState:UIControlStateNormal];
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
             tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
         }else{
-            [recordButton setTitle:@">" forState:UIControlStateNormal];
+            self.navigationItem.title = @"暂停录音";
+            [recordButton setImage:[UIImage imageNamed:@"button_recording_continue.png"] forState:UIControlStateNormal];
             [idleTimer invalidate];
             idleTimer = nil;
             [tapeRotatingTimer invalidate];
@@ -283,7 +264,7 @@
 -(void) checkingIdleState:(NSTimer *)timer{
     [mRecorder updateMeters];
     
-    NSLog(@"current peak: %f, idle: %d", [mRecorder peakPowerForChannel:0], isIdle);
+    //NSLog(@"current peak: %f, idle: %d", [mRecorder peakPowerForChannel:0], isIdle);
     
     if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){       
         idleCount++;
@@ -320,8 +301,8 @@
 }
 
 -(void) rotatingTapeWheel:(NSTimer *)timer{
-    rotatingAngle -= 0.1 * 90.0 * 2 * M_PI / 360.0f;
-    if(rotatingAngle <= -2 * M_PI){
+    rotatingAngle += 0.1 * 90.0 * 2 * M_PI / 360.0f;
+    if(rotatingAngle >= 2 * M_PI){
         rotatingAngle = 0.0f;
     }
     self.wheelView1.transform = CGAffineTransformMakeRotation(rotatingAngle);
@@ -339,7 +320,7 @@
 -(void) removeWaitingView{
     [waitingView removeFromSuperview];
     waitingView = nil;
-    
+
     [self recordOrPause:nil];   //取样后马上开始录音
 }
 
@@ -357,6 +338,8 @@
     BOOL flag;
     
     if(mRecorder == nil){
+        [self addObserver:self forKeyPath:@"recording" options:0 context:NULL];
+        
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         audioSession.delegate = self;
         [audioSession setActive:YES error:nil];
@@ -432,9 +415,14 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void) editTagTitle:(id)sender{
-    UIButton *clicked = (UIButton *)sender;
-    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON3;
+-(void) editTagTitle:(id)sender{        
+    UIButton *clicked = (UIButton *)sender;    
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    editingIndex = path.row;
+    
+    NSLog(@"editingIndex: %d", editingIndex);
+    
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
     UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLELABEL];
     
@@ -486,7 +474,10 @@
 
 -(void) deleteTag:(id)sender{      
     UIButton *clicked = (UIButton *)sender;
-    deletingIndex = clicked.tag - BASE_TAG_DELETE_BUTTON3;    
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    deletingIndex = path.row;
+    
     NSLog(@"deletingIndex:%d", deletingIndex);
     
     //更新数据源
@@ -537,15 +528,38 @@
     return [result autorelease];
 }
 
--(void) initLayout{
-    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
+-(void) initLayout{  
+    if(refreshHeaderView == nil){
+        EGORefreshTableHeaderView *headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0 - myTableView.bounds.size.height, self.view.frame.size.width, myTableView.bounds.size.height)];
+        headerView.delegate = self;
+        [myTableView addSubview:headerView];
+        refreshHeaderView = headerView;
+        [headerView release];
+    }
+    
+    [refreshHeaderView refreshLastUpdatedDate];
+    
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.frame = CGRectMake(0, 0, 56, 28);
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = buttonItem;
     [buttonItem release];
+    
+    UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [doneButton setImage:[UIImage imageNamed:@"button_done.png"] forState:UIControlStateNormal];
+    [doneButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    doneButton.frame = CGRectMake(0, 0, 46, 28);
+    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
+    self.navigationItem.rightBarButtonItem = buttonItem2;
+    [buttonItem2 release];
+    
+    self.navigationItem.title = @"请稍候...";
 }
 
 -(IBAction) tagForTime:(id)sender{
-    if(recording){
-        
+    if(recording){        
         //更新数据源
         NSString *currentTimeStr = [self stringForDuration:mRecorder.currentTime];
         NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];  
@@ -554,6 +568,7 @@
         
         //增加TagView
         [self addTagView];
+        
         
         //更新列表视图
         [myTableView beginUpdates];
@@ -608,7 +623,7 @@
     NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:filepath error:nil];
     NSString *tempFileSizeStr  = [dict objectForKey:NSFileSize];
     float filesize = [tempFileSizeStr longLongValue] / 1000000.0;
-    NSString *filesizeStr = [[NSString alloc] initWithFormat:@"%.2f", filesize];
+    NSString *filesizeStr = [[NSString alloc] initWithFormat:@"%.1f", filesize];
     
     NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:newURL error:nil];

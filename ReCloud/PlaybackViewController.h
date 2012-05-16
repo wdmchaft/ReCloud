@@ -24,6 +24,7 @@
     NSInteger deletingIndex;
     NSInteger hightlightedIndex;   //当前高亮的标记序号 
     NSInteger idleIndex;    //当前断句序号
+    NSMutableArray *editingButtons;
     
     UIInterfaceOrientation currentOrientation;
     

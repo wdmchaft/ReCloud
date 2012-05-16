@@ -46,7 +46,7 @@
     self.dataInfo = nil;
     self.audioPlayer = nil;
     self.idleList = nil;
-    
+    [editingButtons release];
     if(progressTimer != nil){
         [progressTimer invalidate];
         progressTimer = nil;
@@ -80,6 +80,7 @@
     hightlightedIndex = -1;
     idleIndex = 0;
     currentOrientation = UIInterfaceOrientationPortrait;
+    editingButtons = [[NSMutableArray alloc] init];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willSlide:) name:NOTIFY_WILL_SLIDE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneSliding:) name:NOTIFY_END_SLIDE object:nil];
@@ -141,23 +142,9 @@
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *cellIdentifier1 = @"playbackViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier1];
-    if(cell == nil){
-        
-        NSLog(@"tableView width: %f", tableView.frame.size.width);
-        
+    if(cell == nil){        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
-        
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        editButton.tag = BASE_TAG_EDIT_BUTTON2 + indexPath.row;
-        [editButton setTitle:@"E" forState:UIControlStateNormal];               
-        [editButton addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:editButton];
-        
-        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [deleteButton setTitle:@"D" forState:UIControlStateNormal];
-        deleteButton.tag = BASE_TAG_DELETE_BUTTON2 + indexPath.row;
-        [deleteButton addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:deleteButton];
+
     }    
     
     if(indexList != nil && indexList.count > 0){
@@ -172,11 +159,12 @@
         UILabel *titleLabel = (UILabel *)[cell.contentView viewWithTag:TAG_TITLELABEL];
         titleLabel.text = [dict objectForKey:kTagTitle];        
         
-        UIButton *_editButton = (UIButton *)[cell.contentView viewWithTag:BASE_TAG_EDIT_BUTTON2 + indexPath.row];
-        _editButton.frame = CGRectMake(tableView.frame.size.width * 6.0 / 8, 15, 35, 25);
+        UIButton *editingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_EDITING_BUTTON2];
+        [editingBtn addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *_deleteButton = (UIButton *)[cell.contentView viewWithTag:BASE_TAG_DELETE_BUTTON2 + indexPath.row];
-        _deleteButton.frame = CGRectMake(tableView.frame.size.width * 7.0 / 8, 15, 35, 25);        
+        UIButton *deletingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_DELETING_BUTTON2];
+        [deletingBtn addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+               
     }
     
     return cell;
@@ -227,8 +215,6 @@
     }  
     
     self.view.userInteractionEnabled = YES;
-    
-
 }
 
 #pragma mark - KVO Callback Methods
@@ -568,13 +554,19 @@
 -(void) initLayout{
     self.view.userInteractionEnabled = NO;
     
-    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"back" style:UIBarButtonItemStyleBordered target:self action:@selector(backAction:)];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.frame = CGRectMake(0, 0, 50, 25);
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = buttonItem;
     [buttonItem release];
     
+    /*
     UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithTitle:@"upload" style:UIBarButtonItemStyleBordered target:self action:@selector(uploadAction:)];
     self.navigationItem.rightBarButtonItem = buttonItem2;
     [buttonItem2 release];
+     */
     
     self.navigationItem.title = [dataInfo objectForKey:kTitle];
     
@@ -616,6 +608,11 @@
     CGRect rect5 = self.nextButton.frame;
     rect5.origin.x = 408;
     self.nextButton.frame = rect5;
+    
+    for(UIView *theView in myTableView.subviews){
+        [theView removeFromSuperview];
+    }
+    
     [myTableView reloadData];    
     [tagSliderView landscapeLayout];
 
@@ -643,6 +640,11 @@
     CGRect rect5 = self.nextButton.frame;
     rect5.origin.x = 268;
     self.nextButton.frame = rect5;
+    
+    for(UIView *theView in myTableView.subviews){
+        [theView removeFromSuperview];
+    }
+    
     [myTableView reloadData];
     [tagSliderView portraitLayout];
 
@@ -650,7 +652,9 @@
 
 -(void) editTagTitle:(id)sender{
     UIButton *clicked = (UIButton *)sender;
-    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON2;
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    editingIndex = path.row;
     
     NSLog(@"editingIndex: %d", editingIndex);
     
@@ -710,11 +714,13 @@
 
 
 -(void) deleteTag:(id)sender{
-    didEdit = YES;
-    
+    didEdit = YES;    
     UIButton *clicked = (UIButton *)sender;
-    NSLog(@"tag: %d", clicked.tag);    
-    deletingIndex = clicked.tag - BASE_TAG_DELETE_BUTTON2;
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    deletingIndex = path.row;
+    
+    NSLog(@"deletingIndex: %d", deletingIndex);
     
     if(hightlightedIndex + 1 >= indexList.count - deletingIndex){
         hightlightedIndex--;
@@ -736,7 +742,7 @@
         
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
         countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - i];
-    }    
+    }
     
     [myTableView beginUpdates];
     [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deletingIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];

@@ -23,7 +23,9 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+{       
+    
+    [self customizeNavigationBar];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *samplePath = [[self documentPath] stringByAppendingPathComponent:SAMPLE_DIR];
@@ -105,5 +107,13 @@
     return docPath;
 }
 
+-(void) customizeNavigationBar{
+    if([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9){
+        UIImage *gradientImage44 = [[UIImage imageNamed:@"top_port.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        UIImage *gradientImage32 = [[UIImage imageNamed:@"top_land.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];        
+        [[UINavigationBar appearance] setBackgroundImage:gradientImage44 forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setBackgroundImage:gradientImage32 forBarMetrics:UIBarMetricsLandscapePhone];
+    }
+}
 
 @end

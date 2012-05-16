@@ -14,23 +14,22 @@
     
     BOOL viewingLocal;
     UIView *editingView;
-    NSInteger editingIndex;
-    
+    NSInteger editingIndex;    
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
 @property (nonatomic, retain) IBOutlet UILabel *editLabel;
 @property (nonatomic, retain) NSMutableArray *audioList;
 
--(IBAction) showRecordingView:(id)sender;
--(IBAction) viewCloud:(id)sender;
--(IBAction) viewLocal:(id)sender;
--(void)     refreshAudioList;
--(void)     editTitle:(id)sender;
--(void)     uploadToCloud:(id)sender;
--(void)     editAction:(id)sender;
--(void)     loginAction:(id)sender;
--(void)     doneEditingAction:(id)sender;
--(void)     initLayout;
+-(IBAction)    showRecordingView:(id)sender;
+-(IBAction)    viewCloud:(id)sender;
+-(IBAction)    viewLocal:(id)sender;
+-(void)        refreshAudioList;
+-(void)        editTitle:(id)sender;
+-(void)        uploadToCloud:(id)sender;
+-(void)        editAction:(id)sender;
+-(void)        loginAction:(id)sender;
+-(void)        doneEditingAction:(id)sender;
+-(void)        initLayout;
 
 @end

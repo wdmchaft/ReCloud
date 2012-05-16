@@ -12,6 +12,7 @@
 #import "MAlertView.h"
 #import "Constants.h"
 #import "AppDelegate.h"
+#import "UINavigationBar+Customized.h"
 
 @implementation MainViewController
 
@@ -40,8 +41,7 @@
     self.audioList = nil;
     self.editLabel = nil;
     
-    [super dealloc];
-    
+    [super dealloc];    
 }
 
 #pragma mark - View lifecycle
@@ -51,8 +51,7 @@
     [super viewDidLoad];
     NSLog(@"%s", __FUNCTION__);    
     
-    viewingLocal = YES;   
-    
+    viewingLocal = YES;
     [self initLayout];    
 }
 
@@ -93,12 +92,13 @@
 }
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"%s", __FUNCTION__);
+    NSLog(@"%s, row: %d", __FUNCTION__, indexPath.row);
     
     static NSString *cellIdentifier = @"mainViewCell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if(cell == nil){
+    if(cell == nil){        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MainViewCell" owner:self options:nil] lastObject];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;            
     } 
     
     if(audioList != nil && audioList.count > 0){
@@ -110,27 +110,18 @@
         UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
         UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
         
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [editButton setTitle:@"E" forState:UIControlStateNormal];
-        editButton.tag = BASE_TAG_EDIT_BUTTON + indexPath.row;
-        editButton.frame = CGRectMake(240, 11, 30, 25);
-        [cell.contentView addSubview:editButton];
-        
-        UIButton *uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [uploadButton setTitle:@"U" forState:UIControlStateNormal];
-        uploadButton.tag = BASE_TAG_UPLOAD_BUTTON + indexPath.row;
-        uploadButton.frame = CGRectMake(285, 11, 30, 25);
-        [cell.contentView addSubview:uploadButton];
-        
         timeLabel.text = [dict objectForKey:kTime];
         dateLabel.text = [dict objectForKey:kDate];
         titleLabel.text = [dict objectForKey:kTitle];
         durationLabel.text = [dict objectForKey:kDuration];
-        sizeLabel.text = [NSString stringWithFormat:@"%@MB", [dict objectForKey:kSize]];
-        [editButton addTarget:self action:@selector(editTitle:) forControlEvents:UIControlEventTouchUpInside];
-        [uploadButton addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
+        sizeLabel.text = [NSString stringWithFormat:@"%@M", [dict objectForKey:kSize]];        
+        
+        UIButton *editBtn = (UIButton *)[cell.contentView viewWithTag:TAG_EDITING_BUTTON1];
+        [editBtn addTarget:self action:@selector(editTitle:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *uploadBtn = (UIButton *)[cell.contentView viewWithTag:TAG_UPLOAD_BUTTON1];
+        [uploadBtn addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
     }
-
     
     return cell;
 }
@@ -203,12 +194,6 @@
     editLabel.text = @"edit";
     [self doneEditingAction:nil];
     
-    /*
-    [audioList addObject:@""];
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:3 inSection:0];
-    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationMiddle];
-     */
-    
     MAlertView *alertView = [[MAlertView alloc] initWithTitle:@"" message:nil delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
     [alertView addTextField:[[[UITextField alloc] init] autorelease] placeHolder:@"Account"];
     [alertView addTextField:[[[UITextField alloc] init] autorelease] placeHolder:@"Password"];
@@ -267,9 +252,13 @@
 }
 
 -(void) editTitle:(id)sender{
-    UIButton *clicked = (UIButton *)sender;
-
-    editingIndex = clicked.tag - BASE_TAG_EDIT_BUTTON;
+    UIButton *clicked = (UIButton *)sender;    
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    editingIndex = path.row;
+    
+    NSLog(@"editingIndex: %d", editingIndex); 
+    
     UITableViewCell *editingCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:editingIndex inSection:0]];
     UILabel *titleLabel = (UILabel *)[editingCell.contentView viewWithTag:TAG_TITLE_LABEL];
     
@@ -326,20 +315,33 @@
     [self cancelEditing:nil];
 }
 
-
-
 -(void) uploadToCloud:(id)sender{
-    
+    UIButton *clicked = (UIButton *)sender;
+    UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
+    NSIndexPath *path = [myTableView indexPathForCell:cell];
+    NSLog(@"row %d click!", path.row);
 }
 
--(void) initLayout{
+-(void) initLayout{    
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    
     UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editAction:)];
     self.navigationItem.leftBarButtonItem = leftButtonItem;
     [leftButtonItem release];
     
-    UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"login" style:UIBarButtonItemStyleBordered target:self action:@selector(loginAction:)];
+    UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingBtn setImage:[UIImage imageNamed:@"button_setting.png"] forState:UIControlStateNormal];
+    [settingBtn addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    settingBtn.frame = CGRectMake(0, 0, 36, 28);
+    UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingBtn];
     self.navigationItem.rightBarButtonItem = rightButtonItem;
     [rightButtonItem release];
+    
+    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
+    logoView.frame = CGRectMake(0, 0, 134, 18);
+    self.navigationItem.titleView = logoView;
+    [logoView release];
 }
+
 
 @end

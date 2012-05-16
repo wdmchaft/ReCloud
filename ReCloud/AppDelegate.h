@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
--(NSString *) documentPath;
+-(NSString *)   documentPath;
+-(void)         customizeNavigationBar;
 
 @end
