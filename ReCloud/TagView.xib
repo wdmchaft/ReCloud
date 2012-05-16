@@ -75,7 +75,6 @@
 						<string key="NSFrame">{{7, 0}, {16, 70}}</string>
 						<reference key="NSSuperview" ref="966476739"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIAutoresizesSubviews">NO</bool>
 						<int key="IBUITag">32</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>

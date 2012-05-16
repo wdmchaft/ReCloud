@@ -26,6 +26,7 @@
     NSTimer *sampleTimer;
     NSTimer *idleTimer;
     NSTimer *tapeRotatingTimer;
+    NSTimer *spectrumTimer;
     BOOL isIdle;
     BOOL recording;
     BOOL sampling;
@@ -45,6 +46,7 @@
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
 @property (nonatomic, retain) IBOutlet UIImageView *wheelView1;
 @property (nonatomic, retain) IBOutlet UIImageView *wheelView2;
+@property (nonatomic, retain) IBOutlet UIView *spectrumView;
 @property (nonatomic, retain) NSMutableArray *tagList;
 @property (nonatomic, retain) AVAudioRecorder *mRecorder;
 

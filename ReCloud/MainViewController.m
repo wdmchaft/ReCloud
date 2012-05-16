@@ -341,6 +341,7 @@
     logoView.frame = CGRectMake(0, 0, 134, 18);
     self.navigationItem.titleView = logoView;
     [logoView release];
+    
 }
 
 

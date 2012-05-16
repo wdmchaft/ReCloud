@@ -38,9 +38,8 @@
 @property (nonatomic, retain) IBOutlet UIButton *playButton;
 @property (nonatomic, retain) IBOutlet UIButton *prevButton;
 @property (nonatomic, retain) IBOutlet UIButton *addTagButton;
-@property (nonatomic, retain) IBOutlet UIButton *stopButton;
 @property (nonatomic, retain) IBOutlet UIButton *nextButton;
-@property (nonatomic, retain) IBOutlet UIView *buttonBackView;
+@property (nonatomic, retain) IBOutlet UIImageView *tableBackView;
 @property (nonatomic, retain) NSMutableArray *indexList;
 @property (nonatomic, retain) NSMutableDictionary *dataInfo;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;

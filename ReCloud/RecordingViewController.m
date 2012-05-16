@@ -19,6 +19,7 @@
 @synthesize timingLabel;
 @synthesize myTableView;
 @synthesize wheelView1, wheelView2;
+@synthesize spectrumView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,7 +42,8 @@
     self.tagList = nil;
     self.mRecorder = nil;    
     [tagViews release];
-    [idleList release];   
+    [idleList release];
+    
     if(recordingTimer != nil){
         [recordingTimer invalidate];
         recordingTimer = nil;
@@ -57,6 +59,10 @@
     if(tapeRotatingTimer != nil){
         [tapeRotatingTimer invalidate];
         tapeRotatingTimer = nil;
+    }
+    if(spectrumTimer != nil){
+        [spectrumTimer invalidate];
+        spectrumTimer = nil;
     }
     
     refreshHeaderView = nil;
@@ -102,6 +108,7 @@
     refreshHeaderView = nil;
     self.wheelView1 = nil;
     self.wheelView2 = nil;
+    self.spectrumView = nil;
 
     [super viewDidUnload];
 
@@ -210,6 +217,7 @@
             [recordButton setImage:[UIImage imageNamed:@"button_recording_pause.png"] forState:UIControlStateNormal];
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
             tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
+            spectrumTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(handleSpectrum:) userInfo:nil repeats:YES];
         }else{
             self.navigationItem.title = @"暂停录音";
             [recordButton setImage:[UIImage imageNamed:@"button_recording_continue.png"] forState:UIControlStateNormal];
@@ -217,6 +225,8 @@
             idleTimer = nil;
             [tapeRotatingTimer invalidate];
             tapeRotatingTimer = nil;
+            [spectrumTimer invalidate];
+            spectrumTimer = nil;
         }
     }
 }
@@ -245,8 +255,8 @@
 -(void) pickSampleVoice:(NSTimer *)timer{
     if(sampleCount < 30){
         [mRecorder updateMeters];
-        NSLog(@"sampling: %f", [mRecorder peakPowerForChannel:0]);
-        totalSamplePeak += [mRecorder peakPowerForChannel:0];
+        NSLog(@"sampling: %f", [mRecorder peakPowerForChannel:0] + 160);
+        totalSamplePeak += ([mRecorder peakPowerForChannel:0] + 160);
         sampleCount++;
     }else{
         [sampleTimer invalidate];
@@ -264,9 +274,9 @@
 -(void) checkingIdleState:(NSTimer *)timer{
     [mRecorder updateMeters];
     
-    //NSLog(@"current peak: %f, idle: %d", [mRecorder peakPowerForChannel:0], isIdle);
+    NSLog(@"current peak: %f, idle: %d", [mRecorder peakPowerForChannel:0] + 160, isIdle);
     
-    if([mRecorder peakPowerForChannel:0] <= averageSamplePeak){       
+    if(([mRecorder peakPowerForChannel:0] + 160) <= averageSamplePeak){       
         idleCount++;
         if(idleCount >= 15){   //空白时间超过1.5秒即判断为断句
             isIdle = YES;
@@ -309,6 +319,13 @@
     self.wheelView2.transform = CGAffineTransformMakeRotation(rotatingAngle);
 }
 
+
+-(void) handleSpectrum:(NSTimer *)timer{
+    [mRecorder updateMeters];
+    
+    float powerPerItem = 160 - averageSamplePeak / SPECTRUM_ITEM_COUNT;
+    
+}
 
 #pragma mark - UIView Animation Callback Methods
 
@@ -554,6 +571,14 @@
     UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
     self.navigationItem.rightBarButtonItem = buttonItem2;
     [buttonItem2 release];
+    
+    for(NSInteger i = 0; i < SPECTRUM_ITEM_COUNT; i++){
+        UIImageView *imageV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"osc_off.png"]];
+        imageV.frame = CGRectMake(11 + 19 * i, 184, 17, 7);
+        imageV.tag = BASE_TAG_SPECTRUM_ITEMVIEW + i;
+        [spectrumView addSubview:imageV];
+        [imageV release];
+    }
     
     self.navigationItem.title = @"请稍候...";
 }

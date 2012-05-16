@@ -23,8 +23,8 @@
     if (self) {        
         durationStr = str;
         
-        UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 50)];
-        backView.backgroundColor = CUSTOM_COLOR(176.0, 215.0, 255.0); 
+        UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 70)];
+        backView.backgroundColor = CUSTOM_COLOR(90.0, 90.0, 90.0); 
         backView.tag = TAG_SLIDER_BACK_VIEW;
         [self addSubview:backView];
         [backView release];
@@ -32,7 +32,7 @@
         //progressView为可拖动的进度界面
         UIView *progressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, backView.frame.size.height)];
         progressView.backgroundColor = [UIColor blackColor];
-        progressView.alpha = 0.3;
+        progressView.alpha = 0.4;
         progressView.tag = TAG_SLIDER_VIEW;
         [self addSubview:progressView];
         [progressView release];
@@ -40,7 +40,7 @@
         UILabel *durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 0, backView.frame.size.width, backView.frame.size.height)];
         durationLabel.backgroundColor = [UIColor clearColor];
         durationLabel.textAlignment = UITextAlignmentCenter;
-        durationLabel.font = [UIFont systemFontOfSize:28];
+        durationLabel.font = [UIFont systemFontOfSize:32];
         durationLabel.textColor = [UIColor whiteColor];
         durationLabel.text = [NSString stringWithFormat:@"00:00:00/%@", str];
         durationLabel.center = CGPointMake(backView.frame.size.width / 2, backView.frame.size.height / 2);
@@ -53,8 +53,7 @@
         progress = 0.0;
         UIView *blockView = [[[NSBundle mainBundle] loadNibNamed:@"SliderBlockView" owner:self options:nil] lastObject];
         UILabel *blockLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
-        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * progress]];
-        self.currentTimeStr = blockLabel.text;
+        blockLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:duration * progress]];        
         CGRect rect = blockView.frame;
         rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
         rect.origin.y = 0;
@@ -62,6 +61,7 @@
         blockView.tag = TAG_BLOCK_VIEW;
         [self addSubview:blockView];
         [self bringSubviewToFront:blockView];
+        self.currentTimeStr = blockLabel.text;
         
         positionPercentage = [[NSMutableArray alloc] init];
         tagViews = [[NSMutableArray alloc] init];
@@ -217,7 +217,7 @@
     self.frame = CGRectMake(0, 0, screenWidth, 87);
     
     UIView *progressBackView = [self viewWithTag:TAG_SLIDER_BACK_VIEW];
-    progressBackView.frame = CGRectMake(0, 0, screenWidth, 50);
+    progressBackView.frame = CGRectMake(0, 0, screenWidth, 70);
     
     UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
     progressView.frame = CGRectMake(0, 0, progress * progressBackView.frame.size.width, progressBackView.frame.size.height);
@@ -226,6 +226,15 @@
     CGRect rect = blockView.frame;
     rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
     blockView.frame = rect;
+    
+    UIView *blockViewLine = [blockView viewWithTag:TAG_TAGSLIDERVIEW_LINE];
+    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2, 0, 1, 57);
+    
+    UIImageView *blockViewSquare = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_SQUARE];
+    blockViewSquare.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewSquare.frame.size.width / 2, 57, blockViewSquare.frame.size.width, blockViewSquare.frame.size.height);
+    
+    UILabel *blockViewLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    blockViewLabel.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewLabel.frame.size.width / 2, 68, blockViewLabel.frame.size.width, blockViewLabel.frame.size.height);
     
     UILabel *durationLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
     durationLabel.center = CGPointMake(progressBackView.frame.size.width / 2, progressBackView.frame.size.height / 2);
@@ -238,25 +247,24 @@
         tagView.frame = rect;
         
         UIImageView *pointView = (UIImageView *)[tagView viewWithTag:TAG_TAGVIEW_POINT];
-        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 70);
+        pointView.frame = CGRectMake(tagView.frame.size.width / 2 - 16 / 2, pointView.frame.origin.y, 16, 70);
         
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-        countLabel.frame = CGRectMake(countLabel.frame.origin.x, 53, countLabel.frame.size.width, countLabel.frame.size.height);
+        countLabel.frame = CGRectMake(tagView.frame.size.width / 2 - countLabel.frame.size.width / 2, 53, countLabel.frame.size.width, countLabel.frame.size.height);
         countLabel.font = [UIFont systemFontOfSize:13];
         
         UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
-        timeLabel.frame = CGRectMake(timeLabel.frame.origin.x, 69, timeLabel.frame.size.width, timeLabel.frame.size.height);
-
-        
+        timeLabel.frame = CGRectMake(tagView.frame.size.width / 2 - timeLabel.frame.size.width / 2, 69, timeLabel.frame.size.width, timeLabel.frame.size.height);        
     }
 }
 
 -(void) landscapeLayout{
+    
     CGFloat screenWidth = [UIScreen mainScreen].applicationFrame.size.height;
-    self.frame = CGRectMake(0, 0, screenWidth, 70);
+    self.frame = CGRectMake(0, 0, screenWidth, 95);
     
     UIView *progressBackView = [self viewWithTag:TAG_SLIDER_BACK_VIEW];
-    progressBackView.frame = CGRectMake(0, 0, screenWidth, 40.2);
+    progressBackView.frame = CGRectMake(0, 0, screenWidth, 80);
     
     UIView *progressView = [self viewWithTag:TAG_SLIDER_VIEW];
     progressView.frame = CGRectMake(0, 0, progress * progressBackView.frame.size.width, progressBackView.frame.size.height);
@@ -264,6 +272,16 @@
     UIView *blockView = [self viewWithTag:TAG_BLOCK_VIEW];
     CGRect rect = blockView.frame;
     rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
+    blockView.frame = rect;
+    
+    UIView *blockViewLine = [blockView viewWithTag:TAG_TAGSLIDERVIEW_LINE];
+    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2, 0, 1, 67);
+    
+    UIImageView *blockViewSquare = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_SQUARE];
+    blockViewSquare.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewSquare.frame.size.width / 2, 67, blockViewSquare.frame.size.width, blockViewSquare.frame.size.height);
+    
+    UILabel *blockViewLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
+    blockViewLabel.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewLabel.frame.size.width / 2, 77, blockViewLabel.frame.size.width, blockViewLabel.frame.size.height);
     
     UILabel *durationLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
     durationLabel.center = CGPointMake(progressBackView.frame.size.width / 2, progressBackView.frame.size.height / 2);
@@ -272,18 +290,18 @@
         UIView *tagView = [tagViews objectAtIndex:i];
         CGRect rect1 = tagView.frame;
         rect1.origin.x = self.frame.size.width * [[positionPercentage objectAtIndex:i] floatValue] - rect1.size.width / 2;
-        rect1.size.height = 60;      
-        tagView.frame = rect1;     
+        rect1.size.height = 95;      
+        tagView.frame = rect1;
         
         UIImageView *pointView = (UIImageView *)[tagView viewWithTag:TAG_TAGVIEW_POINT];
-        pointView.frame = CGRectMake(pointView.frame.origin.x, pointView.frame.origin.y, 16, 55);
+        pointView.frame = CGRectMake(tagView.frame.size.width / 2 - 18 / 2, pointView.frame.origin.y, 18, 80);
         
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-        countLabel.frame = CGRectMake(countLabel.frame.origin.x, 40, countLabel.frame.size.width, countLabel.frame.size.height);
-        countLabel.font = [UIFont systemFontOfSize:12];
+        countLabel.frame = CGRectMake(tagView.frame.size.width / 2 - countLabel.frame.size.width / 2, 60, countLabel.frame.size.width, countLabel.frame.size.height);
+        countLabel.font = [UIFont systemFontOfSize:13];
         
         UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
-        timeLabel.frame = CGRectMake(timeLabel.frame.origin.x, 52, timeLabel.frame.size.width, timeLabel.frame.size.height);
+        timeLabel.frame = CGRectMake(tagView.frame.size.width / 2 - timeLabel.frame.size.width / 2, 78, timeLabel.frame.size.width, timeLabel.frame.size.height);
     }    
 }
 

@@ -39,7 +39,7 @@
 					<object class="IBUIView" id="183064686">
 						<reference key="NSNextResponder" ref="985596422"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{15, 0}, {1, 50}}</string>
+						<string key="NSFrame">{{15, 0}, {1, 57}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="80636197"/>
@@ -47,15 +47,19 @@
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4xOTYwNzg0MzE0IDAuMzA5ODAzOTIxNiAwLjUyMTU2ODYyNzUAA</bytes>
 						</object>
+						<bool key="IBUIAutoresizesSubviews">NO</bool>
+						<int key="IBUITag">102</int>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 					<object class="IBUIImageView" id="269105364">
 						<reference key="NSNextResponder" ref="985596422"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{6, 50}, {19, 13}}</string>
+						<string key="NSFrame">{{6, 57}, {19, 13}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
+						<bool key="IBUIAutoresizesSubviews">NO</bool>
+						<int key="IBUITag">101</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
@@ -66,11 +70,12 @@
 					<object class="IBUILabel" id="80636197">
 						<reference key="NSNextResponder" ref="985596422"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{-6, 60}, {43, 16}}</string>
+						<string key="NSFrame">{{-6, 68}, {43, 16}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="269105364"/>
 						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIAutoresizesSubviews">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
 						<int key="IBUITag">100</int>
@@ -96,7 +101,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{31, 75}</string>
+				<string key="NSFrameSize">{31, 85}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="183064686"/>
@@ -104,6 +109,7 @@
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MCAwAA</bytes>
 				</object>
+				<bool key="IBUIAutoresizesSubviews">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 		</array>
