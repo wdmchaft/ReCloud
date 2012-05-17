@@ -217,7 +217,7 @@
             [recordButton setImage:[UIImage imageNamed:@"button_recording_pause.png"] forState:UIControlStateNormal];
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
             tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
-            spectrumTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(handleSpectrum:) userInfo:nil repeats:YES];
+            spectrumTimer = [NSTimer scheduledTimerWithTimeInterval:0.06 target:self selector:@selector(handleSpectrum:) userInfo:nil repeats:YES];
         }else{
             self.navigationItem.title = @"暂停录音";
             [recordButton setImage:[UIImage imageNamed:@"button_recording_continue.png"] forState:UIControlStateNormal];
@@ -265,7 +265,8 @@
         self.mRecorder = nil;
         
         averageSamplePeak = totalSamplePeak / sampleCount;
-        NSLog(@"averageSamplePeak: %f", averageSamplePeak);
+        powerPerSpectrumItem = (160 - averageSamplePeak) / SPECTRUM_ITEM_COUNT;
+        NSLog(@"averageSamplePeak: %f, powerPerSpectrumItem: %f", averageSamplePeak, powerPerSpectrumItem);
         
         [self cancelWaitingView];
     }
@@ -291,7 +292,7 @@
             [idlePoint release];
             
             UIView *tempView = [[[NSBundle mainBundle] loadNibNamed:@"TempView" owner:self options:nil] lastObject];
-            tempView.frame = CGRectMake(50.0, 100.0, tempView.frame.size.width, tempView.frame.size.height);
+            tempView.frame = CGRectMake(50.0, 40.0, tempView.frame.size.width, tempView.frame.size.height);
             tempView.tag = 20000 + tempIndex;
             UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
             [btn setTitle:@"关" forState:UIControlStateNormal];
@@ -322,8 +323,21 @@
 
 -(void) handleSpectrum:(NSTimer *)timer{
     [mRecorder updateMeters];
+    NSInteger hightlightedCount = 0;    
+    if(160 + [mRecorder peakPowerForChannel:0] - averageSamplePeak > 0){
+        NSInteger temp =  (int)((160 + [mRecorder peakPowerForChannel:0] - averageSamplePeak) / powerPerSpectrumItem) + 1;
+        hightlightedCount = MIN(temp, SPECTRUM_ITEM_COUNT);
+        NSLog(@"hightlightedCount: %d", hightlightedCount); 
+    }
     
-    float powerPerItem = 160 - averageSamplePeak / SPECTRUM_ITEM_COUNT;
+    for(NSInteger i = 0 ; i < SPECTRUM_ITEM_COUNT; i++){
+        UIImageView *spectrumItemView = (UIImageView *)[spectrumView viewWithTag:BASE_TAG_SPECTRUM_ITEMVIEW + i];
+        if(i < hightlightedCount){
+            spectrumItemView.image = [UIImage imageNamed:@"osc_on.png"];
+        }else{
+            spectrumItemView.image = [UIImage imageNamed:@"osc_off.png"];
+        }            
+    }    
     
 }
 
@@ -574,7 +588,7 @@
     
     for(NSInteger i = 0; i < SPECTRUM_ITEM_COUNT; i++){
         UIImageView *imageV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"osc_off.png"]];
-        imageV.frame = CGRectMake(11 + 19 * i, 184, 17, 7);
+        imageV.frame = CGRectMake(25 + 19 * i, 2, 17, 7);
         imageV.tag = BASE_TAG_SPECTRUM_ITEMVIEW + i;
         [spectrumView addSubview:imageV];
         [imageV release];

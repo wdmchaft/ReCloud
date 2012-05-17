@@ -34,6 +34,7 @@
     long timestamp;
     float totalSamplePeak;
     float averageSamplePeak;
+    float powerPerSpectrumItem;
     float idleTime;
     float rotatingAngle;
     NSInteger tempIndex;
