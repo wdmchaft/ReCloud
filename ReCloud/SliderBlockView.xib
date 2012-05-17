@@ -36,25 +36,10 @@
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
-					<object class="IBUIView" id="183064686">
-						<reference key="NSNextResponder" ref="985596422"/>
-						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{15, 0}, {1, 57}}</string>
-						<reference key="NSSuperview" ref="985596422"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="80636197"/>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzE0IDAuMzA5ODAzOTIxNiAwLjUyMTU2ODYyNzUAA</bytes>
-						</object>
-						<bool key="IBUIAutoresizesSubviews">NO</bool>
-						<int key="IBUITag">102</int>
-						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-					</object>
 					<object class="IBUIImageView" id="269105364">
 						<reference key="NSNextResponder" ref="985596422"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{6, 57}, {19, 13}}</string>
+						<string key="NSFrame">{{7, 0}, {16, 70}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -64,7 +49,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">newsstand_default.png</string>
+							<string key="NSResourceName">note_point02.png</string>
 						</object>
 					</object>
 					<object class="IBUILabel" id="80636197">
@@ -83,8 +68,8 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<string key="IBUIText">02:30</string>
 						<object class="NSColor" key="IBUITextColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4wOTEyNDA4NzU5MSAwLjcxMTY3ODgzMjEgMC45ODE3NTE4MjQ4AA</bytes>
+							<int key="NSColorSpace">2</int>
+							<bytes key="NSRGB">MC4xNzI1NDkwMjQyIDAuNTAxOTYwODE0IDAuNzgwMzkyMjI5NgA</bytes>
 						</object>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -104,7 +89,7 @@
 				<string key="NSFrameSize">{31, 85}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="183064686"/>
+				<reference key="NSNextKeyView" ref="80636197"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MCAwAA</bytes>
@@ -138,16 +123,10 @@
 						<int key="objectID">3</int>
 						<reference key="object" ref="985596422"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="183064686"/>
 							<reference ref="269105364"/>
 							<reference ref="80636197"/>
 						</array>
 						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">4</int>
-						<reference key="object" ref="183064686"/>
-						<reference key="parent" ref="985596422"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">5</int>
@@ -166,7 +145,6 @@
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="3.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -182,8 +160,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">newsstand_default.png</string>
-			<string key="NS.object.0">{1024, 2028}</string>
+			<string key="NS.key.0">note_point02.png</string>
+			<string key="NS.object.0">{25, 110}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

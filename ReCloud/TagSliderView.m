@@ -227,11 +227,8 @@
     rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
     blockView.frame = rect;
     
-    UIView *blockViewLine = [blockView viewWithTag:TAG_TAGSLIDERVIEW_LINE];
-    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2, 0, 1, 57);
-    
-    UIImageView *blockViewSquare = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_SQUARE];
-    blockViewSquare.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewSquare.frame.size.width / 2, 57, blockViewSquare.frame.size.width, blockViewSquare.frame.size.height);
+    UIImageView *blockViewLine = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_POINT];
+    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2 - 16 / 2, 0, 16, 70);
     
     UILabel *blockViewLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     blockViewLabel.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewLabel.frame.size.width / 2, 68, blockViewLabel.frame.size.width, blockViewLabel.frame.size.height);
@@ -274,11 +271,8 @@
     rect.origin.x = progressView.frame.size.width - blockView.frame.size.width / 2;
     blockView.frame = rect;
     
-    UIView *blockViewLine = [blockView viewWithTag:TAG_TAGSLIDERVIEW_LINE];
-    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2, 0, 1, 67);
-    
-    UIImageView *blockViewSquare = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_SQUARE];
-    blockViewSquare.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewSquare.frame.size.width / 2, 67, blockViewSquare.frame.size.width, blockViewSquare.frame.size.height);
+    UIImageView *blockViewLine = (UIImageView *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_POINT];
+    blockViewLine.frame = CGRectMake(blockView.frame.size.width / 2 - 18 / 2, 0, 18, 80);
     
     UILabel *blockViewLabel = (UILabel *)[blockView viewWithTag:TAG_TAGSLIDERVIEW_TIMELABEL];
     blockViewLabel.frame = CGRectMake(blockView.frame.size.width / 2 - blockViewLabel.frame.size.width / 2, 77, blockViewLabel.frame.size.width, blockViewLabel.frame.size.height);

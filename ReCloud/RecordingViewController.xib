@@ -190,7 +190,7 @@
 								</object>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">button_recording_continue.png</string>
+									<string key="NSResourceName">button_rec.png</string>
 								</object>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<int key="type">2</int>
@@ -238,7 +238,6 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<bool key="IBUIAlwaysBounceVertical">YES</bool>
-						<int key="IBUISeparatorStyle">1</int>
 						<object class="NSColor" key="IBUISeparatorColor">
 							<int key="NSColorSpace">2</int>
 							<bytes key="NSRGB">MC4yMTU2ODYyOTE1IDAuMjQ3MDU4ODM4NiAwLjI3ODQzMTM4NTgAA</bytes>
@@ -562,7 +561,7 @@
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="bg.png">{640, 960}</string>
 			<string key="bottom_01.png">{640, 134}</string>
-			<string key="button_recording_continue.png">{97, 94}</string>
+			<string key="button_rec.png">{124, 124}</string>
 			<string key="shape_audiotape.png">{622, 374}</string>
 			<string key="shape_audiotape03.png">{58, 58}</string>
 			<string key="shape_audiotape_bg.png">{640, 415}</string>

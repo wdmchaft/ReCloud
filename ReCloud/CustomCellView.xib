@@ -44,16 +44,32 @@
 							<object class="IBUIImageView" id="871271368">
 								<reference key="NSNextResponder" ref="890989970"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrameSize">{320, 50}</string>
+								<string key="NSFrameSize">{320, 49}</string>
 								<reference key="NSSuperview" ref="890989970"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="1015886299"/>
+								<reference key="NSNextKeyView" ref="351803495"/>
 								<int key="IBUITag">49</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">list_bg.png</string>
+								</object>
+							</object>
+							<object class="IBUIImageView" id="351803495">
+								<reference key="NSNextResponder" ref="890989970"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrameSize">{320, 49}</string>
+								<reference key="NSSuperview" ref="890989970"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1015886299"/>
+								<float key="IBUIAlpha">0.0</float>
+								<int key="IBUITag">1006</int>
+								<bool key="IBUIUserInteractionEnabled">NO</bool>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">list_bg_hover.png</string>
 								</object>
 							</object>
 							<object class="IBUIImageView" id="906340939">
@@ -226,7 +242,7 @@
 								<reference key="IBUIFont" ref="1033357984"/>
 							</object>
 						</array>
-						<string key="NSFrameSize">{320, 49}</string>
+						<string key="NSFrameSize">{320, 48}</string>
 						<reference key="NSSuperview" ref="684863557"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="871271368"/>
@@ -241,14 +257,14 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</array>
-				<string key="NSFrameSize">{320, 50}</string>
+				<string key="NSFrameSize">{320, 49}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="890989970"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<reference key="IBUIContentView" ref="890989970"/>
 				<string key="IBUIReuseIdentifier">playbackViewCell</string>
-				<real value="50" key="IBUIRowHeight"/>
+				<real value="49" key="IBUIRowHeight"/>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -283,6 +299,7 @@
 							<reference ref="871271368"/>
 							<reference ref="926475691"/>
 							<reference ref="81119473"/>
+							<reference ref="351803495"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -321,6 +338,11 @@
 						<reference key="object" ref="81119473"/>
 						<reference key="parent" ref="684863557"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">34</int>
+						<reference key="object" ref="351803495"/>
+						<reference key="parent" ref="684863557"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -335,12 +357,13 @@
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="32.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="33.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">33</int>
+			<int key="maxID">34</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
@@ -349,7 +372,8 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="button_edit.png">{32, 33}</string>
-			<string key="list_bg.png">{640, 98}</string>
+			<string key="list_bg.png">{640, 97}</string>
+			<string key="list_bg_hover.png">{640, 97}</string>
 			<string key="note_bg.png">{59, 56}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>

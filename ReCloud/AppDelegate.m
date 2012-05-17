@@ -26,6 +26,7 @@
 {       
     
     [self customizeNavigationBar];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *samplePath = [[self documentPath] stringByAppendingPathComponent:SAMPLE_DIR];

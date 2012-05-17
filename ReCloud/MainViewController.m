@@ -52,6 +52,7 @@
     NSLog(@"%s", __FUNCTION__);    
     
     viewingLocal = YES;
+    lastSelectedIndex = -1;
     [self initLayout];    
 }
 
@@ -98,7 +99,8 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MainViewCell" owner:self options:nil] lastObject];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;            
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator; 
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } 
     
     if(audioList != nil && audioList.count > 0){
@@ -110,7 +112,10 @@
         UILabel *durationLabel = (UILabel *)[cell.contentView viewWithTag:TAG_DURATION_LABEL];
         UILabel *sizeLabel = (UILabel *)[cell.contentView viewWithTag:TAG_SIZE_LABEL];
         
-        timeLabel.text = [dict objectForKey:kTime];
+        NSString *timeStr = [dict objectForKey:kTime];
+        NSArray *arr = [timeStr componentsSeparatedByString:@":"];
+        timeLabel.text = [NSString stringWithFormat:@"%@:%@", [arr objectAtIndex:0], [arr objectAtIndex:1]];        
+        
         dateLabel.text = [dict objectForKey:kDate];
         titleLabel.text = [dict objectForKey:kTitle];
         durationLabel.text = [dict objectForKey:kDuration];
@@ -121,6 +126,13 @@
         
         UIButton *uploadBtn = (UIButton *)[cell.contentView viewWithTag:TAG_UPLOAD_BUTTON1];
         [uploadBtn addTarget:self action:@selector(uploadToCloud:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL1_HOVERVIEW];
+        if(lastSelectedIndex == indexPath.row){
+            hoverView.alpha = 1.0;
+        }else{
+            hoverView.alpha = 0.0;
+        }
     }
     
     return cell;
@@ -148,7 +160,17 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];    
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL1_HOVERVIEW];
+    hoverView.alpha = 1.0;
+    
+    if(lastSelectedIndex >= 0){
+        NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
+        UITableViewCell *lastSelectedCell = [tableView cellForRowAtIndexPath:lastPath];
+        UIImageView *hoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL1_HOVERVIEW];
+        hoverView.alpha = 0.0;        
+    }
+    lastSelectedIndex = indexPath.row;
     
     PlaybackViewController *playbackVC = [[PlaybackViewController alloc] initWithAudioInfo:[audioList objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:playbackVC animated:YES];
@@ -156,7 +178,7 @@
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 49;
 }
 
 #pragma mark - UIView Animation Callback Methods
@@ -169,26 +191,32 @@
 #pragma mark - Instance Methods
 
 -(IBAction) showRecordingView:(id)sender{    
-    [self doneEditingAction:nil];
+    //[self doneEditingAction:nil];
     
     RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
     [self.navigationController pushViewController:recordingVC animated:YES];
     //[recordingVC release];    
 }
 
+
 -(void) editAction:(id)sender{    
+    /*
     [myTableView setEditing:YES animated:YES];    
     UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"done" style:UIBarButtonItemStyleBordered target:self action:@selector(doneEditingAction:)];
     self.navigationItem.leftBarButtonItem = leftButtonItem;
     [leftButtonItem release];
+     */
 }
 
 -(void) doneEditingAction:(id)sender{
+    /*
     [myTableView setEditing:NO animated:YES];
     UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editAction:)];
     self.navigationItem.leftBarButtonItem = leftButtonItem;
     [leftButtonItem release];
+     */
 }
+
 
 -(void) loginAction:(id)sender{
     editLabel.text = @"edit";
@@ -325,17 +353,21 @@
 -(void) initLayout{    
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
+    /*
     UIBarButtonItem *leftButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editAction:)];
     self.navigationItem.leftBarButtonItem = leftButtonItem;
     [leftButtonItem release];
+     */
     
     UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingBtn setImage:[UIImage imageNamed:@"button_setting.png"] forState:UIControlStateNormal];
+    [settingBtn setImage:[UIImage imageNamed:@"button_setting_hover.png"] forState:UIControlStateHighlighted];
     [settingBtn addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     settingBtn.frame = CGRectMake(0, 0, 36, 28);
     UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingBtn];
     self.navigationItem.rightBarButtonItem = rightButtonItem;
     [rightButtonItem release];
+    
     
     UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
     logoView.frame = CGRectMake(0, 0, 134, 18);

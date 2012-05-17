@@ -14,7 +14,8 @@
     
     BOOL viewingLocal;
     UIView *editingView;
-    NSInteger editingIndex;    
+    NSInteger editingIndex;
+    NSInteger lastSelectedIndex;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
@@ -27,8 +28,8 @@
 -(void)        refreshAudioList;
 -(void)        editTitle:(id)sender;
 -(void)        uploadToCloud:(id)sender;
--(void)        editAction:(id)sender;
 -(void)        loginAction:(id)sender;
+-(void)        editAction:(id)sender;
 -(void)        doneEditingAction:(id)sender;
 -(void)        initLayout;
 

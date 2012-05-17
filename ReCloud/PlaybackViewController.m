@@ -79,6 +79,7 @@
     didEdit = NO;
     hightlightedIndex = -1;
     idleIndex = 0;
+    lastSelectedIndex = -1;
     currentOrientation = UIInterfaceOrientationPortrait;
     editingButtons = [[NSMutableArray alloc] init];
     
@@ -143,6 +144,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier1];
     if(cell == nil){        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     if(indexList != nil && indexList.count > 0){
@@ -173,7 +175,16 @@
         CGRect rect3 = cellBg.frame;
         rect3.size.width = tableView.frame.size.width;
         cellBg.frame = rect3;
-               
+        
+        UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+        CGRect rect4 = hoverView.frame;
+        rect4.size.width = tableView.frame.size.width;
+        hoverView.frame = rect4;
+        if(lastSelectedIndex == indexPath.row){
+            hoverView.alpha = 1.0;
+        }else{
+            hoverView.alpha = 0.0;
+        }
     }
     
     return cell;
@@ -182,6 +193,21 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+    hoverView.alpha = 1.0;   
+    
+    if(lastSelectedIndex >= 0){
+        NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
+        UITableViewCell *lastSelectedCell = [tableView cellForRowAtIndexPath:lastPath];
+        UIImageView *hoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+        hoverView.alpha = 0.0;        
+    }
+    lastSelectedIndex = indexPath.row;  
+    
+    NSLog(@"hoverView: %@", hoverView);
+    NSLog(@"last index: %d", lastSelectedIndex);
+    
     NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
     float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
     float currentTime = [TagSliderView durationForString:[dict objectForKey:kCurrentTime]];
@@ -192,7 +218,7 @@
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 49;
 }
 
 #pragma mark - UINavigationController Delegate Methods
@@ -233,10 +259,17 @@
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqualToString:@"playing"]){
         if(playing){
-            [playButton setTitle:@"||" forState:UIControlStateNormal];
+            if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+                [playButton setImage:[UIImage imageNamed:@"button_pause.png"] forState:UIControlStateNormal];
+            }else{
+                [playButton setImage:[UIImage imageNamed:@"button_pause_h.png"] forState:UIControlStateNormal];
+            }
         }else{
-            [playButton setTitle:@">" forState:UIControlStateNormal];
-
+            if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+                [playButton setImage:[UIImage imageNamed:@"button_play.png"] forState:UIControlStateNormal];
+            }else{
+                [playButton setImage:[UIImage imageNamed:@"button_play_h.png"] forState:UIControlStateNormal];
+            }
         } 
     } 
 }
@@ -567,6 +600,7 @@
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
+    [backButton setImage:[UIImage imageNamed:@"button_back_hover.png"] forState:UIControlStateHighlighted];
     [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     backButton.frame = CGRectMake(0, 0, 56, 28);
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
@@ -575,6 +609,7 @@
     
     UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [doneButton setImage:[UIImage imageNamed:@"button_done.png"] forState:UIControlStateNormal];
+    [doneButton setImage:[UIImage imageNamed:@"button_done_hover.png"] forState:UIControlStateHighlighted];
     [doneButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
     doneButton.frame = CGRectMake(0, 0, 46, 28);
     UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
@@ -606,10 +641,15 @@
     self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 95);
     self.myTableView.frame = CGRectMake(0, 95, screenWidth, 124);
     self.tableBackView.frame = CGRectMake(0, 95, screenWidth, 124);
+    
     self.prevButton.frame = CGRectMake(0, 219, 120, 49);
+    [prevButton setImage:[UIImage imageNamed:@"button_left_h.png"] forState:UIControlStateNormal];
     self.playButton.frame = CGRectMake(120, 219, 120, 49);
+    [playButton setImage:[UIImage imageNamed:@"button_play_h.png"] forState:UIControlStateNormal];
     self.nextButton.frame = CGRectMake(240, 219, 120, 49);
+    [nextButton setImage:[UIImage imageNamed:@"button_right_h.png"] forState:UIControlStateNormal];
     self.addTagButton.frame = CGRectMake(360, 219, 120, 49);
+    [addTagButton setImage:[UIImage imageNamed:@"button_add_h.png"] forState:UIControlStateNormal];
     
     [myTableView reloadData];    
     [tagSliderView landscapeLayout];
@@ -621,12 +661,16 @@
     NSLog(@"screenWidth: %f", screenWidth);
     
     self.sliderBackView.frame = CGRectMake(0, 0, screenWidth, 87);
-    self.myTableView.frame = CGRectMake(0, 88, screenWidth, 280);
-    self.tableBackView.frame = CGRectMake(0, 88, screenWidth, 280);
+    self.myTableView.frame = CGRectMake(0, 87, screenWidth, 280);
+    self.tableBackView.frame = CGRectMake(0, 87, screenWidth, 280);
     self.prevButton.frame = CGRectMake(0, 367, 80, 49);
+    [prevButton setImage:[UIImage imageNamed:@"button_left.png"] forState:UIControlStateNormal];
     self.playButton.frame = CGRectMake(80, 367, 80, 49);
+    [playButton setImage:[UIImage imageNamed:@"button_play.png"] forState:UIControlStateNormal];
     self.nextButton.frame = CGRectMake(160, 367, 80, 49);
+    [nextButton setImage:[UIImage imageNamed:@"button_right.png"] forState:UIControlStateNormal];
     self.addTagButton.frame = CGRectMake(240, 367, 80, 49);
+    [addTagButton setImage:[UIImage imageNamed:@"button_add.png"] forState:UIControlStateNormal];
     
     [myTableView reloadData];
     [tagSliderView portraitLayout];

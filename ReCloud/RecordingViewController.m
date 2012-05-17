@@ -178,7 +178,7 @@
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 49;
 }
 
 #pragma mark - UIScrollViewDelegate Methods
@@ -214,13 +214,15 @@
     if([keyPath isEqualToString:@"recording"]){
         if(recording){
             self.navigationItem.title = @"正在录音";
-            [recordButton setImage:[UIImage imageNamed:@"button_recording_pause.png"] forState:UIControlStateNormal];
+            [recordButton setImage:[UIImage imageNamed:@"button_recpause.png"] forState:UIControlStateNormal];
+            [recordButton setImage:[UIImage imageNamed:@"button_recpause_hover.png"] forState:UIControlStateHighlighted];
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
-            tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
+            tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
             spectrumTimer = [NSTimer scheduledTimerWithTimeInterval:0.06 target:self selector:@selector(handleSpectrum:) userInfo:nil repeats:YES];
         }else{
             self.navigationItem.title = @"暂停录音";
-            [recordButton setImage:[UIImage imageNamed:@"button_recording_continue.png"] forState:UIControlStateNormal];
+            [recordButton setImage:[UIImage imageNamed:@"button_rec.png"] forState:UIControlStateNormal];
+            [recordButton setImage:[UIImage imageNamed:@"button_rec_hover.png"] forState:UIControlStateHighlighted];
             [idleTimer invalidate];
             idleTimer = nil;
             [tapeRotatingTimer invalidate];
@@ -312,7 +314,7 @@
 }
 
 -(void) rotatingTapeWheel:(NSTimer *)timer{
-    rotatingAngle += 0.1 * 90.0 * 2 * M_PI / 360.0f;
+    rotatingAngle += 0.05 * 90.0 * 2 * M_PI / 360.0f;
     if(rotatingAngle >= 2 * M_PI){
         rotatingAngle = 0.0f;
     }
@@ -572,6 +574,7 @@
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
+    [backButton setImage:[UIImage imageNamed:@"button_back_hover.png"] forState:UIControlStateHighlighted];
     [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     backButton.frame = CGRectMake(0, 0, 56, 28);
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
@@ -580,7 +583,8 @@
     
     UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [doneButton setImage:[UIImage imageNamed:@"button_done.png"] forState:UIControlStateNormal];
-    [doneButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [doneButton setImage:[UIImage imageNamed:@"button_done_hover.png"] forState:UIControlStateHighlighted];
+    [doneButton addTarget:self action:@selector(testAction:) forControlEvents:UIControlEventTouchUpInside];
     doneButton.frame = CGRectMake(0, 0, 46, 28);
     UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
     self.navigationItem.rightBarButtonItem = buttonItem2;
@@ -595,6 +599,18 @@
     }
     
     self.navigationItem.title = @"请稍候...";
+}
+
+-(void) testAction:(id)sender{
+    /*
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect rect = self.navigationController.navigationBar.frame;
+        rect.origin.y = -10;
+        self.navigationController.navigationBar.frame = rect;
+    }];
+     */
+    //self.navigationController.navigationBar.hidden = YES;
+    NSLog(@"navBar: %@", self.navigationController.navigationBar);
 }
 
 -(IBAction) tagForTime:(id)sender{
@@ -652,10 +668,13 @@
     NSString *defaultTitle = @"未命名";
     
     NSDate *newDate = [[NSDate alloc] initWithTimeIntervalSince1970:timestamp];
-    NSArray *tmp = [newDate.description componentsSeparatedByString:@" "];
-    NSString *tempDateStr = [tmp objectAtIndex:0];
-    NSString *dateStr = [tempDateStr stringByReplacingOccurrencesOfString:@"-" withString:@"/"];
-    NSString *timeStr = [[[tmp objectAtIndex:1] componentsSeparatedByString:@"+"] objectAtIndex:0];    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yy/MM/dd HH:mm"];
+    [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"zh_Han_cn"] autorelease]];
+    NSString *datetimeStr = [dateFormatter stringFromDate:newDate];    
+    NSArray *tmp = [datetimeStr componentsSeparatedByString:@" "];
+    NSString *dateStr = [tmp objectAtIndex:0];
+    NSString *timeStr = [tmp objectAtIndex:1];    
     
     AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
     NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:filename];
