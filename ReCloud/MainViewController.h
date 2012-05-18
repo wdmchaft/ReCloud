@@ -20,6 +20,7 @@
 
 @property (nonatomic, retain) IBOutlet UITableView *myTableView;
 @property (nonatomic, retain) IBOutlet UILabel *editLabel;
+@property (nonatomic, retain) IBOutlet UIImageView *guideView;
 @property (nonatomic, retain) NSMutableArray *audioList;
 
 -(IBAction)    showRecordingView:(id)sender;

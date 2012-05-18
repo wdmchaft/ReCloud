@@ -16,6 +16,7 @@
 #define TAG_TAGVIEW_TIMELABEL 31
 #define TAG_TAGVIEW_POINT 32
 #define TAG_WAITINGVIEW_ACTIVITY_INDICATOR 40
+#define TAG_WAITINGVIEW_LABEL_BACK 41
 #define TAG_CELL_BG 49
 #define TAG_COUNTLABEL 50
 #define TAG_TIMELABEL 51
@@ -40,6 +41,7 @@
 #define TAG_CELL2_HOVERVIEW 1006
 #define BASE_TAG_PLAYBACK_TAGVIEW 7000
 #define BASE_TAG_SPECTRUM_ITEMVIEW 2000
+#define BASE_TAG_WAITINGVIEW_LABEL 3000
 
 #define kDate @"Date"
 #define kTime @"Time"
@@ -65,6 +67,7 @@
 #define NOTIFY_END_SLIDE @"nEndSlideSliderView"
 #define NOTIFY_SLIDING @"nSlidingSliderView"
 #define NOTIFY_SLIDERVIEW_X_CHANGED @"nSliderViewXposChanged"
+#define NOTIFY_DISMISS_MODAL_VIEW @"dismissModalView"
 
 
 

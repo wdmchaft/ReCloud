@@ -19,6 +19,7 @@
 @synthesize myTableView;
 @synthesize editLabel;
 @synthesize audioList;
+@synthesize guideView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -53,6 +54,7 @@
     
     viewingLocal = YES;
     lastSelectedIndex = -1;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalView:) name:NOTIFY_DISMISS_MODAL_VIEW object:nil];
     [self initLayout];    
 }
 
@@ -67,7 +69,7 @@
 - (void)viewDidUnload
 {
     self.myTableView = nil;
-    
+    self.guideView = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];    
@@ -153,7 +155,12 @@
         NSString *plistFile = [[[appDelegate documentPath] stringByAppendingPathComponent:INDEX_DIR] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", filePrefix]];
         [filemanager removeItemAtPath:audioFile error:nil];
         [filemanager removeItemAtPath:plistFile error:nil];
-
+        
+        if(audioList.count == 0){
+            [UIView animateWithDuration:0.3 animations:^{
+                guideView.alpha = 1.0;
+            }]; 
+        }
     }    
 }
 
@@ -164,7 +171,7 @@
     UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL1_HOVERVIEW];
     hoverView.alpha = 1.0;
     
-    if(lastSelectedIndex >= 0){
+    if(lastSelectedIndex >= 0 && lastSelectedIndex != indexPath.row){
         NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
         UITableViewCell *lastSelectedCell = [tableView cellForRowAtIndexPath:lastPath];
         UIImageView *hoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL1_HOVERVIEW];
@@ -188,16 +195,23 @@
     editingView = nil;
 }
 
+#pragma mark - NSNotification Callback Methods
+
+-(void) dismissModalView:(NSNotification *)notification{
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+
 #pragma mark - Instance Methods
 
 -(IBAction) showRecordingView:(id)sender{    
     //[self doneEditingAction:nil];
     
     RecordingViewController *recordingVC = [[RecordingViewController alloc] init];
-    [self.navigationController pushViewController:recordingVC animated:YES];
-    //[recordingVC release];    
+    recordingVC.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    [self presentModalViewController:recordingVC animated:YES];
+    [recordingVC release];
 }
-
 
 -(void) editAction:(id)sender{    
     /*
@@ -274,6 +288,16 @@
     }    
     self.audioList = newArr;
     [newArr release];
+    
+    if(audioList.count == 0){
+        [UIView animateWithDuration:0.3 animations:^{
+            guideView.alpha = 1.0;
+        }];        
+    }else{
+        [UIView animateWithDuration:0.3 animations:^{
+            guideView.alpha = 0.0;
+        }]; 
+    }
 
     NSLog(@"audioList count: %d", audioList.count);
     
@@ -370,7 +394,7 @@
     
     
     UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
-    logoView.frame = CGRectMake(0, 0, 134, 18);
+    logoView.frame = CGRectMake(0, 0, 122, 37);
     self.navigationItem.titleView = logoView;
     [logoView release];
     

@@ -54,6 +54,7 @@
     self.window.rootViewController = nav;
     [mainVC release];    
     
+    self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     return YES;
 }

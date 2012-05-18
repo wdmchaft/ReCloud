@@ -53,6 +53,7 @@
 -(IBAction)     stop:(id)sender;
 -(IBAction)     addTag:(id)sender;
 -(void)         backAction:(id)sender;
+-(void)         deleteTag:(id)sender;
 -(void)         initLayout;
 -(void)         showOverlayViewWithMessage:(NSString *)msg;
 -(void)         cancelOverlayView;

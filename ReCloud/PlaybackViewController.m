@@ -78,8 +78,8 @@
     playing = NO;
     didEdit = NO;
     hightlightedIndex = -1;
-    idleIndex = 0;
     lastSelectedIndex = -1;
+    idleIndex = 0;
     currentOrientation = UIInterfaceOrientationPortrait;
     editingButtons = [[NSMutableArray alloc] init];
     
@@ -190,6 +190,15 @@
     return cell;
 }
 
+-(void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(editingStyle == UITableViewCellEditingStyleDelete){
+        NSLog(@"deleteIndextRow: %d", indexPath.row);
+        
+        deletingIndex = indexPath.row;
+        [self deleteTag:nil];
+    }    
+}
+
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -197,7 +206,7 @@
     UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
     hoverView.alpha = 1.0;   
     
-    if(lastSelectedIndex >= 0){
+    if(lastSelectedIndex >= 0 && lastSelectedIndex != indexPath.row){
         NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
         UITableViewCell *lastSelectedCell = [tableView cellForRowAtIndexPath:lastPath];
         UIImageView *hoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
@@ -298,13 +307,33 @@
             }
         }
         if(found != -1){
-            [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
-
+            if(lastSelectedIndex != indexList.count - 1 - found){
+                //[myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+                
+                UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0]];
+                UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                hoverView.alpha = 1.0;
+                
+                if(lastSelectedIndex >= 0){
+                    UITableViewCell *lastSeletedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+                    UIImageView *lastHoverView = (UIImageView *)[lastSeletedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                    lastHoverView.alpha = 0.0;
+                }               
+                lastSelectedIndex = indexList.count - 1 - found;
+            }
         }else{
+            /*
             for(NSInteger i = 0; i < indexList.count; i++){
                 [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
 
-            }        
+            }    
+            */
+            
+            if(lastSelectedIndex >= 0){
+                UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+                UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                hoverView.alpha = 0.0;
+            }            
         }
         
         hightlightedIndex = found;
@@ -338,10 +367,23 @@
     
     NSLog(@"found: %d", found);
     if(found != -1){
-        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+        if(lastSelectedIndex != indexList.count - 1 - found){            
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 1.0;
+            
+            if(lastSelectedIndex >= 0){
+                UITableViewCell *lastSeletedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+                UIImageView *lastHoverView = (UIImageView *)[lastSeletedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                lastHoverView.alpha = 0.0;
+            }            
+            lastSelectedIndex = indexList.count - 1 - found;
+        }
     }else{
-        for(NSInteger i = 0; i < indexList.count; i++){
-            [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
+        if(lastSelectedIndex >= 0){
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 0.0;
         }        
     }
     
@@ -378,11 +420,24 @@
     
     //NSLog(@"found: %d", found);
     if(found != -1){
-        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];   
+        if(lastSelectedIndex != indexList.count - 1 - found){            
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 1.0;
+            
+            if(lastSelectedIndex >= 0){
+                UITableViewCell *lastSeletedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+                UIImageView *lastHoverView = (UIImageView *)[lastSeletedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                lastHoverView.alpha = 0.0;
+            }            
+            lastSelectedIndex = indexList.count - 1 - found;
+        }
     }else{
-        for(NSInteger i = 0; i < indexList.count; i++){
-            [myTableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] animated:NO];
-        }  
+        if(lastSelectedIndex >= 0){
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 0.0;
+        }        
     }
     
     hightlightedIndex = found;
@@ -400,6 +455,7 @@
     UIView *deleteTagView = [tagSliderView.tagViews objectAtIndex:deletingIndex];
     [deleteTagView removeFromSuperview];
     [tagSliderView.tagViews removeObjectAtIndex:deletingIndex];
+    [tagSliderView.positionPercentage removeObjectAtIndex:deletingIndex];
     deleteTagView = nil;
 }
 
@@ -599,8 +655,8 @@
     self.view.userInteractionEnabled = NO;
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
-    [backButton setImage:[UIImage imageNamed:@"button_back_hover.png"] forState:UIControlStateHighlighted];
+    [backButton setImage:[UIImage imageNamed:@"button_back02.png"] forState:UIControlStateNormal];
+    [backButton setImage:[UIImage imageNamed:@"button_back02_hover.png"] forState:UIControlStateHighlighted];
     [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     backButton.frame = CGRectMake(0, 0, 56, 28);
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
@@ -739,16 +795,18 @@
 
 -(void) deleteTag:(id)sender{
     didEdit = YES;    
+    /*
     UIButton *clicked = (UIButton *)sender;
     UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
     NSIndexPath *path = [myTableView indexPathForCell:cell];
     deletingIndex = path.row;
+    */
     
-    NSLog(@"deletingIndex: %d", deletingIndex);
-    
+    NSLog(@"deletingIndex: %d", deletingIndex);   
+ 
     if(hightlightedIndex + 1 >= indexList.count - deletingIndex){
         hightlightedIndex--;
-    } 
+    }     
     
     [indexList removeObjectAtIndex:deletingIndex];
     
@@ -762,11 +820,11 @@
     [UIView commitAnimations];
     
     for(NSInteger i = 0; i < deletingIndex; i++){
-        UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
-        
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];        
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
         countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - i];
     }
+    
     
     [myTableView beginUpdates];
     [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:deletingIndex inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
@@ -782,8 +840,16 @@
     [myTableView endUpdates];
     [indexPaths release];
     
-    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:indexList.count - 1 - hightlightedIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    if(lastSelectedIndex >= 0){
+        UITableViewCell *cell1 = (UITableViewCell *)[myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+        UIImageView *hoverView = (UIImageView *)[cell1.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+        hoverView.alpha = 1.0;
+    }
+    if(lastSelectedIndex > deletingIndex){
+        lastSelectedIndex--;
+    }  
     
+    NSLog(@"lastSelectedIndex:%d", lastSelectedIndex);
 }
 
 -(void) showOverlayViewWithMessage:(NSString *)msg{
@@ -820,5 +886,6 @@
         [UIView commitAnimations];
     }
 }
+
 
 @end

@@ -20,6 +20,7 @@
 @synthesize myTableView;
 @synthesize wheelView1, wheelView2;
 @synthesize spectrumView;
+@synthesize guideView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,6 +44,7 @@
     self.mRecorder = nil;    
     [tagViews release];
     [idleList release];
+    [statusStrs release];
     
     if(recordingTimer != nil){
         [recordingTimer invalidate];
@@ -65,7 +67,7 @@
         spectrumTimer = nil;
     }
     
-    refreshHeaderView = nil;
+    //refreshHeaderView = nil;
     
     [super dealloc];    
 }
@@ -88,14 +90,16 @@
     idleCount = 0;
     idleTime = -1.0f;
     rotatingAngle = 0.0f;
+    lastSelectedIndex = -1;
     tagViews = [[NSMutableArray alloc] init];
     idleList = [[NSMutableArray alloc] init];
+    statusStrs = [[NSArray alloc] initWithObjects:@"获取环境噪音...", @"正在优化...", @"加载录音模块...", @"开始录音！", nil];
     NSString *initIdlePoint = [[NSString alloc] initWithFormat:@"%f", 0.0f];
     [idleList addObject:initIdlePoint];
     [initIdlePoint release];
     
-    [self sampleSurroundVoice];
-    
+    [self showWaitingView];
+    [self sampleSurroundVoice];    
     [self initLayout];
 }
 
@@ -105,10 +109,11 @@
     self.tagBackView = nil;
     self.timingLabel = nil;
     self.myTableView = nil;
-    refreshHeaderView = nil;
+    //refreshHeaderView = nil;
     self.wheelView1 = nil;
     self.wheelView2 = nil;
     self.spectrumView = nil;
+    self.guideView = nil;
 
     [super viewDidUnload];
 
@@ -140,6 +145,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier2];
     if(cell == nil){
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CustomCellView" owner:self options:nil] lastObject];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }  
     
     if(tagList != nil && tagList.count > 0){
@@ -165,7 +171,13 @@
         
         UIButton *editingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_EDITING_BUTTON2];
         [editingBtn addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
-    
+        
+        UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+        if(lastSelectedIndex == indexPath.row){
+            hoverView.alpha = 1.0;
+        }else{
+            hoverView.alpha = 0.0;
+        }    
     }
     
     return cell;
@@ -174,13 +186,23 @@
 #pragma mark - UITableView Delegate Methods
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    UITableViewCell *cell = [myTableView cellForRowAtIndexPath:indexPath];
+    UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+    hoverView.alpha = 1.0;
+    
+    if(lastSelectedIndex >= 0 && lastSelectedIndex != indexPath.row){
+        UITableViewCell *lastSelectedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+        UIImageView *lastHoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+        lastHoverView.alpha = 0.0;
+    }
+    lastSelectedIndex = indexPath.row;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 49;
 }
 
+/*
 #pragma mark - UIScrollViewDelegate Methods
 
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -205,6 +227,7 @@
 -(NSDate *) egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view{
     return [NSDate date];
 }
+ */
 
 #pragma mark - KVO Callback Methods
 
@@ -214,15 +237,15 @@
     if([keyPath isEqualToString:@"recording"]){
         if(recording){
             self.navigationItem.title = @"正在录音";
-            [recordButton setImage:[UIImage imageNamed:@"button_recpause.png"] forState:UIControlStateNormal];
-            [recordButton setImage:[UIImage imageNamed:@"button_recpause_hover.png"] forState:UIControlStateHighlighted];
+            [recordButton setImage:[UIImage imageNamed:@"button_i_pause.png"] forState:UIControlStateNormal];
+
             idleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkingIdleState:) userInfo:nil repeats:YES];
             tapeRotatingTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(rotatingTapeWheel:) userInfo:nil repeats:YES];
             spectrumTimer = [NSTimer scheduledTimerWithTimeInterval:0.06 target:self selector:@selector(handleSpectrum:) userInfo:nil repeats:YES];
         }else{
             self.navigationItem.title = @"暂停录音";
-            [recordButton setImage:[UIImage imageNamed:@"button_rec.png"] forState:UIControlStateNormal];
-            [recordButton setImage:[UIImage imageNamed:@"button_rec_hover.png"] forState:UIControlStateHighlighted];
+            [recordButton setImage:[UIImage imageNamed:@"button_i_rec.png"] forState:UIControlStateNormal];
+            
             [idleTimer invalidate];
             idleTimer = nil;
             [tapeRotatingTimer invalidate];
@@ -261,6 +284,11 @@
         totalSamplePeak += ([mRecorder peakPowerForChannel:0] + 160);
         sampleCount++;
     }else{
+        
+        if(waitingView != nil){
+            
+        }
+        
         [sampleTimer invalidate];
         sampleTimer = nil;
         [mRecorder stop];
@@ -340,7 +368,6 @@
             spectrumItemView.image = [UIImage imageNamed:@"osc_off.png"];
         }            
     }    
-    
 }
 
 #pragma mark - UIView Animation Callback Methods
@@ -442,10 +469,10 @@
     }
 }
 
--(void) backAction:(id)sender{
+-(IBAction) saveAndBack:(id)sender{
     [self stopRecording];
-    [self removeObserver:self forKeyPath:@"recording"];    
-    [self.navigationController popViewControllerAnimated:YES];
+    [self removeObserver:self forKeyPath:@"recording"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
 }
 
 -(void) editTagTitle:(id)sender{        
@@ -562,6 +589,7 @@
 }
 
 -(void) initLayout{  
+    /*
     if(refreshHeaderView == nil){
         EGORefreshTableHeaderView *headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0 - myTableView.bounds.size.height, self.view.frame.size.width, myTableView.bounds.size.height)];
         headerView.delegate = self;
@@ -571,24 +599,7 @@
     }
     
     [refreshHeaderView refreshLastUpdatedDate];
-    
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setImage:[UIImage imageNamed:@"button_back.png"] forState:UIControlStateNormal];
-    [backButton setImage:[UIImage imageNamed:@"button_back_hover.png"] forState:UIControlStateHighlighted];
-    [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
-    backButton.frame = CGRectMake(0, 0, 56, 28);
-    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-    self.navigationItem.leftBarButtonItem = buttonItem;
-    [buttonItem release];
-    
-    UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [doneButton setImage:[UIImage imageNamed:@"button_done.png"] forState:UIControlStateNormal];
-    [doneButton setImage:[UIImage imageNamed:@"button_done_hover.png"] forState:UIControlStateHighlighted];
-    [doneButton addTarget:self action:@selector(testAction:) forControlEvents:UIControlEventTouchUpInside];
-    doneButton.frame = CGRectMake(0, 0, 46, 28);
-    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
-    self.navigationItem.rightBarButtonItem = buttonItem2;
-    [buttonItem2 release];
+     */
     
     for(NSInteger i = 0; i < SPECTRUM_ITEM_COUNT; i++){
         UIImageView *imageV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"osc_off.png"]];
@@ -601,18 +612,6 @@
     self.navigationItem.title = @"请稍候...";
 }
 
--(void) testAction:(id)sender{
-    /*
-    [UIView animateWithDuration:0.5 animations:^{
-        CGRect rect = self.navigationController.navigationBar.frame;
-        rect.origin.y = -10;
-        self.navigationController.navigationBar.frame = rect;
-    }];
-     */
-    //self.navigationController.navigationBar.hidden = YES;
-    NSLog(@"navBar: %@", self.navigationController.navigationBar);
-}
-
 -(IBAction) tagForTime:(id)sender{
     if(recording){        
         //更新数据源
@@ -622,8 +621,7 @@
         [newDict release];
         
         //增加TagView
-        [self addTagView];
-        
+        [self addTagView];        
         
         //更新列表视图
         [myTableView beginUpdates];
@@ -639,6 +637,11 @@
         [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
         [myTableView endUpdates];   
         [rowIndexPaths release];
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            guideView.alpha = 0.0;
+        }];
+        
     }
 }
 
@@ -709,6 +712,7 @@
     [newArr release];
 }
 
+/*
 -(void) doneLoadingTableViewData{
     reloading = NO;
     [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:myTableView];
@@ -718,6 +722,7 @@
     reloading = YES;
     [self tagForTime:nil];
 }
+ */
 
 -(void) sampleSurroundVoice{
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -746,18 +751,28 @@
     sampleCount = 0;
     
     sampleTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(pickSampleVoice:) userInfo:nil repeats:YES];  
-    
-    [self showWaitingView];
 }
 
 -(void) showWaitingView{
     waitingView = [[[NSBundle mainBundle] loadNibNamed:@"WaitingView" owner:self options:nil] lastObject];
-    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-    waitingView.frame = CGRectMake(0, 20, waitingView.frame.size.width, waitingView.frame.size.height);
+    waitingView.frame = CGRectMake(0, 0, waitingView.frame.size.width, waitingView.frame.size.height);
     waitingView.alpha = 0.0;
+    UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
+    for(NSInteger i = 0; i < 4; i++){
+        UILabel *label = [[UILabel alloc] init];
+        label.textAlignment = UITextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont systemFontOfSize:17];
+        label.backgroundColor = [UIColor clearColor];
+        label.frame = CGRectMake(5, 7 + 50 * i, 100, 27);
+        label.text = [statusStrs objectAtIndex:i];
+        label.tag = BASE_TAG_WAITINGVIEW_LABEL + i;        
+        [labelView addSubview:label];
+        [label release];
+    }
     UIActivityIndicatorView *indicator = (UIActivityIndicatorView *)[waitingView viewWithTag:TAG_WAITINGVIEW_ACTIVITY_INDICATOR];
     [indicator startAnimating];
-    [appDelegate.window addSubview:waitingView];
+    [self.view addSubview:waitingView];
     
     [UIView animateWithDuration:0.3 animations:^{
         waitingView.alpha = 1.0;

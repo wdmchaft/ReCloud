@@ -10,18 +10,20 @@
 #import <AVFoundation/AVFoundation.h>
 #import "EGORefreshTableHeaderView.h"
 
-@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate, EGORefreshTableHeaderDelegate>{
+@interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate>{
     
     UIView *editingView;
     UIView *waitingView;
-    EGORefreshTableHeaderView *refreshHeaderView;
+    //EGORefreshTableHeaderView *refreshHeaderView;
     
     NSMutableArray *idleList;
     NSMutableArray *tagViews;
+    NSArray *statusStrs;
     NSInteger editingIndex;
     NSInteger deletingIndex;
     NSInteger sampleCount;
     NSInteger idleCount;
+    NSInteger lastSelectedIndex;
     NSTimer *recordingTimer;
     NSTimer *sampleTimer;
     NSTimer *idleTimer;
@@ -48,19 +50,20 @@
 @property (nonatomic, retain) IBOutlet UIImageView *wheelView1;
 @property (nonatomic, retain) IBOutlet UIImageView *wheelView2;
 @property (nonatomic, retain) IBOutlet UIView *spectrumView;
+@property (nonatomic, retain) IBOutlet UIImageView *guideView;
 @property (nonatomic, retain) NSMutableArray *tagList;
 @property (nonatomic, retain) AVAudioRecorder *mRecorder;
 
--(void)         backAction:(id)sender;
 -(void)         stopRecording;
 -(NSString *)   stringForDuration:(NSTimeInterval)duration;
 -(IBAction)     recordOrPause:(id)sender;
 -(IBAction)     tagForTime:(id)sender;
+-(IBAction)     saveAndBack:(id)sender;
 -(void)         addTagView;
 -(void)         initLayout;
 -(void)         writeAudioIndexToFile;
--(void)         reloadTableViewDataSource;
--(void)         doneLoadingTableViewData;
+//-(void)         reloadTableViewDataSource;
+//-(void)         doneLoadingTableViewData;
 -(void)         sampleSurroundVoice;  //周围环境声音采样
 -(void)         showWaitingView;
 -(void)         cancelWaitingView;
