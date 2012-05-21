@@ -161,7 +161,11 @@
         
         UIButton *editingBtn = (UIButton *)[cell.contentView viewWithTag:TAG_EDITING_BUTTON2];
         CGRect rect1 = editingBtn.frame;
-        rect1.origin.x = tableView.frame.size.width * 7.0f / 8;
+        if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+            rect1.origin.x = 274;
+        }else{
+            rect1.origin.x = 434;
+        }
         editingBtn.frame = rect1;
         [editingBtn addTarget:self action:@selector(editTagTitle:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -557,80 +561,96 @@
 
 -(IBAction) addTag:(id)sender{
     
-    //更新数据源
-    NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:tagSliderView.currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
-    [indexList insertObject:newDict atIndex:indexList.count - 1 - hightlightedIndex];
-    [newDict release];    
-    
-    //插入标记视图
-    UIView *newTagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
-    
-    UILabel *tagCountLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-    tagCountLabel.text = [NSString stringWithFormat:@"%d", hightlightedIndex + 2];
-    
-    UILabel *tagTimeLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
-    tagTimeLabel.text = [NSString stringWithFormat:@"%@", tagSliderView.currentTimeStr];
-    tagTimeLabel.hidden = YES;
-    
-    CGRect rect = newTagView.frame;
-    rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
-    if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
-        rect.size.height = 85;
-        
-        UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
-        pointView.frame = CGRectMake(newTagView.frame.size.width / 2 - 16 / 2, pointView.frame.origin.y, 16, 70);
-        
-        tagCountLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagCountLabel.frame.size.width / 2, 53, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
-        tagCountLabel.font = [UIFont systemFontOfSize:13];
-        
-        tagTimeLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagTimeLabel.frame.size.width / 2, 69, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
-    }else{
-        rect.size.height = 95;
-        
-        UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
-        pointView.frame = CGRectMake(newTagView.frame.size.width / 2 - 18 / 2, pointView.frame.origin.y, 18, 80);
-        
-        tagCountLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagCountLabel.frame.size.width / 2, 60, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
-        tagCountLabel.font = [UIFont systemFontOfSize:12];
-        
-        tagTimeLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagTimeLabel.frame.size.width / 2, 78, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
-    }
-    newTagView.frame = rect;
-    
-    NSInteger index = tagSliderView.tagViews.count - 1 - hightlightedIndex;
-    [tagSliderView addTagView:newTagView atIndex:index];  
-    [tagSliderView.positionPercentage insertObject:[NSNumber numberWithFloat:tagSliderView.progress] atIndex:index];
-    
-    //刷新标记序号
-    NSInteger count = indexList.count - 1 - (hightlightedIndex + 2);
-    for(NSInteger i = 0; i <= count; i++){
-        NSLog(@"looping>..");
-        UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
-        UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
-        countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - 1 - i + 1];        
-    }    
-    
-    //刷新列表视图
-    [myTableView beginUpdates];
-    [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:(indexList.count - 2 - hightlightedIndex) inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
-    [myTableView endUpdates];    
-    
-    [myTableView beginUpdates];        
-    NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
-    for(NSInteger i = 0; i < indexList.count; i++){
-        if(i != indexList.count - 2 - hightlightedIndex){
-            NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
-            [rowIndexPaths addObject:temp];
+    BOOL tagExist = NO;
+    for(NSDictionary *dict in indexList){
+        NSString *timeStr = [dict objectForKey:kCurrentTime];
+        if([tagSliderView.currentTimeStr isEqualToString:timeStr]){
+            tagExist = YES;
+            break;
         }
     }
-    [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-    [myTableView endUpdates];   
-    [rowIndexPaths release];
     
-    hightlightedIndex++;
-    [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];   
-     
-    didEdit = YES;
+    if(!tagExist){
+        //更新数据源
+        NSDictionary *newDict = [[NSDictionary alloc] initWithObjectsAndKeys:tagSliderView.currentTimeStr, kCurrentTime, @"未命名", kTagTitle, nil];
+        [indexList insertObject:newDict atIndex:indexList.count - 1 - hightlightedIndex];
+        [newDict release];    
+        
+        //插入标记视图
+        UIView *newTagView = [[[NSBundle mainBundle] loadNibNamed:@"TagView" owner:self options:nil] lastObject];
+        
+        UILabel *tagCountLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+        tagCountLabel.text = [NSString stringWithFormat:@"%d", hightlightedIndex + 2];
+        
+        UILabel *tagTimeLabel = (UILabel *)[newTagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
+        tagTimeLabel.text = [NSString stringWithFormat:@"%@", tagSliderView.currentTimeStr];
+        tagTimeLabel.hidden = YES;
+        
+        CGRect rect = newTagView.frame;
+        rect.origin.x = tagSliderView.frame.size.width * tagSliderView.progress - rect.size.width / 2;
+        if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+            rect.size.height = 85;
+            
+            UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
+            pointView.frame = CGRectMake(newTagView.frame.size.width / 2 - 16 / 2, pointView.frame.origin.y, 16, 70);
+            
+            tagCountLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagCountLabel.frame.size.width / 2, 53, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
+            tagCountLabel.font = [UIFont systemFontOfSize:13];
+            
+            tagTimeLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagTimeLabel.frame.size.width / 2, 69, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
+        }else{
+            rect.size.height = 95;
+            
+            UIImageView *pointView = (UIImageView *)[newTagView viewWithTag:TAG_TAGVIEW_POINT];
+            pointView.frame = CGRectMake(newTagView.frame.size.width / 2 - 18 / 2, pointView.frame.origin.y, 18, 80);
+            
+            tagCountLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagCountLabel.frame.size.width / 2, 60, tagCountLabel.frame.size.width, tagCountLabel.frame.size.height);
+            tagCountLabel.font = [UIFont systemFontOfSize:12];
+            
+            tagTimeLabel.frame = CGRectMake(newTagView.frame.size.width / 2 - tagTimeLabel.frame.size.width / 2, 78, tagTimeLabel.frame.size.width, tagTimeLabel.frame.size.height);
+        }
+        newTagView.frame = rect;
+        
+        NSInteger index = tagSliderView.tagViews.count - 1 - hightlightedIndex;
+        [tagSliderView addTagView:newTagView atIndex:index];  
+        [tagSliderView.positionPercentage insertObject:[NSNumber numberWithFloat:tagSliderView.progress] atIndex:index];
+        
+        //刷新标记序号
+        NSInteger count = indexList.count - 1 - (hightlightedIndex + 2);
+        for(NSInteger i = 0; i <= count; i++){
+            NSLog(@"looping>..");
+            UIView *tagView = [tagSliderView.tagViews objectAtIndex:i];
+            UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
+            countLabel.text = [NSString stringWithFormat:@"%d", indexList.count - 1 - i + 1];        
+        }    
+        
+        //刷新列表视图
+        [myTableView beginUpdates];
+        [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:(indexList.count - 2 - hightlightedIndex) inSection:0]] withRowAnimation:UITableViewRowAnimationRight];
+        [myTableView endUpdates];    
+        
+        [myTableView beginUpdates];        
+        NSMutableArray *rowIndexPaths = [[NSMutableArray alloc] init];
+        for(NSInteger i = 0; i < indexList.count; i++){
+            if(i != indexList.count - 2 - hightlightedIndex){
+                NSIndexPath *temp = [NSIndexPath indexPathForRow:i inSection:0];
+                [rowIndexPaths addObject:temp];
+            }
+        }
+        [myTableView reloadRowsAtIndexPaths:rowIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [myTableView endUpdates];   
+        [rowIndexPaths release];
+        
+        hightlightedIndex++;
+        [myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - hightlightedIndex) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];   
+        
+        didEdit = YES; 
+        
+    }else{
+        
+        [self showOverlayViewWithMessage:@"时间点重复"];
+    }   
+
 }
 
 -(IBAction) stop:(id)sender{
@@ -663,6 +683,7 @@
     self.navigationItem.leftBarButtonItem = buttonItem;
     [buttonItem release];
     
+    /*
     UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [doneButton setImage:[UIImage imageNamed:@"button_done.png"] forState:UIControlStateNormal];
     [doneButton setImage:[UIImage imageNamed:@"button_done_hover.png"] forState:UIControlStateHighlighted];
@@ -671,7 +692,7 @@
     UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
     self.navigationItem.rightBarButtonItem = buttonItem2;
     [buttonItem2 release];
-    
+    */
     self.navigationItem.title = [dataInfo objectForKey:kTitle];
     
     tagSliderView = [[TagSliderView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, sliderBackView.frame.size.height) andTotalTimeStr:[dataInfo objectForKey:kDuration]];

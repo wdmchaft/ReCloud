@@ -10,10 +10,12 @@
 #import <AVFoundation/AVFoundation.h>
 #import "EGORefreshTableHeaderView.h"
 
+
 @interface RecordingViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioRecorderDelegate>{
     
     UIView *editingView;
     UIView *waitingView;
+    UIView *toastView;
     //EGORefreshTableHeaderView *refreshHeaderView;
     
     NSMutableArray *idleList;
@@ -59,6 +61,7 @@
 -(IBAction)     recordOrPause:(id)sender;
 -(IBAction)     tagForTime:(id)sender;
 -(IBAction)     saveAndBack:(id)sender;
+-(void)         deleteTag:(id)sender;
 -(void)         addTagView;
 -(void)         initLayout;
 -(void)         writeAudioIndexToFile;
@@ -67,6 +70,8 @@
 -(void)         sampleSurroundVoice;  //周围环境声音采样
 -(void)         showWaitingView;
 -(void)         cancelWaitingView;
+-(void)         showToastViewWithMessage:(NSString *)str;
+-(void)         cancelToastView;
 -(void)         deleteTagViewAtIndex:(NSInteger)index;
 
 @end

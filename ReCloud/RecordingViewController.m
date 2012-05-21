@@ -22,6 +22,7 @@
 @synthesize spectrumView;
 @synthesize guideView;
 
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -41,7 +42,7 @@
 
 -(void) dealloc{
     self.tagList = nil;
-    self.mRecorder = nil;    
+    self.mRecorder = nil; 
     [tagViews release];
     [idleList release];
     [statusStrs release];
@@ -91,6 +92,8 @@
     idleTime = -1.0f;
     rotatingAngle = 0.0f;
     lastSelectedIndex = -1;
+    totalSamplePeak = 0;
+    sampleCount = 0;
     tagViews = [[NSMutableArray alloc] init];
     idleList = [[NSMutableArray alloc] init];
     statusStrs = [[NSArray alloc] initWithObjects:@"获取环境噪音...", @"正在优化...", @"加载录音模块...", @"开始录音！", nil];
@@ -181,6 +184,15 @@
     }
     
     return cell;
+}
+
+-(void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.row != tagList.count - 1){
+        if(editingStyle == UITableViewCellEditingStyleDelete){
+            deletingIndex = indexPath.row;
+            [self deleteTag:nil];
+        }
+    }
 }
 
 #pragma mark - UITableView Delegate Methods
@@ -281,25 +293,53 @@
     if(sampleCount < 30){
         [mRecorder updateMeters];
         NSLog(@"sampling: %f", [mRecorder peakPowerForChannel:0] + 160);
-        totalSamplePeak += ([mRecorder peakPowerForChannel:0] + 160);
-        sampleCount++;
-    }else{
-        
-        if(waitingView != nil){
-            
+        totalSamplePeak += ([mRecorder peakPowerForChannel:0] + 160);        
+    }else{  
+        if(sampleCount == 30){
+            averageSamplePeak = totalSamplePeak / sampleCount;
+            powerPerSpectrumItem = (160 - averageSamplePeak) / SPECTRUM_ITEM_COUNT;
+            NSLog(@"averageSamplePeak: %f, powerPerSpectrumItem: %f", averageSamplePeak, powerPerSpectrumItem);
         }
-        
-        [sampleTimer invalidate];
-        sampleTimer = nil;
-        [mRecorder stop];
-        self.mRecorder = nil;
-        
-        averageSamplePeak = totalSamplePeak / sampleCount;
-        powerPerSpectrumItem = (160 - averageSamplePeak) / SPECTRUM_ITEM_COUNT;
-        NSLog(@"averageSamplePeak: %f, powerPerSpectrumItem: %f", averageSamplePeak, powerPerSpectrumItem);
-        
-        [self cancelWaitingView];
+        if(sampleCount == 50){
+            if(waitingView != nil){
+                UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
+                [UIView animateWithDuration:0.3 animations:^{
+                    CGRect rect = labelView.frame;
+                    rect.origin.y -= 50;
+                    labelView.frame = rect;
+                }];
+            }
+        }
+        if(sampleCount == 80){
+            if(waitingView != nil){
+                UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
+                [UIView animateWithDuration:0.3 animations:^{
+                    CGRect rect = labelView.frame;
+                    rect.origin.y -= 50;
+                    labelView.frame = rect;
+                }];
+            }
+        }
+        if(sampleCount == 90){
+            if(waitingView != nil){
+                UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
+                [UIView animateWithDuration:0.3 animations:^{
+                    CGRect rect = labelView.frame;
+                    rect.origin.y -= 50;
+                    labelView.frame = rect;
+                }];
+            }
+            
+            [sampleTimer invalidate];
+            sampleTimer = nil;
+            [mRecorder stop];
+            mRecorder = nil;
+            
+            [self performSelector:@selector(cancelWaitingView) withObject:nil afterDelay:0.5];            
+        }
     }
+    
+    sampleCount++;
 }
 
 -(void) checkingIdleState:(NSTimer *)timer{
@@ -357,7 +397,7 @@
     if(160 + [mRecorder peakPowerForChannel:0] - averageSamplePeak > 0){
         NSInteger temp =  (int)((160 + [mRecorder peakPowerForChannel:0] - averageSamplePeak) / powerPerSpectrumItem) + 1;
         hightlightedCount = MIN(temp, SPECTRUM_ITEM_COUNT);
-        NSLog(@"hightlightedCount: %d", hightlightedCount); 
+        //NSLog(@"hightlightedCount: %d", hightlightedCount); 
     }
     
     for(NSInteger i = 0 ; i < SPECTRUM_ITEM_COUNT; i++){
@@ -391,6 +431,18 @@
     deletingTagView = nil;
 }
 
+-(void) willRemoveToastView{
+    [self performSelector:@selector(cancelToastView) withObject:nil afterDelay:0.5];
+}
+
+-(void) didRemoveToastView{
+    if(toastView != nil){
+        [toastView removeFromSuperview];
+        toastView = nil;
+    }
+    [self removeObserver:self forKeyPath:@"recording"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
+}
 
 #pragma mark - Instance Methods
 
@@ -469,10 +521,10 @@
     }
 }
 
--(IBAction) saveAndBack:(id)sender{
+-(IBAction) saveAndBack:(id)sender{    
     [self stopRecording];
-    [self removeObserver:self forKeyPath:@"recording"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
+    [self showToastViewWithMessage:@"保存成功"];
 }
 
 -(void) editTagTitle:(id)sender{        
@@ -532,12 +584,14 @@
     [self cancelEditing:nil];
 }
 
--(void) deleteTag:(id)sender{      
+-(void) deleteTag:(id)sender{
+    /*
     UIButton *clicked = (UIButton *)sender;
     UITableViewCell *cell = (UITableViewCell *)[[clicked superview] superview];
     NSIndexPath *path = [myTableView indexPathForCell:cell];
     deletingIndex = path.row;
-    
+    */
+     
     NSLog(@"deletingIndex:%d", deletingIndex);
     
     //更新数据源
@@ -568,6 +622,12 @@
         UIView *tagView = [tagViews objectAtIndex:i];
         UILabel *countLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_COUNTLABEL];
         countLabel.text = [NSString stringWithFormat:@"%d", tagViews.count - 1 - i];
+    }
+    
+    if(tagList.count == 1){   //注意没标记时tagList仍然有一个临时填充项，所以大小为1
+        [UIView animateWithDuration:0.3 animations:^{
+            guideView.alpha = 1.0;
+        }];
     }
     
 }
@@ -764,7 +824,7 @@
         label.textColor = [UIColor whiteColor];
         label.font = [UIFont systemFontOfSize:17];
         label.backgroundColor = [UIColor clearColor];
-        label.frame = CGRectMake(5, 7 + 50 * i, 100, 27);
+        label.frame = CGRectMake(-8, 7 + 50 * i, 150, 27);
         label.text = [statusStrs objectAtIndex:i];
         label.tag = BASE_TAG_WAITINGVIEW_LABEL + i;        
         [labelView addSubview:label];
@@ -790,6 +850,34 @@
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(removeWaitingView)];
         waitingView.alpha = 0.0;
+        [UIView commitAnimations];
+    }
+}
+
+-(void) showToastViewWithMessage:(NSString *)str{
+    toastView = [[[NSBundle mainBundle] loadNibNamed:@"OverlayView" owner:self options:nil] objectAtIndex:0];
+    UILabel *msgLabel = (UILabel *)[toastView viewWithTag:TAG_OVERLAY_MESSAGE_LABEL_PORT];
+    msgLabel.text = str;
+    toastView.frame = CGRectMake(0, 0, toastView.frame.size.width, toastView.frame.size.height);
+    toastView.alpha = 0.0;
+    [self.view addSubview:toastView];
+    [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(willRemoveToastView)];
+    toastView.alpha = 1.0;
+    [UIView commitAnimations];
+}
+
+-(void) cancelToastView{
+    if(toastView != nil){
+        [UIView beginAnimations:nil context:UIGraphicsGetCurrentContext()];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(didRemoveToastView)];
+        toastView.alpha = 0.0;
         [UIView commitAnimations];
     }
 }

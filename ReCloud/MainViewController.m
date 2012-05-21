@@ -54,14 +54,14 @@
     
     viewingLocal = YES;
     lastSelectedIndex = -1;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalView:) name:NOTIFY_DISMISS_MODAL_VIEW object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSubViewController:) name:NOTIFY_DISMISS_MODAL_VIEW object:nil];
     [self initLayout];    
 }
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     NSLog(@"%s", __FUNCTION__);
-    
+
     [self refreshAudioList];
     [myTableView reloadData];
 }
@@ -101,7 +101,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if(cell == nil){        
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MainViewCell" owner:self options:nil] lastObject];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator; 
+        //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator; 
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } 
     
@@ -197,7 +197,9 @@
 
 #pragma mark - NSNotification Callback Methods
 
--(void) dismissModalView:(NSNotification *)notification{
+-(void) dismissSubViewController:(NSNotification *)notification{
+    NSLog(@"%s", __FUNCTION__);
+    
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -390,11 +392,10 @@
     settingBtn.frame = CGRectMake(0, 0, 36, 28);
     UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingBtn];
     self.navigationItem.rightBarButtonItem = rightButtonItem;
-    [rightButtonItem release];
-    
+    [rightButtonItem release];    
     
     UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
-    logoView.frame = CGRectMake(0, 0, 122, 37);
+    logoView.frame = CGRectMake(0, 0, 61, 18);
     self.navigationItem.titleView = logoView;
     [logoView release];
     

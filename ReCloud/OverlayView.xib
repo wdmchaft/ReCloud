@@ -170,6 +170,7 @@
 							<reference ref="391910962"/>
 						</array>
 						<reference key="parent" ref="0"/>
+						<string key="objectName">portview</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">-1</int>
@@ -200,6 +201,7 @@
 							<reference ref="191539464"/>
 						</array>
 						<reference key="parent" ref="0"/>
+						<string key="objectName">landview</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">6</int>

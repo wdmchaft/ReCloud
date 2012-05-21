@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B635DE2F156A280600A93AB6 /* button_edit1.png in Resources */ = {isa = PBXBuildFile; fileRef = B635DE2E156A280600A93AB6 /* button_edit1.png */; };
+		B635DE32156A284900A93AB6 /* button_edit1_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = B635DE31156A284900A93AB6 /* button_edit1_hover.png */; };
 		B69F883A153E9B1E003044BF /* SliderBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B69F8839153E9B1E003044BF /* SliderBlockView.xib */; };
 		B6A11BDB1547AC0100456A6E /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6A11BDA1547AC0100456A6E /* TagView.xib */; };
 		B6A4E3591564AD8C00C27B15 /* list_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = B6A4E3581564AD8C00C27B15 /* list_bg.png */; };
@@ -98,6 +100,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B635DE2E156A280600A93AB6 /* button_edit1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_edit1.png; sourceTree = "<group>"; };
+		B635DE31156A284900A93AB6 /* button_edit1_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_edit1_hover.png; sourceTree = "<group>"; };
 		B69F8839153E9B1E003044BF /* SliderBlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderBlockView.xib; sourceTree = "<group>"; };
 		B6A11BDA1547AC0100456A6E /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
 		B6A4E3581564AD8C00C27B15 /* list_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_bg.png; sourceTree = "<group>"; };
@@ -362,6 +366,8 @@
 				B6AF9650154BDF0300CA87A4 /* overlay2.png */,
 				B6D235C71560E0E400598F8A /* bottom_01.png */,
 				B6A973FC155CBEC9004B471D /* button_edit.png */,
+				B635DE2E156A280600A93AB6 /* button_edit1.png */,
+				B635DE31156A284900A93AB6 /* button_edit1_hover.png */,
 				B6D235C91560E11A00598F8A /* button_back.png */,
 				B6D235CB1560E3BE00598F8A /* button_setting.png */,
 				B6D235CD1560E58000598F8A /* button_done.png */,
@@ -535,6 +541,8 @@
 				B6C9AF9D1565F7B100F85F4E /* button_i_save.png in Resources */,
 				B6C9AFA01565F7BF00F85F4E /* button_back02_hover.png in Resources */,
 				B6C9AFA11565F7BF00F85F4E /* button_back02.png in Resources */,
+				B635DE2F156A280600A93AB6 /* button_edit1.png in Resources */,
+				B635DE32156A284900A93AB6 /* button_edit1_hover.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

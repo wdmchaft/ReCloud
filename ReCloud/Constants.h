@@ -67,7 +67,7 @@
 #define NOTIFY_END_SLIDE @"nEndSlideSliderView"
 #define NOTIFY_SLIDING @"nSlidingSliderView"
 #define NOTIFY_SLIDERVIEW_X_CHANGED @"nSliderViewXposChanged"
-#define NOTIFY_DISMISS_MODAL_VIEW @"dismissModalView"
+#define NOTIFY_DISMISS_MODAL_VIEW @"nDismissModalView"
 
 
 
