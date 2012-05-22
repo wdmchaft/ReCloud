@@ -24,7 +24,7 @@
         durationStr = str;
         
         UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 70)];
-        backView.backgroundColor = CUSTOM_COLOR(90.0, 90.0, 90.0); 
+        backView.backgroundColor = CUSTOM_COLOR(42.0, 42.0, 44.0); 
         backView.tag = TAG_SLIDER_BACK_VIEW;
         [self addSubview:backView];
         [backView release];
@@ -42,7 +42,7 @@
         durationLabel.textAlignment = UITextAlignmentCenter;
         durationLabel.font = [UIFont systemFontOfSize:32];
         durationLabel.textColor = [UIColor whiteColor];
-        durationLabel.text = [NSString stringWithFormat:@"00:00:00/%@", str];
+        durationLabel.text = [NSString stringWithString:@"00:00:00"];
         durationLabel.center = CGPointMake(backView.frame.size.width / 2, backView.frame.size.height / 2);
         durationLabel.tag = TAG_TAGSLIDERVIEW_PROGRESS_LABEL;
         [self addSubview:durationLabel];
@@ -62,6 +62,17 @@
         [self addSubview:blockView];
         [self bringSubviewToFront:blockView];
         self.currentTimeStr = blockLabel.text;
+        
+        //时间刻度
+        float eachTime = duration / 6;
+        for(NSInteger i = 0; i < 6; i++){
+            UIView *timepointView = [[[NSBundle mainBundle] loadNibNamed:@"TimePointView" owner:self options:nil] lastObject];
+            timepointView.frame = CGRectMake((frame.size.width / 6) * i, 70, 60, 15);
+            timepointView.tag = BASE_TAG_TIMEPOINT_VIEW + i;
+            UILabel *timeLabel = (UILabel *)[timepointView viewWithTag:TAG_TIMEPOINT_LABEL];
+            timeLabel.text = [NSString stringWithFormat:@"%@", [TagSliderView stringForDuration:eachTime * i]];
+            [self addTagView:timepointView];
+        }
         
         positionPercentage = [[NSMutableArray alloc] init];
         tagViews = [[NSMutableArray alloc] init];
@@ -95,7 +106,7 @@
     self.currentTimeStr = timeLabel.text;
     
     UILabel *progressLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
-    progressLabel.text = [NSString stringWithFormat:@"%@/%@", self.currentTimeStr, durationStr];
+    progressLabel.text = [NSString stringWithFormat:@"%@", self.currentTimeStr];
 
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:currentXpos], kSliderViewBlockXpos, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_WILL_SLIDE object:self userInfo:dict];
@@ -124,7 +135,7 @@
     self.currentTimeStr = timeLabel.text;
     
     UILabel *progressLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
-    progressLabel.text = [NSString stringWithFormat:@"%@/%@", self.currentTimeStr, durationStr];
+    progressLabel.text = [NSString stringWithFormat:@"%@", self.currentTimeStr];
     
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:currentXpos], kSliderViewBlockXpos, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_SLIDING object:self userInfo:dict];
@@ -209,7 +220,7 @@
     blockLabel.text = [TagSliderView stringForDuration:progress * duration];  
     
     UILabel *progressLabel = (UILabel *)[self viewWithTag:TAG_TAGSLIDERVIEW_PROGRESS_LABEL];
-    progressLabel.text = [NSString stringWithFormat:@"%@/%@", self.currentTimeStr, durationStr];
+    progressLabel.text = [NSString stringWithFormat:@"%@", self.currentTimeStr];
 }
 
 -(void) portraitLayout{
@@ -252,6 +263,11 @@
         
         UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
         timeLabel.frame = CGRectMake(tagView.frame.size.width / 2 - timeLabel.frame.size.width / 2, 69, timeLabel.frame.size.width, timeLabel.frame.size.height);        
+    }
+    
+    for(NSInteger j = 0; j < 6; j++){
+        UIView *timePointView = [self viewWithTag:BASE_TAG_TIMEPOINT_VIEW + j];
+        timePointView.frame = CGRectMake((self.frame.size.width / 6) * j, 70, 60, 15);
     }
 }
 
@@ -296,7 +312,12 @@
         
         UILabel *timeLabel = (UILabel *)[tagView viewWithTag:TAG_TAGVIEW_TIMELABEL];
         timeLabel.frame = CGRectMake(tagView.frame.size.width / 2 - timeLabel.frame.size.width / 2, 78, timeLabel.frame.size.width, timeLabel.frame.size.height);
-    }    
+    }   
+    
+    for(NSInteger j = 0; j < 6; j++){
+        UIView *timePointView = [self viewWithTag:BASE_TAG_TIMEPOINT_VIEW + j];
+        timePointView.frame = CGRectMake((self.frame.size.width / 6) * j, 80, 60, 15);
+    }
 }
 
 +(NSString *) stringForDuration:(NSTimeInterval)duration{

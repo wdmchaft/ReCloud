@@ -214,6 +214,10 @@
     return 49;
 }
 
+-(NSString *) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return @"删除";
+}
+
 /*
 #pragma mark - UIScrollViewDelegate Methods
 
@@ -310,7 +314,7 @@
                 }];
             }
         }
-        if(sampleCount == 80){
+        if(sampleCount == 70){
             if(waitingView != nil){
                 UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
                 [UIView animateWithDuration:0.3 animations:^{
@@ -320,7 +324,7 @@
                 }];
             }
         }
-        if(sampleCount == 90){
+        if(sampleCount == 80){
             if(waitingView != nil){
                 UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
                 [UIView animateWithDuration:0.3 animations:^{
@@ -354,6 +358,8 @@
         }
     }else{
         if(isIdle){
+            NSLog(@"Idle!!!");
+            
             idleTime = mRecorder.currentTime;
             isIdle = NO;
             
@@ -362,6 +368,7 @@
             [idlePoint release];
             
             UIView *tempView = [[[NSBundle mainBundle] loadNibNamed:@"TempView" owner:self options:nil] lastObject];
+            tempView.alpha = 0;
             tempView.frame = CGRectMake(50.0, 40.0, tempView.frame.size.width, tempView.frame.size.height);
             tempView.tag = 20000 + tempIndex;
             UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -719,9 +726,11 @@
     
     [tagBackView addSubview:tagView];
     
+    /*
     [UIView animateWithDuration:0.5 animations:^{
         tagView.alpha = 1.0;
     }];
+     */
     
 }
 

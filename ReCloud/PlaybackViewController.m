@@ -218,9 +218,6 @@
     }
     lastSelectedIndex = indexPath.row;  
     
-    NSLog(@"hoverView: %@", hoverView);
-    NSLog(@"last index: %d", lastSelectedIndex);
-    
     NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
     float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
     float currentTime = [TagSliderView durationForString:[dict objectForKey:kCurrentTime]];
@@ -232,6 +229,10 @@
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 49;
+}
+
+-(NSString *) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return @"删除";
 }
 
 #pragma mark - UINavigationController Delegate Methods

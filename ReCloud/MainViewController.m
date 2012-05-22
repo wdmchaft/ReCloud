@@ -9,7 +9,6 @@
 #import "MainViewController.h"
 #import "RecordingViewController.h"
 #import "PlaybackViewController.h"
-#import "MAlertView.h"
 #import "Constants.h"
 #import "AppDelegate.h"
 #import "UINavigationBar+Customized.h"
@@ -188,6 +187,10 @@
     return 49;
 }
 
+-(NSString *) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return @"删除";
+}
+
 #pragma mark - UIView Animation Callback Methods
 
 -(void) removeEditingView{
@@ -235,6 +238,7 @@
 
 
 -(void) loginAction:(id)sender{
+    /*
     editLabel.text = @"edit";
     [self doneEditingAction:nil];
     
@@ -243,6 +247,7 @@
     [alertView addTextField:[[[UITextField alloc] init] autorelease] placeHolder:@"Password"];
     [alertView show];
     [alertView release];
+     */
     
 }
 
