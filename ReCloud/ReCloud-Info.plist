@@ -10,7 +10,6 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string></string>
 		<string>ico_57.png</string>
 		<string>ico_114.png</string>
 	</array>
@@ -29,7 +28,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>cn.kevin.test.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>cn.kevin.test</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

@@ -53,7 +53,6 @@
     
     viewingLocal = YES;
     lastSelectedIndex = -1;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSubViewController:) name:NOTIFY_DISMISS_MODAL_VIEW object:nil];
     [self initLayout];    
 }
 
@@ -69,7 +68,6 @@
 {
     self.myTableView = nil;
     self.guideView = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];    
 }
@@ -196,14 +194,6 @@
 -(void) removeEditingView{
     [editingView removeFromSuperview];
     editingView = nil;
-}
-
-#pragma mark - NSNotification Callback Methods
-
--(void) dismissSubViewController:(NSNotification *)notification{
-    NSLog(@"%s", __FUNCTION__);
-    
-    [self dismissModalViewControllerAnimated:YES];
 }
 
 

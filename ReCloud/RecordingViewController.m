@@ -339,7 +339,7 @@
             [mRecorder stop];
             mRecorder = nil;
             
-            [self performSelector:@selector(cancelWaitingView) withObject:nil afterDelay:0.5];            
+            [self performSelector:@selector(cancelWaitingView) withObject:nil afterDelay:0.3];           
         }
     }
     
@@ -448,7 +448,7 @@
         toastView = nil;
     }
     [self removeObserver:self forKeyPath:@"recording"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark - Instance Methods
@@ -530,7 +530,6 @@
 
 -(IBAction) saveAndBack:(id)sender{    
     [self stopRecording];
-    //[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_DISMISS_MODAL_VIEW object:self];
     [self showToastViewWithMessage:@"保存成功"];
 }
 

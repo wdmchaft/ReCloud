@@ -42,7 +42,6 @@
 						<string key="NSFrame">{{7, 0}, {16, 70}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIAutoresizesSubviews">NO</bool>
 						<int key="IBUITag">101</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -54,7 +53,7 @@
 					</object>
 					<object class="IBUILabel" id="80636197">
 						<reference key="NSNextResponder" ref="985596422"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">-2147483356</int>
 						<string key="NSFrame">{{-6, 68}, {43, 16}}</string>
 						<reference key="NSSuperview" ref="985596422"/>
 						<reference key="NSWindow"/>

@@ -210,6 +210,8 @@
     UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
     hoverView.alpha = 1.0;   
     
+    NSLog(@"lastSelectedIndex: %d", lastSelectedIndex);
+    
     if(lastSelectedIndex >= 0 && lastSelectedIndex != indexPath.row){
         NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
         UITableViewCell *lastSelectedCell = [tableView cellForRowAtIndexPath:lastPath];
@@ -222,6 +224,7 @@
     float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
     float currentTime = [TagSliderView durationForString:[dict objectForKey:kCurrentTime]];
     [tagSliderView setProgress:currentTime / duration];
+    
     if(playing){
         audioPlayer.currentTime = tagSliderView.progress * audioPlayer.duration;
     }    
@@ -311,6 +314,9 @@
                 break;
             }
         }
+        
+        NSLog(@"lastSelectedIndex: %d", lastSelectedIndex);
+        
         if(found != -1){
             if(lastSelectedIndex != indexList.count - 1 - found){
                 //[myTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
@@ -338,6 +344,8 @@
                 UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
                 UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
                 hoverView.alpha = 0.0;
+                
+                lastSelectedIndex = -1;
             }            
         }
         
@@ -370,6 +378,47 @@
         }        
     }
     
+    NSLog(@"found: %d, lastSelectedIndex: %d", found, lastSelectedIndex);
+    if(found != -1){
+        if(lastSelectedIndex != indexList.count - 1 - found){            
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 1.0;
+            
+            if(lastSelectedIndex >= 0){
+                UITableViewCell *lastSeletedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+                UIImageView *lastHoverView = (UIImageView *)[lastSeletedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+                lastHoverView.alpha = 0.0;
+            }            
+            lastSelectedIndex = indexList.count - 1 - found;
+        }
+    }else{
+        if(lastSelectedIndex >= 0){
+            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
+            hoverView.alpha = 0.0;
+            
+            lastSelectedIndex = -1;
+        }        
+    }
+    
+    hightlightedIndex = found;
+}
+
+-(void) sliding:(NSNotification *)notification{
+    NSDictionary *dict = [notification userInfo];
+    float x = [(NSNumber *)[dict objectForKey:kSliderViewBlockXpos] floatValue];
+    
+    NSInteger found = -1;
+    for(NSInteger i = 0; i < indexList.count; i++){
+        UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
+        if(x >= tagView.frame.origin.x + tagView.frame.size.width / 2){ 
+            found = i;
+        }else{
+            break;
+        }        
+    }
+    
     NSLog(@"found: %d", found);
     if(found != -1){
         if(lastSelectedIndex != indexList.count - 1 - found){            
@@ -389,6 +438,8 @@
             UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
             UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
             hoverView.alpha = 0.0;
+            
+            lastSelectedIndex = -1;
         }        
     }
     
@@ -407,47 +458,6 @@
         }
     }
 }
-
-
--(void) sliding:(NSNotification *)notification{
-    NSDictionary *dict = [notification userInfo];
-    float x = [(NSNumber *)[dict objectForKey:kSliderViewBlockXpos] floatValue];
-    
-    NSInteger found = -1;
-    for(NSInteger i = 0; i < indexList.count; i++){
-        UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
-        if(x >= tagView.frame.origin.x + tagView.frame.size.width / 2){ 
-            found = i;
-        }else{
-            break;
-        }        
-    }
-    
-    //NSLog(@"found: %d", found);
-    if(found != -1){
-        if(lastSelectedIndex != indexList.count - 1 - found){            
-            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexList.count - 1 - found) inSection:0]];
-            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
-            hoverView.alpha = 1.0;
-            
-            if(lastSelectedIndex >= 0){
-                UITableViewCell *lastSeletedCell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
-                UIImageView *lastHoverView = (UIImageView *)[lastSeletedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
-                lastHoverView.alpha = 0.0;
-            }            
-            lastSelectedIndex = indexList.count - 1 - found;
-        }
-    }else{
-        if(lastSelectedIndex >= 0){
-            UITableViewCell *cell = [myTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
-            UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
-            hoverView.alpha = 0.0;
-        }        
-    }
-    
-    hightlightedIndex = found;
-}
-
 
 #pragma mark - Animation Callback Meethods
 
@@ -531,8 +541,8 @@
     BOOL flag;
     if(audioPlayer == nil){
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[dataInfo objectForKey:kFilename]];
-        NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];
+        NSString *filepath = [[[appDelegate documentPath] stringByAppendingPathComponent:AUDIO_DIR] stringByAppendingPathComponent:[dataInfo objectForKey:kFilename]];        
+        NSURL *newURL = [[NSURL alloc] initFileURLWithPath:filepath];        
         AVAudioPlayer *newPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:newURL error:nil];
         [newURL release];
         self.audioPlayer = newPlayer;
