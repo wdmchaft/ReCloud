@@ -210,7 +210,7 @@
     UIImageView *hoverView = (UIImageView *)[cell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
     hoverView.alpha = 1.0;   
     
-    NSLog(@"lastSelectedIndex: %d", lastSelectedIndex);
+    NSLog(@"%s, lastSelectedIndex: %d", __FUNCTION__, lastSelectedIndex);
     
     if(lastSelectedIndex >= 0 && lastSelectedIndex != indexPath.row){
         NSIndexPath *lastPath = [NSIndexPath indexPathForRow:lastSelectedIndex inSection:0];
@@ -218,7 +218,8 @@
         UIImageView *hoverView = (UIImageView *)[lastSelectedCell.contentView viewWithTag:TAG_CELL2_HOVERVIEW];
         hoverView.alpha = 0.0;        
     }
-    lastSelectedIndex = indexPath.row;  
+    
+    lastSelectedIndex = indexPath.row;      
     
     NSDictionary *dict = [indexList objectAtIndex:indexPath.row];
     float duration = [TagSliderView durationForString:[dataInfo objectForKey:kDuration]];
@@ -300,22 +301,25 @@
 #pragma mark - NSTimer Callback Methods
  
 -(void) updateProgress:(NSTimer *)timer{
+    
     if(audioPlayer != nil && playing){        
         
         float progress = audioPlayer.currentTime / audioPlayer.duration;        
         [tagSliderView setProgress:progress];
         
         NSInteger found = -1;
-        for(NSInteger i = 0; i < tagSliderView.tagViews.count; i++){            
-            UIView *tagView = [tagSliderView.tagViews objectAtIndex:tagSliderView.tagViews.count - 1 - i];
-            if(tagSliderView.frame.size.width * progress >= (tagView.frame.origin.x + tagView.frame.size.width / 2)){                
+        for(NSInteger i = 0; i < indexList.count; i++){
+            UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
+            if(tagSliderView.currentXpos >= tagView.frame.origin.x + tagView.frame.size.width / 5){  
+                //判断条件tagView.frame.size.width除以5而非除以2是因为计算有偏差，要稍作修正
+                
                 found = i;
             }else{
                 break;
-            }
+            }        
         }
         
-        NSLog(@"lastSelectedIndex: %d", lastSelectedIndex);
+        NSLog(@"%s, lastSelectedIndex: %d", __FUNCTION__, lastSelectedIndex);        
         
         if(found != -1){
             if(lastSelectedIndex != indexList.count - 1 - found){
