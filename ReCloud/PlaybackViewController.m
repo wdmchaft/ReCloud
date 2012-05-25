@@ -77,9 +77,9 @@
     [self addObserver:self forKeyPath:@"playing" options:0 context:NULL];
     playing = NO;
     didEdit = NO;
+    idleIndex = 0;
     hightlightedIndex = -1;
     lastSelectedIndex = -1;
-    idleIndex = 0;
     currentOrientation = UIInterfaceOrientationPortrait;
     editingButtons = [[NSMutableArray alloc] init];
     
@@ -307,6 +307,9 @@
         float progress = audioPlayer.currentTime / audioPlayer.duration;        
         [tagSliderView setProgress:progress];
         
+        idleIndex = [self findCurrentIdlePoint];
+        NSLog(@"idleIndex: %d", idleIndex);
+        
         NSInteger found = -1;
         for(NSInteger i = 0; i < indexList.count; i++){
             UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
@@ -319,7 +322,7 @@
             }        
         }
         
-        NSLog(@"%s, lastSelectedIndex: %d", __FUNCTION__, lastSelectedIndex);        
+        //NSLog(@"%s, lastSelectedIndex: %d", __FUNCTION__, lastSelectedIndex);        
         
         if(found != -1){
             if(lastSelectedIndex != indexList.count - 1 - found){
@@ -468,6 +471,8 @@
 -(void) removeEditingView{
     [editingView removeFromSuperview];
     editingView = nil;
+    
+    self.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 -(void) removeSingleTagView{
@@ -513,8 +518,8 @@
 }
 
 -(IBAction) prevSection:(id)sender{
-    if(audioPlayer != nil){
-        if(idleIndex == 0){
+    if(audioPlayer != nil){        
+        if(idleIndex <= 0){
             [self showOverlayViewWithMessage:@"列表为空"];
             return;
         }
@@ -522,23 +527,44 @@
         idleIndex--;
         float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
         [tagSliderView setProgress:idlePoint / audioPlayer.duration];
-        self.audioPlayer.currentTime = idlePoint;
-    }   
-    
+        self.audioPlayer.currentTime = idlePoint;      
+        
+    }    
 }
 
 -(IBAction) nextSection:(id)sender{
-    if(audioPlayer != nil){
-        if(idleIndex == idleList.count - 1){
+    //UIButton *clicked = (UIButton *)sender;    
+    if(audioPlayer != nil){        
+        if(idleIndex >= idleList.count - 1){
             [self showOverlayViewWithMessage:@"列表为空"];
             return;
-        }        
+        }
+        
         idleIndex++;
         float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
         [tagSliderView setProgress:idlePoint / audioPlayer.duration];
-        self.audioPlayer.currentTime = idlePoint;
+        self.audioPlayer.currentTime = idlePoint; 
+        
+        /*
+        float lastIdlePoint = [[idleList objectAtIndex:idleList.count - 1] floatValue];
+        if(audioPlayer.currentTime >= lastIdlePoint){
+            [self showOverlayViewWithMessage:@"列表为空"];
+            return;
+        }
+        
+        clicked.userInteractionEnabled = NO;
+        for(NSInteger i = 0; i < idleList.count; i++){
+            float idlePoint = [[idleList objectAtIndex:i] floatValue];            
+            if(idlePoint > audioPlayer.currentTime){
+                NSLog(@"to next point: %f", idlePoint);
+                
+                self.audioPlayer.currentTime = idlePoint;
+                break;
+            }
+        }
+        clicked.userInteractionEnabled = YES;
+         */
     }
-
 }
 
 -(IBAction) playOrPause:(id)sender{
@@ -676,8 +702,6 @@
         [progressTimer invalidate];
         progressTimer = nil;
         
-        idleIndex = 0;
-        
         [tagSliderView setProgress:0.0];
         
         [self willChangeValueForKey:@"playing"];
@@ -743,6 +767,20 @@
     self.addTagButton.frame = CGRectMake(360, 219, 120, 49);
     [addTagButton setImage:[UIImage imageNamed:@"button_add_h.png"] forState:UIControlStateNormal];
     
+    if(editingView != nil){
+        UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+        textView.frame = CGRectMake(40, 3, 400, 35);
+        
+        UIButton *okBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_OK_BUTTON];
+        okBtn.frame = CGRectMake(120, 40, 120, 28);
+        
+        UIButton *cancelBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
+        cancelBtn.frame = CGRectMake(242, 40, 120, 28);
+        
+        UIImageView *editBg = (UIImageView *)[editingView viewWithTag:TAG_EDITVIEW_BGVIEW];
+        editBg.frame = CGRectMake(0, 0, 480, 300);
+    }
+    
     [myTableView reloadData];    
     [tagSliderView landscapeLayout];
 
@@ -764,6 +802,21 @@
     self.addTagButton.frame = CGRectMake(240, 367, 80, 49);
     [addTagButton setImage:[UIImage imageNamed:@"button_add.png"] forState:UIControlStateNormal];
     
+    if(editingView != nil){
+        UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+        textView.frame = CGRectMake(30, 33, 261, 87);
+        
+        UIButton *okBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_OK_BUTTON];
+        okBtn.frame = CGRectMake(40, 121, 119, 37);
+        
+        UIButton *cancelBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
+        cancelBtn.frame = CGRectMake(160, 121, 119, 37);
+        
+        UIImageView *editBg = (UIImageView *)[editingView viewWithTag:TAG_EDITVIEW_BGVIEW];
+        editBg.frame = CGRectMake(0, 0, 320, 460);
+    }
+    
+    
     [myTableView reloadData];
     [tagSliderView portraitLayout];
 
@@ -782,7 +835,6 @@
     
     editingView = [[[NSBundle mainBundle] loadNibNamed:@"EditingView" owner:self options:nil] lastObject];
     editingView.alpha = 0;
-    editingView.frame = CGRectMake(0.0, 20.0, editingView.frame.size.width, editingView.frame.size.height);
     
     UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
     textView.text = titleLabel.text;
@@ -794,11 +846,43 @@
     UIButton *cancelButton = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
     [cancelButton addTarget:self action:@selector(cancelEditing:) forControlEvents:UIControlEventTouchUpInside];
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate.window addSubview:editingView];
+    if(currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown){
+        editingView.frame = CGRectMake(0, 0, 320, 460);
+        
+        UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+        textView.frame = CGRectMake(30, 33, 261, 87);
+        
+        UIButton *okBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_OK_BUTTON];
+        okBtn.frame = CGRectMake(40, 121, 119, 37);
+        
+        UIButton *cancelBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
+        cancelBtn.frame = CGRectMake(160, 121, 119, 37);
+        
+        UIImageView *editBg = (UIImageView *)[editingView viewWithTag:TAG_EDITVIEW_BGVIEW];
+        editBg.frame = CGRectMake(0, 0, editingView.frame.size.width, editingView.frame.size.height);
+    }else{
+        editingView.frame = CGRectMake(0, 0, 480, 300);
+        
+        UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
+        textView.frame = CGRectMake(40, 3, 400, 35);
+        
+        UIButton *okBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_OK_BUTTON];
+        okBtn.frame = CGRectMake(120, 40, 120, 28);
+        
+        UIButton *cancelBtn = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
+        cancelBtn.frame = CGRectMake(242, 40, 120, 28);
+        
+        UIImageView *editBg = (UIImageView *)[editingView viewWithTag:TAG_EDITVIEW_BGVIEW];
+        editBg.frame = CGRectMake(0, 0, editingView.frame.size.width, editingView.frame.size.height);
+    }
+    
+    //AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.view addSubview:editingView];
     [UIView animateWithDuration:0.5 animations:^{
         editingView.alpha = 1.0;
-    }];    
+    }]; 
+    
+    self.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 -(void) cancelEditing:(id)sender{
@@ -921,6 +1005,20 @@
         overlayView.alpha = 0.0;
         [UIView commitAnimations];
     }
+}
+
+-(NSInteger) findCurrentIdlePoint{
+    NSInteger found = -1;
+    for(NSInteger i = 0; i < idleList.count; i++){
+        float idlePoint = [[idleList objectAtIndex:i] floatValue];
+        if(audioPlayer.currentTime >= idlePoint){
+            found = i;
+        }else{
+            break;
+        }
+    }
+    
+    return found;
 }
 
 

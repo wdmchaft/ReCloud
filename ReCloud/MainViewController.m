@@ -313,7 +313,7 @@
     
     editingView = [[[NSBundle mainBundle] loadNibNamed:@"EditingView" owner:self options:nil] lastObject];
     editingView.alpha = 0;
-    editingView.frame = CGRectMake(0.0, 20.0, editingView.frame.size.width, editingView.frame.size.height);
+    editingView.frame = CGRectMake(0.0, 0.0, editingView.frame.size.width, editingView.frame.size.height);
     
     UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
     textView.text = titleLabel.text;
@@ -325,8 +325,8 @@
     UIButton *cancelButton = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
     [cancelButton addTarget:self action:@selector(cancelEditing:) forControlEvents:UIControlEventTouchUpInside];
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate.window addSubview:editingView];
+    //AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.view addSubview:editingView];
     [UIView animateWithDuration:0.5 animations:^{
         editingView.alpha = 1.0;
     }];
@@ -380,6 +380,7 @@
     [leftButtonItem release];
      */
     
+    /*
     UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingBtn setImage:[UIImage imageNamed:@"button_setting.png"] forState:UIControlStateNormal];
     [settingBtn setImage:[UIImage imageNamed:@"button_setting_hover.png"] forState:UIControlStateHighlighted];
@@ -388,6 +389,7 @@
     UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingBtn];
     self.navigationItem.rightBarButtonItem = rightButtonItem;
     [rightButtonItem release];    
+     */;
     
     UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
     logoView.frame = CGRectMake(0, 0, 61, 18);

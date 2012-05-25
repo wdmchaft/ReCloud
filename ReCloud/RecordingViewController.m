@@ -96,10 +96,11 @@
     sampleCount = 0;
     tagViews = [[NSMutableArray alloc] init];
     idleList = [[NSMutableArray alloc] init];
-    statusStrs = [[NSArray alloc] initWithObjects:@"获取环境噪音...", @"正在优化...", @"加载录音模块...", @"开始录音！", nil];
     NSString *initIdlePoint = [[NSString alloc] initWithFormat:@"%f", 0.0f];
     [idleList addObject:initIdlePoint];
     [initIdlePoint release];
+    statusStrs = [[NSArray alloc] initWithObjects:@"获取环境噪音...", @"正在优化...", @"加载录音模块...", @"开始录音！", nil];
+
     
     [self showWaitingView];
     [self sampleSurroundVoice];    
@@ -546,7 +547,7 @@
     
     editingView = [[[NSBundle mainBundle] loadNibNamed:@"EditingView" owner:self options:nil] lastObject];
     editingView.alpha = 0;
-    editingView.frame = CGRectMake(0.0, 20.0, editingView.frame.size.width, editingView.frame.size.height);
+    editingView.frame = CGRectMake(0.0, 0.0, editingView.frame.size.width, editingView.frame.size.height);
     
     UITextView *textView = (UITextView *)[editingView viewWithTag:TAG_EDITVIEW_TEXTVIEW];
     textView.text = titleLabel.text;
@@ -558,8 +559,8 @@
     UIButton *cancelButton = (UIButton *)[editingView viewWithTag:TAG_EDITVIEW_CANCEL_BUTTON];
     [cancelButton addTarget:self action:@selector(cancelEditing:) forControlEvents:UIControlEventTouchUpInside];
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate.window addSubview:editingView];
+    //AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.view addSubview:editingView];
     [UIView animateWithDuration:0.5 animations:^{
         editingView.alpha = 1.0;
     }];
@@ -740,7 +741,7 @@
     
     NSDate *newDate = [[NSDate alloc] initWithTimeIntervalSince1970:timestamp];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yy/MM/dd HH:mm"];
+    [dateFormatter setDateFormat:@"YYYY/MM/dd HH:mm"];
     [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"zh_Han_cn"] autorelease]];
     NSString *datetimeStr = [dateFormatter stringFromDate:newDate];    
     NSArray *tmp = [datetimeStr componentsSeparatedByString:@" "];

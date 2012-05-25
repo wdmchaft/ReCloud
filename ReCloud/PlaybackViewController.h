@@ -22,8 +22,8 @@
     NSTimer *progressTimer;
     NSInteger editingIndex;
     NSInteger deletingIndex;
+    NSInteger idleIndex;
     NSInteger hightlightedIndex;   //当前高亮的标记序号 
-    NSInteger idleIndex;    //当前断句序号
     NSInteger lastSelectedIndex;
     NSMutableArray *editingButtons;
     
@@ -59,5 +59,7 @@
 -(void)         cancelOverlayView;
 -(void)         portraitView;
 -(void)         landscapeView;
+-(NSInteger)    findCurrentIdlePoint;
+
 
 @end
