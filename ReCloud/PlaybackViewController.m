@@ -313,7 +313,7 @@
         NSInteger found = -1;
         for(NSInteger i = 0; i < indexList.count; i++){
             UIView *tagView = [tagSliderView.tagViews objectAtIndex:indexList.count - 1 - i];
-            if(tagSliderView.currentXpos >= tagView.frame.origin.x + tagView.frame.size.width / 8){  
+            if(tagSliderView.currentXpos >= tagView.frame.origin.x + tagView.frame.size.width / 4){  
                 //判断条件tagView.frame.size.width除以5而非除以2是因为计算有偏差，要稍作修正
                 
                 found = i;
@@ -524,8 +524,11 @@
             return;
         }
         
-        idleIndex--;
+        
         float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
+        if(audioPlayer.currentTime <= idlePoint + 1){
+            idleIndex--;
+        }
         [tagSliderView setProgress:idlePoint / audioPlayer.duration];
         self.audioPlayer.currentTime = idlePoint;      
         

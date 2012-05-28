@@ -295,17 +295,17 @@
 }
 
 -(void) pickSampleVoice:(NSTimer *)timer{
-    if(sampleCount < 30){
+    if(sampleCount < 10){
         [mRecorder updateMeters];
         NSLog(@"sampling: %f", [mRecorder peakPowerForChannel:0] + 160);
         totalSamplePeak += ([mRecorder peakPowerForChannel:0] + 160);        
     }else{  
-        if(sampleCount == 30){
+        if(sampleCount == 10){
             averageSamplePeak = totalSamplePeak / sampleCount;
             powerPerSpectrumItem = (160 - averageSamplePeak) / SPECTRUM_ITEM_COUNT;
             NSLog(@"averageSamplePeak: %f, powerPerSpectrumItem: %f", averageSamplePeak, powerPerSpectrumItem);
         }
-        if(sampleCount == 50){
+        if(sampleCount == 20){
             if(waitingView != nil){
                 UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
                 [UIView animateWithDuration:0.3 animations:^{
@@ -315,7 +315,7 @@
                 }];
             }
         }
-        if(sampleCount == 70){
+        if(sampleCount == 25){
             if(waitingView != nil){
                 UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
                 [UIView animateWithDuration:0.3 animations:^{
@@ -325,7 +325,7 @@
                 }];
             }
         }
-        if(sampleCount == 80){
+        if(sampleCount == 28){
             if(waitingView != nil){
                 UIView *labelView = [waitingView viewWithTag:TAG_WAITINGVIEW_LABEL_BACK];
                 [UIView animateWithDuration:0.3 animations:^{
