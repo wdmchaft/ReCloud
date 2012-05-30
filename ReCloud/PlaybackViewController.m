@@ -528,6 +528,7 @@
         float idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
         if(audioPlayer.currentTime <= idlePoint + 1){
             idleIndex--;
+            idlePoint = [[idleList objectAtIndex:idleIndex] floatValue];
         }
         [tagSliderView setProgress:idlePoint / audioPlayer.duration];
         self.audioPlayer.currentTime = idlePoint;      
